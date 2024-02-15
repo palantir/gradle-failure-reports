@@ -1,3 +1,7 @@
+<p align="right">
+<a href="https://autorelease.general.dmz.palantir.tech/palantir/gradle-failure-reports"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
+</p>
+
 ## gradle-failure-reports
 
 A Gradle plugin that detects failures in CircleCI jobs and converts them into JUnit test reports, which are then displayed in the CircleCI user interface for a more streamlined view of the build status and error details.
