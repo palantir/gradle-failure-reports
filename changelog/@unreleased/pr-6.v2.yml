@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: 'Revert "Excavator:  Test libraries using the latest Java LTS"'
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/6
