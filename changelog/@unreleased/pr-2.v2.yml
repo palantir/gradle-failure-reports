@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Bump gradle-external-publish-plugin
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/2
