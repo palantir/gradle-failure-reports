@@ -1,0 +1,18 @@
+<testsuite>
+  <testsuites name="./gradlew --write-locks" tests="1">
+    <testcase name="[:verifyLocks] error: java.lang.RuntimeException: Found dependencies that were not in the lock state: [com.squareup.okhttp3:okhttp, com.squareup.okio:okio]. Please run './gradlew..." className="[:verifyLocks] error: java.lang.RuntimeException: Found dependencies that were not in the lock state: [com.squareup.okhttp3:okhttp, com.squareup.okio:okio]. Please run './gradlew..." time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">Found dependencies that were not in the lock state: [com.squareup.okhttp3:okhttp, com.squareup.okio:okio]. Please run './gradlew --write-locks'.
+
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':verifyLocks'.
+	java.lang.RuntimeException: Found dependencies that were not in the lock state: [com.squareup.okhttp3:okhttp, com.squareup.okio:okio]. Please run './gradlew --write-locks'.
+
+* Full exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':verifyLocks'.
+Caused by: java.lang.RuntimeException: Found dependencies that were not in the lock state: [com.squareup.okhttp3:okhttp, com.squareup.okio:okio]. Please run './gradlew --write-locks'.
+	at com.palantir.gradle.versions.VerifyLocksTask.verifyLocksForScope(VerifyLocksTask.java:90)
+	at com.palantir.gradle.versions.VerifyLocksTask.taskAction(VerifyLocksTask.java:72)
+</failure>
+    </testcase>
+  </testsuites>
+</testsuite>

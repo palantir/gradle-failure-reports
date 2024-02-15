@@ -1,0 +1,36 @@
+<testsuite>
+  <testsuites name="./gradlew runFix" tests="1">
+    <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">ExceptionWithSuggestedFixMessage
+
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
+	com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
+
+* Full exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
+Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
+</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name="./gradlew fixMe" tests="1">
+    <testcase name="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" className="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">InnerExceptionWithSuggestedFixMessage
+
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithSuggestedFix'.
+	org.gradle.api.GradleException: OuterGradleException
+	com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: InnerExceptionWithSuggestedFixMessage
+	java.lang.RuntimeException: InnerRuntimeException
+
+* Full exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithSuggestedFix'.
+Caused by: org.gradle.api.GradleException: OuterGradleException
+Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: InnerExceptionWithSuggestedFixMessage
+	... PLACEHOLDER_NUMBER more
+Caused by: java.lang.RuntimeException: InnerRuntimeException
+	... PLACEHOLDER_NUMBER more
+</failure>
+    </testcase>
+  </testsuites>
+</testsuite>

@@ -1,0 +1,19 @@
+<testsuite>
+  <testsuites name="myProject/src/main/java/app/ClassA.java:4" tests="1">
+    <testcase name="ClassA.java:4: error: cannot find symbol" className="ClassA.java:4: error: cannot find symbol" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/multiple-javaCompile-errors-are-reported/myProject/src/main/java/app/ClassA.java:4: error: cannot find symbol
+public class ClassA extends ClassThatDoesNotExist{
+                            ^
+  symbol: class ClassThatDoesNotExist
+</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name="myProject/src/foo/java/app/ClassFoo.java:6" tests="1">
+    <testcase name="ClassFoo.java:6: error: ';' expected" className="ClassFoo.java:6: error: ';' expected" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/multiple-javaCompile-errors-are-reported/myProject/src/foo/java/app/ClassFoo.java:6: error: ';' expected
+        return 0
+                ^
+</failure>
+    </testcase>
+  </testsuites>
+</testsuite>
