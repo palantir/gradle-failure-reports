@@ -58,6 +58,41 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile")
     }
 
+    def 'scalaCompile errors are reported'() {
+        setup:
+        // language=gradle
+        buildFile << '''
+            apply plugin: 'com.palantir.failure-reports'
+        '''.stripIndent(true)
+
+        buildFile << setFailureReportOutputFile()
+
+        def subProjectDir1 = addScalaSubProject("myProject1")
+        // language=scala
+        addResource("src/main/scala/app", "ClassA.scala", '''
+            package app;
+            case class ClassA(field: String
+        '''.stripIndent(true), subProjectDir1)
+
+        def subProjectDir2 = addScalaSubProject("myProject2")
+        // language=scala
+        addResource("src/main/scala/app", "ClassB.scala", '''
+            package app;
+            class ClassB extends SomeClass {
+              override def apply(extensions: SparkSessionExtensions): Unit = {
+              }
+            }
+        '''.stripIndent(true), subProjectDir2)
+
+        enableTestCiRun()
+
+        when:
+        ExecutionResult result = runTasksWithFailure('compileScala', '--continue', '--parallel')
+
+        then:
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "compileScala")
+    }
+
     def 'multiple javaCompile errors are reported'() {
         setup:
         // language=gradle
@@ -457,5 +492,21 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
                 failureReportOutputFile = project.file('build/failure-reports/unit-test.xml')
             }
         """.stripIndent(true)
+    }
+
+    def addScalaSubProject(String name) {
+        return addSubproject(name, '''
+            repositories {
+                 mavenCentral()
+            }
+
+            apply plugin: 'scala'
+
+            sourceSets { foo }
+
+            dependencies {
+                implementation 'org.scala-lang:scala-library:2.12.8'
+            }
+        '''.stripIndent(true))
     }
 }

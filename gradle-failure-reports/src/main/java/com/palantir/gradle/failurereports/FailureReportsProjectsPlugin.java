@@ -29,6 +29,7 @@ import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.api.tasks.scala.ScalaCompile;
 
 /**
  * Collects all the errors from gradle tasks of type {@link Checkstyle}, {@link JavaCompile} and
@@ -43,12 +44,15 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
         if (!PluginResources.shouldApplyPlugin(project)) {
             return;
         }
+        TaskProvider<FinalizerTask> finalizerTask =
+                project.getRootProject().getTasks().named(FailureReportsRootPlugin.FINALIZER_TASK, FinalizerTask.class);
         project.getPluginManager().withPlugin("java", _javaPlugin -> {
-            TaskProvider<FinalizerTask> finalizerTask = project.getRootProject()
-                    .getTasks()
-                    .named(FailureReportsRootPlugin.FINALIZER_TASK, FinalizerTask.class);
             collectFailureReportsByType(project, finalizerTask, JavaCompile.class, new JavaCompileFailureReporter());
             collectFailureReportsByType(project, finalizerTask, Checkstyle.class, new CheckstyleFailureReporter());
+        });
+
+        project.getPluginManager().withPlugin("scala", _scalaPlugin -> {
+            collectFailureReportsByType(project, finalizerTask, ScalaCompile.class, new ScalaCompileFailureReporter());
         });
     }
 

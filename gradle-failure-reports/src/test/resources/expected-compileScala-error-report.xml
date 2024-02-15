@@ -1,0 +1,17 @@
+<testsuite>
+  <testsuites name="myProject1/src/main/scala/app/ClassA.scala:3" tests="1">
+    <testcase name="ClassA.scala:3: ')' expected but eof found." className="ClassA.scala:3: ')' expected but eof found." time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">[Error] _PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/scalaCompile-errors-are-reported/myProject1/src/main/scala/app/ClassA.scala:3:32: ')' expected but eof found.</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name="myProject2/src/main/scala/app/ClassB.scala:4" tests="1">
+    <testcase name="ClassB.scala:4: not found: type SparkSessionExtensions" className="ClassB.scala:4: not found: type SparkSessionExtensions" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">[Error] _PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/scalaCompile-errors-are-reported/myProject2/src/main/scala/app/ClassB.scala:4:34: not found: type SparkSessionExtensions</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name="myProject2/src/main/scala/app/ClassB.scala:3" tests="1">
+    <testcase name="ClassB.scala:3: not found: type SomeClass" className="ClassB.scala:3: not found: type SomeClass" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">[Error] _PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/scalaCompile-errors-are-reported/myProject2/src/main/scala/app/ClassB.scala:3:22: not found: type SomeClass</failure>
+    </testcase>
+  </testsuites>
+</testsuite>
