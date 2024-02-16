@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        gradlePluginPortal() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
         mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
+        gradlePluginPortal() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
     }
 
     dependencies {
@@ -34,9 +34,8 @@ allprojects {
     apply plugin: 'com.palantir.jakarta-package-alignment'
 
     repositories {
-        gradlePluginPortal()
         mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
-        mavenLocal()
+        gradlePluginPortal()
     }
 
     group 'com.palantir.gradle.failure-reports'
