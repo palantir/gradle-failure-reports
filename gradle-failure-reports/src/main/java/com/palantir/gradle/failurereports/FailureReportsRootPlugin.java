@@ -20,7 +20,6 @@ import com.palantir.gradle.failurereports.Finalizer.FinalizerTask;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.PluginResources;
 import java.util.List;
-import java.util.Optional;
 import one.util.streamex.StreamEx;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -62,9 +61,7 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
             verifyLocksTask.configure(task -> task.finalizedBy(finalizerTask));
 
             finalizerTask.configure(finalizer -> finalizer.getFailureReports().addAll(project.provider(() -> {
-                if (FailureReporterResources.executedAndFailed(verifyLocksTask.get())
-                        && ThrowableFailureReporter.maybeGetFailureReport(verifyLocksTask.get())
-                                .isEmpty()) {
+                if (FailureReporterResources.executedAndFailed(verifyLocksTask.get())) {
                     return List.of(VerifyLocksFailureReporter.getFailureReport(verifyLocksTask.get()));
                 }
                 return List.of();
@@ -85,8 +82,7 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
                                     projectTasks)
                             .filter(FailureReportsRootPlugin::isAllowedTask)
                             .filter(FailureReporterResources::executedAndFailed)
-                            .map(ThrowableFailureReporter::maybeGetFailureReport)
-                            .flatMap(Optional::stream))));
+                            .map(ThrowableFailureReporter::getFailureReport))));
         });
     }
 

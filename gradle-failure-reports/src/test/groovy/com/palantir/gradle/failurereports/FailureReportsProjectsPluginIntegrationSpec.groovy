@@ -320,7 +320,13 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
             tasks.register('throwGradleException') {
                 doLast {
-                    throw new GradleException("This is a gradle exception that is ignored")
+                    throw new GradleException("This is a gradle exception that is not ignored")
+                }
+            }
+            
+           tasks.register('throwOOM') {
+                doLast {
+                    throw new OutOfMemoryError()
                 }
             }
         '''.stripIndent(true))
@@ -328,8 +334,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         enableTestCiRun()
 
         when:
-        runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', '--continue')
-
+        runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', 'throwOOM', '--continue')
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException")
@@ -393,6 +398,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
         reportXml.exists()
     }
+
 
     def setupCompileErrorsWthGradleProperties(String gradleProperties) {
         buildFile << '''

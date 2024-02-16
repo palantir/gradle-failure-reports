@@ -43,7 +43,7 @@ public final class FailureReporterResources {
         return getPathWithLineNumber(getRelativePathToProject(sourceDir, fullFilePath), lineNumber);
     }
 
-    private static String getRelativePathToProject(Path projectDir, Path fullFilePath) {
+    public static String getRelativePathToProject(Path projectDir, Path fullFilePath) {
         try {
             return projectDir.relativize(fullFilePath).toString();
         } catch (IllegalArgumentException e) {
