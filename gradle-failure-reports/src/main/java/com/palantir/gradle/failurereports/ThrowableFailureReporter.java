@@ -52,14 +52,7 @@ public final class ThrowableFailureReporter {
 
     private static <T extends Task> FailureReport getGenericExceptionReport(T task, Throwable throwable) {
         FailureReport report = task.getProject().getObjects().newInstance(FailureReport.class);
-        report.getClickableSource()
-                .set(FailureReporterResources.getRelativePathToProject(
-                        task.getProject()
-                                .getRootProject()
-                                .getProjectDir()
-                                .toPath()
-                                .toAbsolutePath(),
-                        task.getProject().getProjectDir().toPath().toAbsolutePath()));
+        report.getClickableSource().set(task.getPath());
         report.getErrorMessage().set(ThrowableResources.formatThrowable(throwable));
         report.getHeader().set(FailureReporterResources.getTaskErrorHeader(task.getPath(), throwable.getMessage()));
         return report;

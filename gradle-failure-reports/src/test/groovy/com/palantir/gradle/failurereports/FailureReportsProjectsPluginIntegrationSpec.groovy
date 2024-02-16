@@ -323,7 +323,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
                     throw new GradleException("This is a gradle exception that is not ignored")
                 }
             }
-            
+
            tasks.register('throwOOM') {
                 doLast {
                     throw new OutOfMemoryError()
