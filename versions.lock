@@ -15,7 +15,7 @@ com.palantir.gradle.utils:environment-variables:0.6.0 (1 constraints: 0805fd35)
 one.util:streamex:0.8.2 (1 constraints: 0c050536)
 org.checkerframework:checker-qual:3.42.0 (2 constraints: 840fdaa1)
 org.codehaus.woodstox:stax2-api:4.2.1 (2 constraints: 68275cd2)
-org.immutables:value:2.10.0 (1 constraints: 35052f3b)
+org.immutables:value:2.10.1 (1 constraints: 3605303b)
 
 [Test dependencies]
 cglib:cglib-nodep:3.2.2 (1 constraints: 490ded24)
