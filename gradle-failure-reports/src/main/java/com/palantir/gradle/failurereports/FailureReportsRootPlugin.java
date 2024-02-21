@@ -45,13 +45,12 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
         }
         FailureReportsExtension failureReportsExtension =
                 project.getExtensions().create("failureReports", FailureReportsExtension.class);
-        project.getRootProject()
-                .allprojects(subProject -> subProject.getPlugins().apply(FailureReportsProjectsPlugin.class));
-
         TaskProvider<FinalizerTask> finalizerTask = project.getTasks()
                 .register(FINALIZER_TASK, FinalizerTask.class, task -> {
                     task.getOutputFile().set(failureReportsExtension.getFailureReportOutputFile());
                 });
+        project.getRootProject()
+                .allprojects(subProject -> subProject.getPlugins().apply(FailureReportsProjectsPlugin.class));
         collectVerifyLocksFailureReports(project, finalizerTask);
         collectOtherTaskFailures(project, finalizerTask);
     }
