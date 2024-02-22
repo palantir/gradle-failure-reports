@@ -287,7 +287,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks")
     }
 
-    def 'ExceptionWithSuggestion is reported as a failure' () {
+    def 'All exceptions are reported as failures' () {
         setup:
         // language=gradle
         buildFile << '''
@@ -334,7 +334,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         enableTestCiRun()
 
         when:
-        runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', 'throwOOM', '--continue')
+        ExecutionResult executionResult= runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', 'throwOOM', '--continue')
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException")

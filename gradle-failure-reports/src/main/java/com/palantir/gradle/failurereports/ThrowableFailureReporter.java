@@ -54,7 +54,7 @@ public final class ThrowableFailureReporter {
         FailureReport report = task.getProject().getObjects().newInstance(FailureReport.class);
         report.getClickableSource().set(task.getPath());
         report.getErrorMessage().set(ThrowableResources.formatThrowable(throwable));
-        report.getHeader().set(FailureReporterResources.getTaskErrorHeader(task.getPath(), throwable.getMessage()));
+        report.getHeader().set(FailureReporterResources.getTaskErrorHeader(task.getPath(), throwable));
         return report;
     }
 

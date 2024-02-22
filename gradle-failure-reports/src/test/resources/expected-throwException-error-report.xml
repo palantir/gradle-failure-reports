@@ -34,7 +34,7 @@ Caused by: java.lang.RuntimeException: InnerRuntimeException
     </testcase>
   </testsuites>
   <testsuites name=":myProject:throwGradleException" tests="1">
-    <testcase name="[:myProject:throwGradleException] error: Execution failed for task ':myProject:throwGradleException'." className="[:myProject:throwGradleException] error: Execution failed for task ':myProject:throwGradleException'." time="0">
+    <testcase name="[:myProject:throwGradleException] error: This is a gradle exception that is not ignored" className="[:myProject:throwGradleException] error: This is a gradle exception that is not ignored" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">This is a gradle exception that is not ignored
 
 * Causal chain is:
@@ -48,7 +48,7 @@ Caused by: org.gradle.api.GradleException: This is a gradle exception that is no
     </testcase>
   </testsuites>
   <testsuites name=":myProject:throwOOM" tests="1">
-    <testcase name="[:myProject:throwOOM] error: Execution failed for task ':myProject:throwOOM'." className="[:myProject:throwOOM] error: Execution failed for task ':myProject:throwOOM'." time="0">
+    <testcase name="[:myProject:throwOOM] error: java.lang.OutOfMemoryError exception thrown" className="[:myProject:throwOOM] error: java.lang.OutOfMemoryError exception thrown" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
 
 * Causal chain is:
