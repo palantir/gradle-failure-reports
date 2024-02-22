@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Show normal exceptions in the failure reports
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/23
