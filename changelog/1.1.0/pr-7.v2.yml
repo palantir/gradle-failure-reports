@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: 'Revert "Excavator:  Upgrade dependencies"'
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/7
