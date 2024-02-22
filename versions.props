@@ -1,7 +1,7 @@
 com.fasterxml.jackson.core:jackson-databind = 2.15.3
 com.netflix.nebula:nebula-test = 10.0.0
 com.fasterxml.jackson.*:* = 2.15.3
-org.immutables:* = 2.10.0
+org.immutables:* = 2.10.1
 one.util:streamex = 0.8.2
 com.palantir.gradle.auto-parallelizable:* = 1.4.0
 com.google.guava:guava = 32.0.1-jre
