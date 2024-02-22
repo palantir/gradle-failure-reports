@@ -86,9 +86,9 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
     }
 
     private static boolean isAllowedTask(Task task) {
-        return !(task instanceof JavaCompile)
-                && !(task instanceof Checkstyle)
-                && !(task instanceof FinalizerTask)
-                && !task.getName().equals(VERIFY_LOCKS_TASK);
+        return !(task instanceof JavaCompile
+                || task instanceof Checkstyle
+                || task instanceof FinalizerTask
+                || task.getName().equals(VERIFY_LOCKS_TASK));
     }
 }
