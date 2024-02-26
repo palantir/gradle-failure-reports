@@ -33,32 +33,4 @@ Caused by: java.lang.RuntimeException: InnerRuntimeException
 </failure>
     </testcase>
   </testsuites>
-  <testsuites name=":myProject:throwGradleException" tests="1">
-    <testcase name="[:myProject:throwGradleException] error: This is a gradle exception that is not ignored" className="[:myProject:throwGradleException] error: This is a gradle exception that is not ignored" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">This is a gradle exception that is not ignored
-
-* Causal chain is:
-	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
-	org.gradle.api.GradleException: This is a gradle exception that is not ignored
-
-* Full exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
-Caused by: org.gradle.api.GradleException: This is a gradle exception that is not ignored
-</failure>
-    </testcase>
-  </testsuites>
-  <testsuites name=":myProject:throwOOM" tests="1">
-    <testcase name="[:myProject:throwOOM] error: java.lang.OutOfMemoryError exception thrown" className="[:myProject:throwOOM] error: java.lang.OutOfMemoryError exception thrown" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
-
-* Causal chain is:
-	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwOOM'.
-	java.lang.OutOfMemoryError
-
-* Full exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwOOM'.
-Caused by: java.lang.OutOfMemoryError
-</failure>
-    </testcase>
-  </testsuites>
 </testsuite>
