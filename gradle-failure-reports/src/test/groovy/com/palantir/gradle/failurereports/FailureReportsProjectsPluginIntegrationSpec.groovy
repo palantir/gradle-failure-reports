@@ -287,7 +287,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks")
     }
 
-    def 'All exceptions are reported as failures' () {
+    def 'ExceptionWithSuggestion is reported as a failure' () {
         setup:
         // language=gradle
         buildFile << '''
@@ -320,13 +320,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
             tasks.register('throwGradleException') {
                 doLast {
-                    throw new GradleException("This is a gradle exception that is not ignored")
-                }
-            }
-
-           tasks.register('throwOOM') {
-                doLast {
-                    throw new OutOfMemoryError()
+                    throw new GradleException("This is a gradle exception that is ignored")
                 }
             }
         '''.stripIndent(true))
@@ -334,7 +328,8 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         enableTestCiRun()
 
         when:
-        ExecutionResult executionResult= runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', 'throwOOM', '--continue')
+        runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', '--continue')
+
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException")
@@ -398,7 +393,6 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
         reportXml.exists()
     }
-
 
     def setupCompileErrorsWthGradleProperties(String gradleProperties) {
         buildFile << '''

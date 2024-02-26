@@ -22,39 +22,30 @@ import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.ThrowableResources;
 import java.util.Optional;
+import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 public final class ThrowableFailureReporter {
 
-    public static <T extends Task> FailureReport getFailureReport(T task) {
+    public static <T extends Task> Optional<FailureReport> maybeGetFailureReport(T task) {
         Throwable throwable = task.getState().getFailure();
-        // retrieving the last ExceptionWithSuggestion in the causal chain
+        // try to get the last ExtraInfoException in the causal chain
         Optional<ExceptionWithSuggestion> maybeExtraInfoException = Throwables.getCausalChain(throwable).stream()
                 .filter(ExceptionWithSuggestion.class::isInstance)
                 .map(ExceptionWithSuggestion.class::cast)
                 .findFirst();
-        return maybeExtraInfoException
-                .map(exception -> getExceptionWithSuggestionReport(task, throwable, exception))
-                .orElseGet(() -> getGenericExceptionReport(task, throwable));
+        return maybeExtraInfoException.map(
+                exception -> getEnhancedExceptionReport(task.getProject(), task.getPath(), throwable, exception));
     }
 
     @SuppressWarnings("NullAway")
-    private static <T extends Task> FailureReport getExceptionWithSuggestionReport(
-            T task, Throwable initialThrowable, ExceptionWithSuggestion extraInfoException) {
-        FailureReport report = task.getProject().getObjects().newInstance(FailureReport.class);
+    public static FailureReport getEnhancedExceptionReport(
+            Project project, String taskPath, Throwable initialThrowable, ExceptionWithSuggestion extraInfoException) {
+        FailureReport report = project.getObjects().newInstance(FailureReport.class);
         report.getClickableSource().set(extraInfoException.getSuggestion());
         report.getErrorMessage()
                 .set(ThrowableResources.formatThrowableWithMessage(initialThrowable, extraInfoException.getMessage()));
-        report.getHeader()
-                .set(FailureReporterResources.getTaskErrorHeader(task.getPath(), extraInfoException.getMessage()));
-        return report;
-    }
-
-    private static <T extends Task> FailureReport getGenericExceptionReport(T task, Throwable throwable) {
-        FailureReport report = task.getProject().getObjects().newInstance(FailureReport.class);
-        report.getClickableSource().set(task.getPath());
-        report.getErrorMessage().set(ThrowableResources.formatThrowable(throwable));
-        report.getHeader().set(FailureReporterResources.getTaskErrorHeader(task.getPath(), throwable));
+        report.getHeader().set(FailureReporterResources.getTaskErrorHeader(taskPath, extraInfoException.getMessage()));
         return report;
     }
 

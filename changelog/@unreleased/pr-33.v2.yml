@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Revert "Show all exceptions in the failure reports (#23)"
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/33

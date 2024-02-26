@@ -16,7 +16,6 @@
 
 package com.palantir.gradle.failurereports.util;
 
-import com.google.common.base.Throwables;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
@@ -44,22 +43,13 @@ public final class FailureReporterResources {
         return getPathWithLineNumber(getRelativePathToProject(sourceDir, fullFilePath), lineNumber);
     }
 
-    public static String getRelativePathToProject(Path projectDir, Path fullFilePath) {
+    private static String getRelativePathToProject(Path projectDir, Path fullFilePath) {
         try {
             return projectDir.relativize(fullFilePath).toString();
         } catch (IllegalArgumentException e) {
             log.warn("Unable to relativize path {} from {}", fullFilePath, projectDir, e);
             throw e;
         }
-    }
-
-    public static String getTaskErrorHeader(String path, Throwable throwable) {
-        Throwable rootThrowable = Throwables.getRootCause(throwable);
-        return getTaskErrorHeader(
-                path,
-                Optional.ofNullable(rootThrowable.getMessage())
-                        .orElseGet(() -> String.format(
-                                "%s exception thrown", rootThrowable.getClass().getCanonicalName())));
     }
 
     public static String getTaskErrorHeader(String taskPath, String errorDescription) {
