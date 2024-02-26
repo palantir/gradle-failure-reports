@@ -29,7 +29,6 @@ import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.gradle.api.tasks.testing.Test;
 
 public final class FailureReportsRootPlugin implements Plugin<Project> {
 
