@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: ScalaCompile failures are reported
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/24
