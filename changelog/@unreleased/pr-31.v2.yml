@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Ignore test failures in the failure-reports
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/31
