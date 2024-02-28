@@ -33,7 +33,7 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
     protected abstract FlowProviders getFlowProviders();
 
     @Override
-    public void apply(Project project) {
+    public final void apply(Project project) {
         if (!PluginResources.shouldApplyPlugin(project)) {
             return;
         }

@@ -45,7 +45,7 @@ public abstract class CompileFailuresService implements BuildService<None> {
     private final ConcurrentMap<String, Boolean> startedCompileErrorsByTaskPath = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StringBuilder> compilerErrorsByTaskPath = new ConcurrentHashMap<>();
 
-    public <T extends AbstractCompile> void maybeCollectErrorMessage(T task, CharSequence charSequence) {
+    public final <T extends AbstractCompile> void maybeCollectErrorMessage(T task, CharSequence charSequence) {
         Matcher firstCompileErrorMatcher = COMPILE_ERROR_FIRST_LINE_PATTERN.matcher(charSequence);
         if (firstCompileErrorMatcher.find()) {
             String sourcePathFromError = firstCompileErrorMatcher.group("sourcePath");
@@ -78,7 +78,7 @@ public abstract class CompileFailuresService implements BuildService<None> {
         }
     }
 
-    public Stream<FailureReport> collectFailureReports(Project project, String taskPath) {
+    public final Stream<FailureReport> collectFailureReports(Project project, String taskPath) {
         if (!compilerErrorsByTaskPath.containsKey(taskPath)) {
             return Stream.empty();
         }

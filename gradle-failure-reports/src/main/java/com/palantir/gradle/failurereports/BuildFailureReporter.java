@@ -66,15 +66,12 @@ public final class BuildFailureReporter {
             Task task = taskExecutionException.getTask();
 
             if (task.getName().equals("verifyLocks")) {
-                // do something here
                 failureReports.add(VerifyLocksFailureReporter.getFailureReport(task));
             } else if (task instanceof JavaCompile) {
-                // do something here
                 failureReports.addAll(compileFailuresService
                         .collectFailureReports(task.getProject(), task.getPath())
                         .collect(Collectors.toList()));
             } else if (task instanceof Checkstyle) {
-                // do something here
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
                         .collect(Collectors.toList()));
             }
