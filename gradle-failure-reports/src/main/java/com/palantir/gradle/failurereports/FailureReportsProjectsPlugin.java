@@ -16,6 +16,7 @@
 
 package com.palantir.gradle.failurereports;
 
+import com.palantir.gradle.failurereports.util.ExtensionUtils;
 import com.palantir.gradle.failurereports.util.PluginResources;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -31,8 +32,10 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
         if (!PluginResources.shouldApplyPlugin(project)) {
             return;
         }
+        FailureReportsExtension failureReportsExtension =
+                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         Provider<CompileFailuresService> compileService =
-                CompileFailuresService.getSharedCompileFailuresService(project);
+                CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         project.getPluginManager().withPlugin("java", _javaPlugin -> {
             configureCompileTasks(project, compileService);
         });
@@ -41,6 +44,7 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
     private void configureCompileTasks(Project project, Provider<CompileFailuresService> compileService) {
         TaskCollection<JavaCompile> tasksWithClassType = project.getTasks().withType(JavaCompile.class);
         tasksWithClassType.configureEach(javaCompileTask -> {
+            javaCompileTask.usesService(compileService);
             javaCompileTask.getLogging().addStandardErrorListener(new StandardOutputListener() {
 
                 @Override

@@ -16,6 +16,7 @@
 
 package com.palantir.gradle.failurereports;
 
+import com.palantir.gradle.failurereports.util.ExtensionUtils;
 import com.palantir.gradle.failurereports.util.PluginResources;
 import javax.inject.Inject;
 import org.gradle.api.Plugin;
@@ -38,9 +39,9 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
             return;
         }
         FailureReportsExtension failureReportsExtension =
-                project.getExtensions().getByType(FailureReportsExtension.class);
+                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         Provider<CompileFailuresService> compileFailuresService =
-                CompileFailuresService.getSharedCompileFailuresService(project);
+                CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         getFlowScope().always(FailureReportFlowAction.class, spec -> {
             spec.getParameters()
                     .getOutputFile()

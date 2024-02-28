@@ -17,6 +17,8 @@
 package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Splitter;
+import com.palantir.gradle.failurereports.CompileFailuresService.Parameters;
+import com.palantir.gradle.failurereports.junit.JunitReporter;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import java.io.File;
 import java.nio.file.Path;
@@ -29,12 +31,20 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.gradle.api.Project;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.services.BuildService;
-import org.gradle.api.services.BuildServiceParameters.None;
+import org.gradle.api.services.BuildServiceParameters;
 import org.gradle.api.tasks.compile.AbstractCompile;
 
-public abstract class CompileFailuresService implements BuildService<None> {
+public abstract class CompileFailuresService implements BuildService<Parameters>, AutoCloseable {
+
+    interface Parameters extends BuildServiceParameters {
+        RegularFileProperty getOutputFile();
+
+        Property<File> getRootDir();
+    }
 
     private static final Pattern COMPILE_ERROR_FIRST_LINE_PATTERN =
             Pattern.compile("^(?<sourcePath>.*):(?<lineNumber>\\d+): (?<errorMessage>error: .*)$");
@@ -78,21 +88,25 @@ public abstract class CompileFailuresService implements BuildService<None> {
         }
     }
 
-    public final Stream<FailureReport> collectFailureReports(Project project, String taskPath) {
+    public final Stream<FailureReport> collectFailureReports(String taskPath) {
         if (!compilerErrorsByTaskPath.containsKey(taskPath)) {
             return Stream.empty();
         }
         return Splitter.on(COMPILE_ERROR_LAST_LINE_PATTERN)
                 .splitToStream(compilerErrorsByTaskPath.get(taskPath).toString())
-                .map(multiLineError -> maybeGetFailureReport(project, multiLineError))
+                .map(this::maybeGetFailureReport)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
     }
 
-    public static Provider<CompileFailuresService> getSharedCompileFailuresService(Project project) {
+    public static Provider<CompileFailuresService> getSharedCompileFailuresService(
+            Project project, FailureReportsExtension failureReportsExtension) {
         return project.getGradle()
                 .getSharedServices()
-                .registerIfAbsent("compileFailuresService", CompileFailuresService.class, _spec -> {});
+                .registerIfAbsent("compileFailuresService", CompileFailuresService.class, spec -> {
+                    spec.getParameters().getOutputFile().set(failureReportsExtension.getFailureReportOutputFile());
+                    spec.getParameters().getRootDir().set(project.provider(() -> project.getRootDir()));
+                });
     }
 
     private void markCompileErrorStarted(String taskPath) {
@@ -107,7 +121,7 @@ public abstract class CompileFailuresService implements BuildService<None> {
         return startedCompileErrorsByTaskPath.getOrDefault(taskPath, false);
     }
 
-    private static Optional<FailureReport> maybeGetFailureReport(Project project, String multiLineError) {
+    private Optional<FailureReport> maybeGetFailureReport(String multiLineError) {
         Matcher matcher = COMPILE_ERROR_PATTERN.matcher(multiLineError);
         if (!matcher.find()) {
             return Optional.empty();
@@ -119,7 +133,7 @@ public abstract class CompileFailuresService implements BuildService<None> {
         return Optional.of(FailureReport.builder()
                 .header(extractCompileErrorHeader(sourcePathFromError, lineNumber, errorMessage))
                 .clickableSource(FailureReporterResources.getRelativePathWithLineNumber(
-                        project.getRootDir().toPath(), Path.of(sourcePathFromError), lineNumber))
+                        getParameters().getRootDir().get().toPath(), Path.of(sourcePathFromError), lineNumber))
                 .errorMessage(matcher.group())
                 .build());
     }
@@ -130,5 +144,15 @@ public abstract class CompileFailuresService implements BuildService<None> {
         int maxIndex = errorExplanationIndex < 0 ? error.length() : errorExplanationIndex;
         return FailureReporterResources.sourceFileWithErrorMessage(
                 FailureReporterResources.getFileName(sourcePath), lineNumber, error.substring(0, maxIndex));
+    }
+
+    @Override
+    public final void close() throws Exception {
+        // TODO(crogoz): either write to another file or append to the existing one
+        JunitReporter.reportFailures(
+                getParameters().getOutputFile().getAsFile().get(),
+                compilerErrorsByTaskPath.keySet().stream()
+                        .flatMap(this::collectFailureReports)
+                        .collect(Collectors.toList()));
     }
 }

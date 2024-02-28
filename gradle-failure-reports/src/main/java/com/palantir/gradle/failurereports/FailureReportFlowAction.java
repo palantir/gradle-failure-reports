@@ -17,6 +17,7 @@
 package com.palantir.gradle.failurereports;
 
 import java.io.File;
+import java.util.Optional;
 import org.gradle.api.flow.BuildWorkResult;
 import org.gradle.api.flow.FlowAction;
 import org.gradle.api.flow.FlowParameters;
@@ -45,7 +46,7 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
                 .getFailure()
                 .ifPresent(failure -> BuildFailureReporter.report(
                         parameters.getOutputFile().get(),
-                        parameters.getCompileFailuresService().get(),
+                        Optional.of(parameters.getCompileFailuresService().get()),
                         failure));
     }
 }

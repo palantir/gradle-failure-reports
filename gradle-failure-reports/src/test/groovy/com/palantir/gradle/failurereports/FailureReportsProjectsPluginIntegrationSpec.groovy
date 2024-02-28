@@ -34,7 +34,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         def subProjectDir = addSubproject("myProject", '''
             apply plugin: 'java'
@@ -59,7 +59,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         then:
         failureMessage.contains('Compilation failed; see the compiler error output for details.')
         result.standardError.contains('error: \';\' expected')
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile", gradleVersionNumber)
 
         where:
         gradleVersionNumber << GRADLE_VERSIONS
@@ -73,7 +73,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         def subProjectDir = addSubproject('myProject', '''
             apply plugin: 'java'
@@ -104,7 +104,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         runTasks('compileFooJava', 'compileJava', '--continue', "--parallel")
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-javaCompile")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-javaCompile", gradleVersionNumber)
 
         where:
         gradleVersionNumber << GRADLE_VERSIONS
@@ -118,7 +118,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         def projectDir1 = addSubproject('myProject1', '''
             apply plugin: 'java'
@@ -157,7 +157,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         ExecutionResult result = runTasksWithFailure('compileJava', '--continue', "--parallel")
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-projects-javaCompile")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-projects-javaCompile", gradleVersionNumber)
 
         where:
         gradleVersionNumber << GRADLE_VERSIONS
@@ -171,7 +171,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         //language=groovy
         def subProjectDir = addSubproject("myProject", '''
@@ -233,7 +233,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         then:
         failureMessage.contains('Checkstyle rule violations were found.')
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle", gradleVersionNumber)
 
         where:
         gradleVersionNumber << GRADLE_VERSIONS
@@ -268,7 +268,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         then:
         executionResult.success
-        def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
+        def reportXml = new File(projectDir, getOutputFile(gradleVersionNumber))
         !reportXml.exists()
 
         where:
@@ -302,7 +302,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             }
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         file('versions.props').text = 'com.squareup.okhttp3:okhttp = 3.12.0'
         file('versions.lock').text = ''
@@ -313,7 +313,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         runTasksWithFailure('verifyLocks')
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks", gradleVersionNumber)
 
         where:
         gradleVersionNumber << GRADLE_VERSIONS
@@ -336,7 +336,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             }
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         // language=gradle
         addSubproject("myProject", '''
@@ -364,7 +364,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', '--continue')
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException", gradleVersionNumber)
 
         where:
         gradleVersionNumber << GRADLE_VERSIONS
@@ -425,7 +425,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             __TESTING_CI = true
         """.stripIndent(true))
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersionNumber)
 
         when:
         ExecutionResult result = runTasksWithFailure('compileJava')
@@ -434,7 +434,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         result.failure.message.contains('Execution failed for task \':compileJava\'.')
         result.standardError.contains('error: \';\' expected')
 
-        def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
+        def reportXml = new File(projectDir, getOutputFile(gradleVersionNumber))
         reportXml.exists()
 
         where:
@@ -485,7 +485,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.baseline'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setFailureReportOutputFile(gradleVersion)
     }
 
     def enableTestCiRun() {
@@ -496,13 +496,17 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         """.stripIndent(true)
     }
 
-    def setFailureReportOutputFile() {
+    def setFailureReportOutputFile(String gradleVersionNumber) {
         // changing the report failure location to prevent the failure reports from this tests from being displayed
         // in the CircleCi Tests tab
-        return """
+        return String.format("""
             failureReports {
-                failureReportOutputFile = project.file('build/failure-reports/unit-test.xml')
+                failureReportOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
             }
-        """.stripIndent(true)
+        """.stripIndent(true), gradleVersionNumber);
+    }
+
+    def getOutputFile(String gradleVersionNumber) {
+        return String.format('build/failure-reports/unit-test-%s.xml', gradleVersionNumber)
     }
 }

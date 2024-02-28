@@ -34,7 +34,7 @@ import org.gradle.execution.MultipleBuildFailures;
 public final class BuildFailureReporter {
 
     public static void report(
-            File outputFile, CompileFailuresService compileFailuresService, Throwable buildThrowable) {
+            File outputFile, Optional<CompileFailuresService> compileFailuresService, Throwable buildThrowable) {
         Optional.ofNullable(buildThrowable).ifPresent(failure -> {
             try {
                 reportFailures(outputFile, compileFailuresService, failure);
@@ -46,7 +46,7 @@ public final class BuildFailureReporter {
     }
 
     private static void reportFailures(
-            File outputFile, CompileFailuresService compileFailuresService, Throwable buildThrowable)
+            File outputFile, Optional<CompileFailuresService> compileFailuresService, Throwable buildThrowable)
             throws IOException {
         ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
@@ -68,9 +68,8 @@ public final class BuildFailureReporter {
             if (task.getName().equals("verifyLocks")) {
                 failureReports.add(VerifyLocksFailureReporter.getFailureReport(task));
             } else if (task instanceof JavaCompile) {
-                failureReports.addAll(compileFailuresService
-                        .collectFailureReports(task.getProject(), task.getPath())
-                        .collect(Collectors.toList()));
+                compileFailuresService.ifPresent(service -> failureReports.addAll(
+                        service.collectFailureReports(task.getPath()).collect(Collectors.toList())));
             } else if (task instanceof Checkstyle) {
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
                         .collect(Collectors.toList()));
