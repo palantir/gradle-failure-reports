@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.quality.Checkstyle;
@@ -34,15 +35,17 @@ public final class BuildFailureReporter {
 
     public static void report(
             File outputFile, CompileFailuresService compileFailuresService, Throwable buildThrowable) {
-        try {
-            reportFailures(outputFile, compileFailuresService, buildThrowable);
-        } catch (IOException e) {
-            // TODO(crogoz): changeMe
-            throw new RuntimeException(e);
-        }
+        Optional.ofNullable(buildThrowable).ifPresent(failure -> {
+            try {
+                reportFailures(outputFile, compileFailuresService, failure);
+            } catch (IOException e) {
+                // TODO(crogoz): changeMe
+                throw new RuntimeException(e);
+            }
+        });
     }
 
-    public static void reportFailures(
+    private static void reportFailures(
             File outputFile, CompileFailuresService compileFailuresService, Throwable buildThrowable)
             throws IOException {
         ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();

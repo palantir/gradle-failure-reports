@@ -1,10 +1,10 @@
 <testsuite>
   <testsuites name="myProject1/src/main/java/app/ClassFoo.java:6" tests="1">
     <testcase name="ClassFoo.java:6: error: illegal start of expression" className="ClassFoo.java:6: error: illegal start of expression" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/multiple-project-errors-are-reported/myProject1/src/main/java/app/ClassFoo.java:6: error: illegal start of expression
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject1/src/main/java/app/ClassFoo.java:6: error: illegal start of expression
         / wrong
         ^
-_PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/multiple-project-errors-are-reported/myProject1/src/main/java/app/ClassFoo.java:6: error: ';' expected
+_PROJECT_DIR/myProject1/src/main/java/app/ClassFoo.java:6: error: ';' expected
         / wrong
                ^
 </failure>
@@ -12,7 +12,7 @@ _PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProject
   </testsuites>
   <testsuites name="myProject2/src/main/java/app/ClassA.java:4" tests="1">
     <testcase name="ClassA.java:4: error: cannot find symbol" className="ClassA.java:4: error: cannot find symbol" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/nebulatest/com.palantir.gradle.failurereports.FailureReportsProjectsPluginIntegrationSpec/multiple-project-errors-are-reported/myProject2/src/main/java/app/ClassA.java:4: error: cannot find symbol
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject2/src/main/java/app/ClassA.java:4: error: cannot find symbol
 public class ClassA extends AnotherClass {
                             ^
   symbol: class AnotherClass

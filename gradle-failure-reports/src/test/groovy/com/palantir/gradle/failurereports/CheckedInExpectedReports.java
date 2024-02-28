@@ -37,7 +37,6 @@ public final class CheckedInExpectedReports {
 
     private static final Logger log = Logging.getLogger(CheckedInExpectedReports.class);
     private static final Path TEST_RESOURCES_PATH = Paths.get("src/test/resources/");
-    private static final Path CURRENT_PROJECT_DIR = Paths.get("build");
     private static final String PROJECT_DIR_PLACEHOLDER = "_PROJECT_DIR";
     private static final String OTHER_STACK_FRAMES_REGEX = "(?m)^\\sat (?!com\\.palantir\\.).*\n";
     private static final String STACKFRAME_MORE_REGEX = "... \\d+ more";
@@ -56,7 +55,8 @@ public final class CheckedInExpectedReports {
     public static void checkOrUpdateFor(File projectDir, String testName) throws IOException {
         Path expectedReportPath = TEST_RESOURCES_PATH.resolve(getExpectedReportFilename(testName));
         Path actualReportPath = projectDir.toPath().resolve("build/failure-reports/unit-test.xml");
-        String actualReportXmlContent = getReportWithProjectPlaceholder(actualReportPath);
+        String actualReportXmlContent = getReportWithProjectPlaceholder(
+                actualReportPath, projectDir.toPath().toAbsolutePath());
         // making sure the redacted string content is still a valid TestSuites object
         XmlResources.readXml(actualReportXmlContent, TestSuites.class);
 
@@ -72,10 +72,10 @@ public final class CheckedInExpectedReports {
         Files.write(expectedReportPath, actualReportXmlContent.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static String getReportWithProjectPlaceholder(Path reportPath) throws IOException {
+    private static String getReportWithProjectPlaceholder(Path reportPath, Path projectDir) throws IOException {
         return maybeRedactStacktrace(Files.readString(reportPath)
                 // if local paths are too big, they might get truncated in the errorMessage
-                .replaceAll(CURRENT_PROJECT_DIR.toAbsolutePath().toString(), PROJECT_DIR_PLACEHOLDER));
+                .replaceAll(projectDir.toString(), PROJECT_DIR_PLACEHOLDER));
     }
 
     private static boolean runningInCi() {

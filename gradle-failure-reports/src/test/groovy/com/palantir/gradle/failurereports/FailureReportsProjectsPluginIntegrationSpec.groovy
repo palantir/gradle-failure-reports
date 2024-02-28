@@ -23,8 +23,12 @@ import org.assertj.core.util.Throwables
 
 class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
-    def 'javaCompile error is reported'() {
+    public static final List<String> GRADLE_VERSIONS =
+            List.of("8.4", "8.6");
+
+    def '#gradleVersionNumber: javaCompile error is reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
@@ -56,10 +60,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         failureMessage.contains('Compilation failed; see the compiler error output for details.')
         result.standardError.contains('error: \';\' expected')
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile")
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'multiple javaCompile errors are reported'() {
+    def '#gradleVersionNumber: multiple javaCompile errors are reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
@@ -97,10 +105,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-javaCompile")
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'multiple project errors are reported'() {
+    def '#gradleVersionNumber: multiple project errors are reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
@@ -146,10 +158,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-projects-javaCompile")
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'successful build does not report failures ' () {
+    def '#gradleVersionNumber: successful build does not report failures ' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
@@ -177,11 +193,15 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         then:
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
 
-    def 'checkstyle reports failures' () {
+    def '#gradleVersionNumber: checkstyle reports failures' () {
         setup:
+        gradleVersion = gradleVersionNumber
         setupRootCheckstyleBuild()
 
         // language=gradle
@@ -215,10 +235,13 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         failureMessage.contains('Checkstyle rule violations were found.')
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle")
 
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'successful checkstyle does not report failures' () {
+    def '#gradleVersionNumber: successful checkstyle does not report failures' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupRootCheckstyleBuild()
 
@@ -247,10 +270,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         executionResult.success
         def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'verifyLocks reports failures' () {
+    def '#gradleVersionNumber: verifyLocks reports failures' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             buildscript {
@@ -287,10 +314,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks")
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'ExceptionWithSuggestion is reported as a failure' () {
+    def '#gradleVersionNumber: ExceptionWithSuggestion is reported as a failure' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
@@ -332,13 +363,16 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         when:
         runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', '--continue')
 
-
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException")
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'when running locally, no failure report is created'() {
+    def '#gradleVersionNumber: when running locally, no failure report is created'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupCompileErrorsWthGradleProperties("""
             __TESTING = true
@@ -353,10 +387,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'when CIRCLE_NODE_INDEX is not 0, no failure report is created'() {
+    def '#gradleVersionNumber: when CIRCLE_NODE_INDEX is not 0, no failure report is created'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupCompileErrorsWthGradleProperties("""
             __TESTING = true
@@ -373,10 +411,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'when CIRCLE_NODE_INDEX is not set, javaCompile errors are reported'() {
+    def '#gradleVersionNumber: when CIRCLE_NODE_INDEX is not set, javaCompile errors are reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupCompileErrorsWthGradleProperties("""
             __TESTING = true
@@ -394,6 +436,9 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
         reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
     def setupCompileErrorsWthGradleProperties(String gradleProperties) {

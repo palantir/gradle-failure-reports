@@ -17,8 +17,13 @@
 package com.palantir.gradle.failurereports;
 
 import com.palantir.gradle.failurereports.util.PluginResources;
+import java.util.Optional;
+import org.gradle.BuildListener;
+import org.gradle.BuildResult;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.initialization.Settings;
+import org.gradle.api.invocation.Gradle;
 import org.gradle.api.provider.Provider;
 import org.gradle.util.GradleVersion;
 
@@ -44,9 +49,28 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
         if (GradleVersion.version(project.getGradle().getGradleVersion()).compareTo(GRADLE_FLOW_ACTIONS_ENABLED) >= 0) {
             project.getPluginManager().apply(FailureReportsFlowActionsPlugin.class);
         } else {
-            project.getGradle()
-                    .addBuildListener(new FailureReportsBuildListener(
-                            failureReportsExtension.getFailureReportOutputFile().getAsFile(), compileService));
+            project.getGradle().addBuildListener(new BuildListener() {
+                @Override
+                public void settingsEvaluated(Settings _settings) {}
+
+                @Override
+                public void projectsLoaded(Gradle _gradle) {}
+
+                @Override
+                public void projectsEvaluated(Gradle _gradle) {}
+
+                @Override
+                public void buildFinished(BuildResult result) {
+                    Optional.ofNullable(result.getFailure())
+                            .ifPresent(failure -> BuildFailureReporter.report(
+                                    failureReportsExtension
+                                            .getFailureReportOutputFile()
+                                            .getAsFile()
+                                            .get(),
+                                    compileService.get(),
+                                    failure));
+                }
+            });
         }
     }
 }
