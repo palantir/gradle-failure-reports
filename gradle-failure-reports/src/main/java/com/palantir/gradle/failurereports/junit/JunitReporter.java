@@ -16,20 +16,21 @@
 
 package com.palantir.gradle.failurereports.junit;
 
-import com.palantir.gradle.failurereports.Finalizer.FailureReport;
+import com.palantir.gradle.failurereports.FailureReport;
 import com.palantir.gradle.failurereports.junit.TestSuites.TestSuite;
 import com.palantir.gradle.failurereports.junit.TestSuites.TestSuite.TestCase;
 import com.palantir.gradle.failurereports.junit.TestSuites.TestSuite.TestCase.Failure;
 import com.palantir.gradle.failurereports.util.XmlResources;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import one.util.streamex.EntryStream;
 
 /**
- * Helper class that writes all the failures encountered {@link FailureReport}s into a JUNIT XML format that can be
+ * Helper class that writes all the failures encountered {@link com.palantir.gradle.failurereports.FailureReport}s into a JUNIT XML format that can be
  * rendered in the CircleCi `Tests` section.
  */
 public final class JunitReporter {
@@ -38,9 +39,9 @@ public final class JunitReporter {
         if (failureReports.isEmpty()) {
             return;
         }
-        Map<String, List<FailureReport>> failureReportsByClickableSources = failureReports.stream()
-                .collect(Collectors.groupingBy(
-                        failureReport -> failureReport.getClickableSource().get()));
+        createNewFile(junitXmlFile);
+        Map<String, List<FailureReport>> failureReportsByClickableSources =
+                failureReports.stream().collect(Collectors.groupingBy(FailureReport::clickableSource));
         List<TestSuite> testSuites = EntryStream.of(failureReportsByClickableSources)
                 .map(failureReportBySource -> {
                     List<TestCase> testCases = failureReportBySource.getValue().stream()
@@ -59,14 +60,21 @@ public final class JunitReporter {
 
     private static TestCase from(FailureReport failureReport) {
         return TestCase.builder()
-                .name(failureReport.getHeader().get())
-                .className(failureReport.getHeader().get())
+                .name(failureReport.header())
+                .className(failureReport.header())
                 .failure(Failure.builder()
-                        .value(failureReport.getErrorMessage().get())
-                        .message(failureReport.getErrorMessage().get())
+                        .value(failureReport.errorMessage())
+                        .message(failureReport.errorMessage())
                         .build())
                 .time(0L)
                 .build();
+    }
+
+    private static void createNewFile(File file) throws IOException {
+        if (file.exists()) {
+            file.delete();
+        }
+        Files.createFile(file.toPath());
     }
 
     private JunitReporter() {}

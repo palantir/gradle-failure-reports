@@ -17,7 +17,6 @@
 package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Throwables;
-import com.palantir.gradle.failurereports.Finalizer.FailureReport;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.ThrowableResources;
 import org.gradle.api.Task;
@@ -26,13 +25,12 @@ public final class VerifyLocksFailureReporter {
 
     public static FailureReport getFailureReport(Task task) {
         Throwable throwable = task.getState().getFailure();
-        FailureReport report = task.getProject().getObjects().newInstance(FailureReport.class);
-        report.getClickableSource().set("./gradlew --write-locks");
-        report.getErrorMessage().set(ThrowableResources.formatThrowable(throwable));
-        report.getHeader()
-                .set(FailureReporterResources.getTaskErrorHeader(
-                        task.getPath(), Throwables.getRootCause(throwable).toString()));
-        return report;
+        return FailureReport.builder()
+                .header(FailureReporterResources.getTaskErrorHeader(
+                        task.getPath(), Throwables.getRootCause(throwable).toString()))
+                .clickableSource("./gradlew --write-locks")
+                .errorMessage(ThrowableResources.formatThrowable(throwable))
+                .build();
     }
 
     private VerifyLocksFailureReporter() {}

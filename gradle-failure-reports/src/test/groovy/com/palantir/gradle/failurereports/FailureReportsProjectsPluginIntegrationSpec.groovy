@@ -208,11 +208,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         when:
         runTasksSuccessfully('baselineUpdateConfig')
         ExecutionResult executionResult = runTasksWithFailure('checkstyleMain')
+
         def failureMessage = Throwables.getRootCause(executionResult.failure).message
 
         then:
+        executionResult.standardOutput.contains("ddadasdasdas")
         failureMessage.contains('Checkstyle rule violations were found.')
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle")
+
     }
 
     def 'successful checkstyle does not report failures' () {
