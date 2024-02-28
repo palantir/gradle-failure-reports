@@ -16,11 +16,13 @@
 
 package com.palantir.gradle.failurereports;
 
+import com.palantir.gradle.failurereports.util.PluginResources;
 import javax.inject.Inject;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.flow.FlowProviders;
 import org.gradle.api.flow.FlowScope;
+import org.gradle.api.provider.Provider;
 
 public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project> {
 
@@ -32,14 +34,19 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
 
     @Override
     public void apply(Project project) {
+        if (!PluginResources.shouldApplyPlugin(project)) {
+            return;
+        }
         FailureReportsExtension failureReportsExtension =
-                project.getExtensions().create("failureReports", FailureReportsExtension.class);
-
+                project.getExtensions().getByType(FailureReportsExtension.class);
+        Provider<CompileFailuresService> compileFailuresService =
+                CompileFailuresService.getSharedCompileFailuresService(project);
         getFlowScope().always(FailureReportFlowAction.class, spec -> {
             spec.getParameters()
                     .getOutputFile()
                     .set(failureReportsExtension.getFailureReportOutputFile().getAsFile());
             spec.getParameters().getBuildResult().set(getFlowProviders().getBuildWorkResult());
+            spec.getParameters().getCompileFailuresService().set(compileFailuresService);
         });
     }
 }

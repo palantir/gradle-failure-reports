@@ -19,9 +19,12 @@ package com.palantir.gradle.failurereports;
 import com.palantir.gradle.failurereports.util.PluginResources;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.provider.Provider;
 import org.gradle.util.GradleVersion;
 
 public final class FailureReportsRootPlugin implements Plugin<Project> {
+
+    public static final String REPORTS_EXTENSION = "failureReports";
 
     private static final GradleVersion GRADLE_FLOW_ACTIONS_ENABLED = GradleVersion.version("8.6");
 
@@ -33,10 +36,17 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
         if (project.getRootProject() != project) {
             throw new IllegalArgumentException("com.palantir.failure-reports must be applied to the root project only");
         }
+        FailureReportsExtension failureReportsExtension =
+                project.getExtensions().create(REPORTS_EXTENSION, FailureReportsExtension.class);
+        Provider<CompileFailuresService> compileService =
+                CompileFailuresService.getSharedCompileFailuresService(project);
+        project.subprojects(subproject -> subproject.getPluginManager().apply(FailureReportsProjectsPlugin.class));
         if (GradleVersion.version(project.getGradle().getGradleVersion()).compareTo(GRADLE_FLOW_ACTIONS_ENABLED) >= 0) {
             project.getPluginManager().apply(FailureReportsFlowActionsPlugin.class);
         } else {
-            project.getGradle().addBuildListener(new FailureReportsBuildListener());
+            project.getGradle()
+                    .addBuildListener(new FailureReportsBuildListener(
+                            failureReportsExtension.getFailureReportOutputFile().getAsFile(), compileService));
         }
     }
 }

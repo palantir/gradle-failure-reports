@@ -74,6 +74,7 @@ public final class JunitReporter {
         if (file.exists()) {
             file.delete();
         }
+        Files.createDirectories(file.toPath().getParent());
         Files.createFile(file.toPath());
     }
 

@@ -212,7 +212,6 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         def failureMessage = Throwables.getRootCause(executionResult.failure).message
 
         then:
-        executionResult.standardOutput.contains("ddadasdasdas")
         failureMessage.contains('Checkstyle rule violations were found.')
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle")
 

@@ -16,12 +16,24 @@
 
 package com.palantir.gradle.failurereports;
 
+import java.io.File;
+import java.util.Optional;
 import org.gradle.BuildListener;
 import org.gradle.BuildResult;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.invocation.Gradle;
+import org.gradle.api.provider.Provider;
 
-public class FailureReportsBuildListener implements BuildListener {
+public final class FailureReportsBuildListener implements BuildListener {
+
+    private final Provider<File> reportsFile;
+    private final Provider<CompileFailuresService> compileFailuresService;
+
+    public FailureReportsBuildListener(
+            Provider<File> reportsFile, Provider<CompileFailuresService> compileFailuresService) {
+        this.reportsFile = reportsFile;
+        this.compileFailuresService = compileFailuresService;
+    }
 
     @Override
     public void settingsEvaluated(Settings _settings) {}
@@ -33,5 +45,9 @@ public class FailureReportsBuildListener implements BuildListener {
     public void projectsEvaluated(Gradle _gradle) {}
 
     @Override
-    public void buildFinished(BuildResult _result) {}
+    public void buildFinished(BuildResult result) {
+        Optional.ofNullable(result.getFailure())
+                .ifPresent(failure ->
+                        BuildFailureReporter.report(reportsFile.get(), compileFailuresService.get(), failure));
+    }
 }
