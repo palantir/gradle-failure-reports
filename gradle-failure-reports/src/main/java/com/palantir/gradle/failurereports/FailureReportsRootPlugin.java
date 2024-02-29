@@ -16,24 +16,19 @@
 
 package com.palantir.gradle.failurereports;
 
-import com.palantir.gradle.failurereports.Finalizer.FinalizerTask;
-import com.palantir.gradle.failurereports.util.FailureReporterResources;
+import com.palantir.gradle.failurereports.util.ExtensionUtils;
 import com.palantir.gradle.failurereports.util.PluginResources;
-import java.util.List;
-import java.util.Optional;
-import one.util.streamex.StreamEx;
+import org.gradle.BuildListener;
+import org.gradle.BuildResult;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.plugins.quality.Checkstyle;
-import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.TaskProvider;
-import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.api.initialization.Settings;
+import org.gradle.api.invocation.Gradle;
+import org.gradle.util.GradleVersion;
 
 public final class FailureReportsRootPlugin implements Plugin<Project> {
 
-    public static final String FINALIZER_TASK = "failureReportFinalizer";
-    private static final String VERIFY_LOCKS_TASK = "verifyLocks";
+    private static final GradleVersion GRADLE_FLOW_ACTIONS_ENABLED = GradleVersion.version("8.6");
 
     @Override
     public void apply(Project project) {
@@ -44,52 +39,33 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
             throw new IllegalArgumentException("com.palantir.failure-reports must be applied to the root project only");
         }
         FailureReportsExtension failureReportsExtension =
-                project.getExtensions().create("failureReports", FailureReportsExtension.class);
-        TaskProvider<FinalizerTask> finalizerTask = project.getTasks()
-                .register(FINALIZER_TASK, FinalizerTask.class, task -> {
-                    task.getOutputFile().set(failureReportsExtension.getFailureReportOutputFile());
-                });
-        project.getRootProject()
-                .allprojects(subProject -> subProject.getPlugins().apply(FailureReportsProjectsPlugin.class));
-        collectVerifyLocksFailureReports(project, finalizerTask);
-        collectOtherTaskFailures(project, finalizerTask);
-    }
+                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
+        CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
 
-    private void collectVerifyLocksFailureReports(Project project, TaskProvider<FinalizerTask> finalizerTask) {
-        project.getPluginManager().withPlugin("com.palantir.versions-lock", _javaPlugin -> {
-            TaskProvider<Task> verifyLocksTask = project.getTasks().named(VERIFY_LOCKS_TASK);
-            verifyLocksTask.configure(task -> task.finalizedBy(finalizerTask));
+        project.allprojects(subproject -> subproject.getPluginManager().apply(FailureReportsProjectsPlugin.class));
+        if (GradleVersion.version(project.getGradle().getGradleVersion()).compareTo(GRADLE_FLOW_ACTIONS_ENABLED) >= 0) {
+            project.getPluginManager().apply(FailureReportsFlowActionsPlugin.class);
+        } else {
+            project.getGradle().addBuildListener(new BuildListener() {
+                @Override
+                public void settingsEvaluated(Settings _settings) {}
 
-            finalizerTask.configure(finalizer -> finalizer.getFailureReports().addAll(project.provider(() -> {
-                if (FailureReporterResources.executedAndFailed(verifyLocksTask.get())
-                        && ThrowableFailureReporter.maybeGetFailureReport(verifyLocksTask.get())
-                                .isEmpty()) {
-                    return List.of(VerifyLocksFailureReporter.getFailureReport(verifyLocksTask.get()));
-                }
-                return List.of();
-            })));
-        });
-    }
+                @Override
+                public void projectsLoaded(Gradle _gradle) {}
 
-    private void collectOtherTaskFailures(Project project, TaskProvider<FinalizerTask> finalizerTask) {
-        project.allprojects(subProject -> {
-            TaskContainer projectTasks = subProject.getTasks();
-            projectTasks.configureEach(task -> {
-                if (isAllowedTask(task)) {
-                    task.finalizedBy(finalizerTask);
+                @Override
+                public void projectsEvaluated(Gradle _gradle) {}
+
+                @Override
+                public void buildFinished(BuildResult result) {
+                    BuildFailureReporter.report(
+                            failureReportsExtension
+                                    .getFailureReportOutputFile()
+                                    .getAsFile()
+                                    .get(),
+                            result.getFailure());
                 }
             });
-            finalizerTask.configure(
-                    finalizer -> finalizer.getFailureReports().addAll(subProject.provider(() -> StreamEx.of(
-                                    projectTasks)
-                            .filter(FailureReportsRootPlugin::isAllowedTask)
-                            .filter(FailureReporterResources::executedAndFailed)
-                            .map(ThrowableFailureReporter::maybeGetFailureReport)
-                            .flatMap(Optional::stream))));
-        });
-    }
-
-    private static boolean isAllowedTask(Task task) {
-        return !(task instanceof JavaCompile) && !(task instanceof Checkstyle) && !(task instanceof FinalizerTask);
+        }
     }
 }

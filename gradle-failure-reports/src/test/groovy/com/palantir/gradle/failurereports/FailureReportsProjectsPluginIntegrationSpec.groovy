@@ -18,19 +18,24 @@ package com.palantir.gradle.failurereports
 
 import nebula.test.IntegrationSpec
 import nebula.test.functional.ExecutionResult
-import org.apache.tools.ant.taskdefs.Exec
 import org.assertj.core.util.Throwables
+
+import java.nio.file.Path
 
 class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
-    def 'javaCompile error is reported'() {
+    public static final List<String> GRADLE_VERSIONS =
+            List.of("7.6", "8.6");
+
+    def '#gradleVersionNumber: javaCompile error is reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         def subProjectDir = addSubproject("myProject", '''
             apply plugin: 'java'
@@ -55,17 +60,21 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         then:
         failureMessage.contains('Compilation failed; see the compiler error output for details.')
         result.standardError.contains('error: \';\' expected')
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'multiple javaCompile errors are reported'() {
+    def '#gradleVersionNumber: multiple javaCompile errors are reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         def subProjectDir = addSubproject('myProject', '''
             apply plugin: 'java'
@@ -96,17 +105,21 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         runTasks('compileFooJava', 'compileJava', '--continue', "--parallel")
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-javaCompile")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-javaCompile", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'multiple project errors are reported'() {
+    def '#gradleVersionNumber: multiple project errors are reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         def projectDir1 = addSubproject('myProject1', '''
             apply plugin: 'java'
@@ -145,17 +158,21 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         ExecutionResult result = runTasksWithFailure('compileJava', '--continue', "--parallel")
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-projects-javaCompile")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-projects-javaCompile", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'successful build does not report failures ' () {
+    def '#gradleVersionNumber: successful build does not report failures ' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         //language=groovy
         def subProjectDir = addSubproject("myProject", '''
@@ -177,12 +194,17 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         then:
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
 
-    def 'checkstyle reports failures' () {
+    def '#gradleVersionNumber: checkstyle reports failures' () {
         setup:
+        gradleVersion = gradleVersionNumber
         setupRootCheckstyleBuild()
+        buildFile << setDefaultReportsOutputFiles(gradleVersion)
 
         // language=gradle
         def subProjectDir = addSubproject('myProject', '''
@@ -208,17 +230,75 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         when:
         runTasksSuccessfully('baselineUpdateConfig')
         ExecutionResult executionResult = runTasksWithFailure('checkstyleMain')
+
         def failureMessage = Throwables.getRootCause(executionResult.failure).message
 
         then:
         failureMessage.contains('Checkstyle rule violations were found.')
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'successful checkstyle does not report failures' () {
+    def '#gradleVersionNumber: checkstyle and javaCompile report failures' () {
         setup:
+        gradleVersion = gradleVersionNumber
+        setupRootCheckstyleBuild()
+        buildFile << setReportsOutputFiles(gradleVersion)
+
+        // language=gradle
+        def subProjectDir1 = addSubproject('myProject1', '''
+            repositories {
+                mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
+            }
+
+            apply plugin: 'com.palantir.baseline-checkstyle'
+            apply plugin: 'java'
+        '''.stripIndent(true))
+
+        writeJavaSourceFile('''
+            package app;
+            public class ClassA {
+                public static void main() {
+                    System.out.println("something");
+                }
+            }
+        '''.stripIndent(true), subProjectDir1);
+
+        def subProjectDir2 = addSubproject('myProject2', '''
+            repositories {
+                mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
+            }
+            
+            apply plugin: 'java'
+        '''.stripIndent(true))
+
+        writeJavaSourceFile('''
+            package foo;
+            public class Foo extends NonExistentClass
+        '''.stripIndent(true), subProjectDir2);
+
+        enableTestCiRun()
+
+        when:
+        runTasksSuccessfully('baselineUpdateConfig')
+        ExecutionResult executionResult = runTasksWithFailure('checkstyleMain', "compileJava", "--continue", "--parallel")
+
+        then:
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multi-errors-checkstyle", getDefaultOutputFile(gradleVersionNumber))
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multi-errors-compile", getCompileOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
+    }
+
+    def '#gradleVersionNumber: successful checkstyle does not report failures' () {
+        setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupRootCheckstyleBuild()
+        buildFile << setDefaultReportsOutputFiles(gradleVersion)
 
         // language=gradle
         def subProjectDir = addSubproject('myProject', '''
@@ -243,12 +323,16 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         then:
         executionResult.success
-        def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
+        def reportXml = getDefaultOutputFile(gradleVersionNumber).toFile()
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'verifyLocks reports failures' () {
+    def '#gradleVersionNumber: verifyLocks reports failures' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             buildscript {
@@ -273,7 +357,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             }
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         file('versions.props').text = 'com.squareup.okhttp3:okhttp = 3.12.0'
         file('versions.lock').text = ''
@@ -284,11 +368,15 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         runTasksWithFailure('verifyLocks')
 
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'ExceptionWithSuggestion is reported as a failure' () {
+    def '#gradleVersionNumber: ExceptionWithSuggestion is reported as a failure' () {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         buildFile << '''
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
@@ -303,7 +391,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             }
         '''.stripIndent(true)
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         // language=gradle
         addSubproject("myProject", '''
@@ -330,13 +418,16 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         when:
         runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', '--continue')
 
-
         then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException")
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'when running locally, no failure report is created'() {
+    def '#gradleVersionNumber: when running locally, no failure report is created'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupCompileErrorsWthGradleProperties("""
             __TESTING = true
@@ -351,10 +442,14 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'when CIRCLE_NODE_INDEX is not 0, no failure report is created'() {
+    def '#gradleVersionNumber: when CIRCLE_NODE_INDEX is not 0, no failure report is created'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupCompileErrorsWthGradleProperties("""
             __TESTING = true
@@ -371,17 +466,21 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'when CIRCLE_NODE_INDEX is not set, javaCompile errors are reported'() {
+    def '#gradleVersionNumber: when CIRCLE_NODE_INDEX is not set, javaCompile errors are reported'() {
         setup:
+        gradleVersion = gradleVersionNumber
         // language=gradle
         setupCompileErrorsWthGradleProperties("""
             __TESTING = true
             __TESTING_CI = true
         """.stripIndent(true))
 
-        buildFile << setFailureReportOutputFile()
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         when:
         ExecutionResult result = runTasksWithFailure('compileJava')
@@ -390,8 +489,11 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         result.failure.message.contains('Execution failed for task \':compileJava\'.')
         result.standardError.contains('error: \';\' expected')
 
-        def reportXml = new File(projectDir, "build/failure-reports/unit-test.xml")
+        def reportXml = getDefaultOutputFile(gradleVersionNumber).toFile()
         reportXml.exists()
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
     def setupCompileErrorsWthGradleProperties(String gradleProperties) {
@@ -413,7 +515,6 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
         file('gradle.properties') << gradleProperties
     }
-
 
     def setupRootCheckstyleBuild() {
         // language=gradle
@@ -437,8 +538,6 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
             apply plugin: 'com.palantir.baseline'
         '''.stripIndent(true)
-
-        buildFile << setFailureReportOutputFile()
     }
 
     def enableTestCiRun() {
@@ -449,13 +548,34 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         """.stripIndent(true)
     }
 
-    def setFailureReportOutputFile() {
+    def setDefaultReportsOutputFiles(String gradleVersionNumber) {
         // changing the report failure location to prevent the failure reports from this tests from being displayed
         // in the CircleCi Tests tab
-        return """
+        return String.format("""
             failureReports {
-                failureReportOutputFile = project.file('build/failure-reports/unit-test.xml')
+                failureReportOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
+                failureReportCompileOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
             }
-        """.stripIndent(true)
+        """.stripIndent(true), gradleVersionNumber, gradleVersionNumber);
+    }
+
+    def setReportsOutputFiles(String gradleVersionNumber) {
+        // changing the report failure location to prevent the failure reports from this tests from being displayed
+        // in the CircleCi Tests tab
+        return String.format("""
+            failureReports {
+                failureReportOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
+                failureReportCompileOutputFile = project.file('build/failure-reports/unit-test-compile--%s.xml')
+            }
+        """.stripIndent(true), gradleVersionNumber, gradleVersionNumber);
+    }
+
+    private Path getCompileOutputFile(String gradleVersionNumber) {
+        return Path.of(projectDir.getPath()).resolve(String.format('build/failure-reports/unit-test-compile--%s.xml', gradleVersionNumber));
+    }
+
+
+    private Path getDefaultOutputFile(String gradleVersionNumber) {
+        return Path.of(projectDir.getPath()).resolve(String.format('build/failure-reports/unit-test-%s.xml', gradleVersionNumber));
     }
 }

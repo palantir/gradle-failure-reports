@@ -16,7 +16,6 @@
 
 package com.palantir.gradle.failurereports;
 
-import com.palantir.gradle.failurereports.Finalizer.FailureReport;
 import com.palantir.gradle.failurereports.checkstyle.CheckstyleOutput;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.XmlResources;
@@ -25,16 +24,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 import org.gradle.api.Project;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.quality.Checkstyle;
 
-public final class CheckstyleFailureReporter implements FailureReporter<Checkstyle> {
+public final class CheckstyleFailureReporter {
 
-    private static final Logger log = Logging.getLogger(CheckstyleFailureReporter.class);
-
-    @Override
-    public Stream<FailureReport> collect(Project project, Checkstyle checkstyleTask) {
+    public static Stream<FailureReport> collect(Project project, Checkstyle checkstyleTask) {
         if (!FailureReporterResources.executedAndFailed(checkstyleTask)) {
             return Stream.empty();
         }
@@ -48,32 +42,27 @@ public final class CheckstyleFailureReporter implements FailureReporter<Checksty
             CheckstyleOutput checkstyleOutputReport = XmlResources.readXml(checkstyleReportXml, CheckstyleOutput.class);
             return from(project, checkstyleOutputReport);
         } catch (IOException e) {
-            log.error("Unable to read the checkstyleReport", e);
+            project.getLogger().error("Unable to read the checkstyleReport", e);
             return Stream.empty();
         }
     }
 
-    @Override
-    public void configureTask(Checkstyle _checkstyleTask) {}
-
     private static Stream<FailureReport> from(Project project, CheckstyleOutput checkstyleOutputReport) {
         return checkstyleOutputReport.files().stream()
                 .flatMap(checkstyleFileFailure -> checkstyleFileFailure.errors().stream()
-                        .map(checkstyleError -> {
-                            FailureReport report = project.getObjects().newInstance(FailureReport.class);
-                            report.getClickableSource()
-                                    .set(FailureReporterResources.getRelativePathWithLineNumber(
-                                            project.getRootDir().toPath(),
-                                            Path.of(checkstyleFileFailure.name()),
-                                            checkstyleError.line()));
-                            report.getErrorMessage().set(checkstyleError.message());
-                            report.getHeader()
-                                    .set(FailureReporterResources.sourceFileWithErrorMessage(
-                                            FailureReporterResources.getFileName(checkstyleFileFailure.name()),
-                                            checkstyleError.line(),
-                                            checkstyleError.message(),
-                                            checkstyleError.severity()));
-                            return report;
-                        }));
+                        .map(checkstyleError -> FailureReport.builder()
+                                .header(FailureReporterResources.sourceFileWithErrorMessage(
+                                        FailureReporterResources.getFileName(checkstyleFileFailure.name()),
+                                        checkstyleError.line(),
+                                        checkstyleError.message(),
+                                        checkstyleError.severity()))
+                                .clickableSource(FailureReporterResources.getRelativePathWithLineNumber(
+                                        project.getRootDir().toPath(),
+                                        Path.of(checkstyleFileFailure.name()),
+                                        checkstyleError.line()))
+                                .errorMessage(checkstyleError.message())
+                                .build()));
     }
+
+    private CheckstyleFailureReporter() {}
 }

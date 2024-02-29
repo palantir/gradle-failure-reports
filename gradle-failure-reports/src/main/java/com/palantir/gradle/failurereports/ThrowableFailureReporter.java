@@ -17,12 +17,10 @@
 package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Throwables;
-import com.palantir.gradle.failurereports.Finalizer.FailureReport;
 import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.ThrowableResources;
 import java.util.Optional;
-import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 public final class ThrowableFailureReporter {
@@ -35,18 +33,18 @@ public final class ThrowableFailureReporter {
                 .map(ExceptionWithSuggestion.class::cast)
                 .findFirst();
         return maybeExtraInfoException.map(
-                exception -> getEnhancedExceptionReport(task.getProject(), task.getPath(), throwable, exception));
+                exception -> getEnhancedExceptionReport(task.getPath(), throwable, exception));
     }
 
     @SuppressWarnings("NullAway")
     public static FailureReport getEnhancedExceptionReport(
-            Project project, String taskPath, Throwable initialThrowable, ExceptionWithSuggestion extraInfoException) {
-        FailureReport report = project.getObjects().newInstance(FailureReport.class);
-        report.getClickableSource().set(extraInfoException.getSuggestion());
-        report.getErrorMessage()
-                .set(ThrowableResources.formatThrowableWithMessage(initialThrowable, extraInfoException.getMessage()));
-        report.getHeader().set(FailureReporterResources.getTaskErrorHeader(taskPath, extraInfoException.getMessage()));
-        return report;
+            String taskPath, Throwable initialThrowable, ExceptionWithSuggestion extraInfoException) {
+        return FailureReport.builder()
+                .header(FailureReporterResources.getTaskErrorHeader(taskPath, extraInfoException.getMessage()))
+                .clickableSource(extraInfoException.getSuggestion())
+                .errorMessage(ThrowableResources.formatThrowableWithMessage(
+                        initialThrowable, extraInfoException.getMessage()))
+                .build();
     }
 
     private ThrowableFailureReporter() {}
