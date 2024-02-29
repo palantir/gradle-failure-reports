@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.Task;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.api.tasks.compile.JavaCompile;
@@ -33,14 +35,24 @@ import org.gradle.execution.MultipleBuildFailures;
 
 public final class BuildFailureReporter {
 
+    private static Logger log = Logging.getLogger(BuildFailureReporter.class);
+
+    public static void report(File outputFile, Throwable buildThrowable) {
+        report(outputFile, Optional.empty(), buildThrowable);
+    }
+
     public static void report(
+            File outputFile, CompileFailuresService compileFailuresService, Throwable buildThrowable) {
+        report(outputFile, Optional.of(compileFailuresService), buildThrowable);
+    }
+
+    private static void report(
             File outputFile, Optional<CompileFailuresService> compileFailuresService, Throwable buildThrowable) {
         Optional.ofNullable(buildThrowable).ifPresent(failure -> {
             try {
                 reportFailures(outputFile, compileFailuresService, failure);
             } catch (IOException e) {
-                // TODO(crogoz): changeMe
-                throw new RuntimeException(e);
+                log.error("Failed to report build failures", e);
             }
         });
     }
@@ -71,6 +83,7 @@ public final class BuildFailureReporter {
                 compileFailuresService.ifPresent(service -> failureReports.addAll(
                         service.collectFailureReports(task.getPath()).collect(Collectors.toList())));
             } else if (task instanceof Checkstyle) {
+
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
                         .collect(Collectors.toList()));
             }

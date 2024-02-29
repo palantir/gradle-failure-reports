@@ -43,6 +43,8 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
     interface Parameters extends BuildServiceParameters {
         RegularFileProperty getOutputFile();
 
+        RegularFileProperty getCompileOutputFile();
+
         Property<File> getRootDir();
     }
 
@@ -105,6 +107,9 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
                 .getSharedServices()
                 .registerIfAbsent("compileFailuresService", CompileFailuresService.class, spec -> {
                     spec.getParameters().getOutputFile().set(failureReportsExtension.getFailureReportOutputFile());
+                    spec.getParameters()
+                            .getCompileOutputFile()
+                            .set(failureReportsExtension.getFailureReportCompileOutputFile());
                     spec.getParameters().getRootDir().set(project.provider(() -> project.getRootDir()));
                 });
     }
@@ -148,9 +153,8 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
 
     @Override
     public final void close() throws Exception {
-        // TODO(crogoz): either write to another file or append to the existing one
         JunitReporter.reportFailures(
-                getParameters().getOutputFile().getAsFile().get(),
+                getParameters().getCompileOutputFile().getAsFile().get(),
                 compilerErrorsByTaskPath.keySet().stream()
                         .flatMap(this::collectFailureReports)
                         .collect(Collectors.toList()));

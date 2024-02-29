@@ -24,11 +24,15 @@ public abstract class FailureReportsExtension {
 
     public abstract RegularFileProperty getFailureReportOutputFile();
 
+    public abstract RegularFileProperty getFailureReportCompileOutputFile();
+
     @Inject
     public abstract ProjectLayout getProjectLayout();
 
     public FailureReportsExtension() {
         getFailureReportOutputFile()
                 .convention(getProjectLayout().getBuildDirectory().file("failure-reports/build-TEST.xml"));
+        getFailureReportCompileOutputFile()
+                .convention(getProjectLayout().getBuildDirectory().file("failure-reports/build-compile-TEST.xml"));
     }
 }

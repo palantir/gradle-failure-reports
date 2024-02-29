@@ -18,7 +18,6 @@ package com.palantir.gradle.failurereports;
 
 import com.palantir.gradle.failurereports.util.ExtensionUtils;
 import com.palantir.gradle.failurereports.util.PluginResources;
-import java.util.Optional;
 import org.gradle.BuildListener;
 import org.gradle.BuildResult;
 import org.gradle.api.Plugin;
@@ -59,14 +58,12 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
 
                 @Override
                 public void buildFinished(BuildResult result) {
-                    Optional.ofNullable(result.getFailure())
-                            .ifPresent(failure -> BuildFailureReporter.report(
-                                    failureReportsExtension
-                                            .getFailureReportOutputFile()
-                                            .getAsFile()
-                                            .get(),
-                                    Optional.empty(),
-                                    failure));
+                    BuildFailureReporter.report(
+                            failureReportsExtension
+                                    .getFailureReportOutputFile()
+                                    .getAsFile()
+                                    .get(),
+                            result.getFailure());
                 }
             });
         }

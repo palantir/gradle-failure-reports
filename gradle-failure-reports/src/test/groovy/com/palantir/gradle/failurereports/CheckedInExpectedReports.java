@@ -52,12 +52,8 @@ public final class CheckedInExpectedReports {
      * @param projectDir the current project's dir.
      * @param testName the name of the current test. It is used to generate and read the expected reportXml file.
      */
-    public static void checkOrUpdateFor(File projectDir, String testName, String gradleVersionNumber)
-            throws IOException {
+    public static void checkOrUpdateFor(File projectDir, String testName, Path actualReportPath) throws IOException {
         Path expectedReportPath = TEST_RESOURCES_PATH.resolve(getExpectedReportFilename(testName));
-        Path actualReportPath = projectDir
-                .toPath()
-                .resolve(String.format("build/failure-reports/unit-test-%s.xml", gradleVersionNumber));
         String actualReportXmlContent = getReportWithProjectPlaceholder(
                 actualReportPath, projectDir.toPath().toAbsolutePath());
         // making sure the redacted string content is still a valid TestSuites object

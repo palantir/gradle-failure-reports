@@ -1,0 +1,20 @@
+<testsuite>
+  <testsuites name="myProject1/src/main/java/app/ClassA.java:5" tests="1">
+    <testcase name="ClassA.java:5: error: Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info(&quot;Message&quot;)." className="ClassA.java:5: error: Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info(&quot;Message&quot;)." time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info("Message").</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name="myProject1/src/main/java/app/ClassA.java:3" tests="1">
+    <testcase name="ClassA.java:3: error: Utility classes should not have a public or default constructor." className="ClassA.java:3: error: Utility classes should not have a public or default constructor." time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">Utility classes should not have a public or default constructor.</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name="myProject2/src/main/java/foo/Foo.java:3" tests="1">
+    <testcase name="Foo.java:3: error: reached end of file while parsing" className="Foo.java:3: error: reached end of file while parsing" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject2/src/main/java/foo/Foo.java:3: error: reached end of file while parsing
+public class Foo extends NonExistentClass
+                                         ^
+</failure>
+    </testcase>
+  </testsuites>
+</testsuite>
