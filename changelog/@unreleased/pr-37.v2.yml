@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: '[Refactor] Drop finalizerTask, add FlowAction and CompilerService'
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/37
