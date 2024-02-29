@@ -43,9 +43,7 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
                 .getBuildResult()
                 .get()
                 .getFailure()
-                .ifPresent(failure -> BuildFailureReporter.report(
-                        parameters.getOutputFile().get(),
-                        parameters.getCompileFailuresService().get(),
-                        failure));
+                .ifPresent(failure ->
+                        BuildFailureReporter.report(parameters.getOutputFile().get(), failure));
     }
 }

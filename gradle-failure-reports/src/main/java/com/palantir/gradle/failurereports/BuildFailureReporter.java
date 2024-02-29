@@ -38,28 +38,16 @@ public final class BuildFailureReporter {
     private static Logger log = Logging.getLogger(BuildFailureReporter.class);
 
     public static void report(File outputFile, Throwable buildThrowable) {
-        report(outputFile, Optional.empty(), buildThrowable);
-    }
-
-    public static void report(
-            File outputFile, CompileFailuresService compileFailuresService, Throwable buildThrowable) {
-        report(outputFile, Optional.of(compileFailuresService), buildThrowable);
-    }
-
-    private static void report(
-            File outputFile, Optional<CompileFailuresService> compileFailuresService, Throwable buildThrowable) {
         Optional.ofNullable(buildThrowable).ifPresent(failure -> {
             try {
-                reportFailures(outputFile, compileFailuresService, failure);
+                reportFailures(outputFile, failure);
             } catch (IOException e) {
                 log.error("Failed to report build failures", e);
             }
         });
     }
 
-    private static void reportFailures(
-            File outputFile, Optional<CompileFailuresService> compileFailuresService, Throwable buildThrowable)
-            throws IOException {
+    private static void reportFailures(File outputFile, Throwable buildThrowable) throws IOException {
         ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
         if (buildThrowable instanceof MultipleBuildFailures) {
@@ -80,10 +68,10 @@ public final class BuildFailureReporter {
             if (task.getName().equals("verifyLocks")) {
                 failureReports.add(VerifyLocksFailureReporter.getFailureReport(task));
             } else if (task instanceof JavaCompile) {
-                compileFailuresService.ifPresent(service -> failureReports.addAll(
-                        service.collectFailureReports(task.getPath()).collect(Collectors.toList())));
+                // TODO(crogoz): use compileFailuresService to report the errors once everything is on gradle >= 8.6
+                // for now this is a noop, once the {@link CompileFailuresService} is closed, it will report all the
+                // errors that were collected
             } else if (task instanceof Checkstyle) {
-
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
                         .collect(Collectors.toList()));
             }

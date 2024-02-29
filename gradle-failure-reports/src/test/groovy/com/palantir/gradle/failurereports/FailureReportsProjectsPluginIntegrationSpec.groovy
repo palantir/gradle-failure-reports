@@ -25,8 +25,7 @@ import java.nio.file.Path
 class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
     public static final List<String> GRADLE_VERSIONS =
-            List.of("7.6"
-                    , "8.6");
+            List.of("7.6", "8.6");
 
     def '#gradleVersionNumber: javaCompile error is reported'() {
         setup:
@@ -285,15 +284,11 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         when:
         runTasksSuccessfully('baselineUpdateConfig')
         ExecutionResult executionResult = runTasksWithFailure('checkstyleMain', "compileJava", "--continue", "--parallel")
-        def failureMessage = Throwables.getRootCause(executionResult.failure).message
 
         then:
-        if (gradleVersionNumber == "8.6") {
-            CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle-compile-8.6gradle", getDefaultOutputFile(gradleVersionNumber))
-        } else {
-            CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle-8.4gradle", getDefaultOutputFile(gradleVersionNumber))
-            CheckedInExpectedReports.checkOrUpdateFor(projectDir, "compile-8.4gradle", getCompileOutputFile(gradleVersionNumber))
-        }
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multi-errors-checkstyle", getDefaultOutputFile(gradleVersionNumber))
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multi-errors-compile", getCompileOutputFile(gradleVersionNumber))
+
         where:
         gradleVersionNumber << GRADLE_VERSIONS
     }
