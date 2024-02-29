@@ -18,6 +18,10 @@ package com.palantir.gradle.failurereports;
 
 import com.palantir.gradle.failurereports.util.ExtensionUtils;
 import com.palantir.gradle.failurereports.util.PluginResources;
+import java.io.File;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.StandardOutputListener;
@@ -46,10 +50,21 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
         tasksWithClassType.configureEach(javaCompileTask -> {
             javaCompileTask.usesService(compileService);
             javaCompileTask.getLogging().addStandardErrorListener(new StandardOutputListener() {
+                private Optional<Set<String>> sourcePathsCache = Optional.empty();
 
                 @Override
                 public void onOutput(CharSequence charSequence) {
-                    compileService.get().maybeCollectErrorMessage(javaCompileTask, charSequence);
+                    compileService
+                            .get()
+                            .maybeCollectErrorMessage(
+                                    javaCompileTask, charSequence, sourcePathsCache.orElseGet(this::getSourcePaths));
+                }
+
+                private Set<String> getSourcePaths() {
+                    this.sourcePathsCache = Optional.of(javaCompileTask.getSource().getFiles().stream()
+                            .map(File::getAbsolutePath)
+                            .collect(Collectors.toSet()));
+                    return sourcePathsCache.get();
                 }
             });
         });

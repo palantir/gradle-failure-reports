@@ -57,7 +57,8 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
     private final ConcurrentMap<String, Boolean> startedCompileErrorsByTaskPath = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StringBuilder> compilerErrorsByTaskPath = new ConcurrentHashMap<>();
 
-    public final <T extends AbstractCompile> void maybeCollectErrorMessage(T task, CharSequence charSequence) {
+    public final <T extends AbstractCompile> void maybeCollectErrorMessage(
+            T task, CharSequence charSequence, Set<String> taskCompiledSourcePaths) {
         Matcher firstCompileErrorMatcher = COMPILE_ERROR_FIRST_LINE_PATTERN.matcher(charSequence);
         if (firstCompileErrorMatcher.find()) {
             String sourcePathFromError = firstCompileErrorMatcher.group("sourcePath");
@@ -66,9 +67,6 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
             // see: https://github.com/gradle/gradle/issues/6068 for context.
             // If the matched sourcePath is not part of the current javaCompileTask's sourceSet, we need to
             // ignore it.
-            Set<String> taskCompiledSourcePaths = task.getSource().getFiles().stream()
-                    .map(File::getAbsolutePath)
-                    .collect(Collectors.toSet());
             if (!taskCompiledSourcePaths.contains(sourcePathFromError)) {
                 return;
             }
@@ -78,16 +76,17 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
                     .append(charSequence);
             return;
         }
+        if (!isCompileErrorStarted(task.getPath())) {
+            return;
+        }
         Matcher lastCompileErrorMessage = COMPILE_ERROR_LAST_LINE_PATTERN.matcher(charSequence);
-        if (isCompileErrorStarted(task.getPath()) && lastCompileErrorMessage.find()) {
+        if (lastCompileErrorMessage.find()) {
             markCompileErrorFinished(task.getPath());
             return;
         }
-        if (isCompileErrorStarted(task.getPath())) {
-            compilerErrorsByTaskPath
-                    .computeIfAbsent(task.getPath(), _k -> new StringBuilder())
-                    .append(charSequence);
-        }
+        compilerErrorsByTaskPath
+                .computeIfAbsent(task.getPath(), _k -> new StringBuilder())
+                .append(charSequence);
     }
 
     public final Stream<FailureReport> collectFailureReports(String taskPath) {

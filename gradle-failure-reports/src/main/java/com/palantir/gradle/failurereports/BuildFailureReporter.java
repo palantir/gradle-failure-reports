@@ -48,23 +48,9 @@ public final class BuildFailureReporter {
     }
 
     private static void reportFailures(File outputFile, Throwable buildThrowable) throws IOException {
-        ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
-        if (buildThrowable instanceof MultipleBuildFailures) {
-            rootExceptions.addAll(((MultipleBuildFailures) buildThrowable).getCauses());
-        } else {
-            rootExceptions.add(buildThrowable);
-        }
-        List<TaskExecutionException> throwables = rootExceptions.build().stream()
-                .map(Throwables::getCausalChain)
-                .flatMap(Collection::stream)
-                .filter(throwable -> throwable instanceof TaskExecutionException)
-                .map(throwable -> (TaskExecutionException) throwable)
-                .collect(Collectors.toList());
-
-        for (TaskExecutionException taskExecutionException : throwables) {
+        for (TaskExecutionException taskExecutionException : getTaskExecutionExceptions(buildThrowable)) {
             Task task = taskExecutionException.getTask();
-
             if (task.getName().equals("verifyLocks")) {
                 failureReports.add(VerifyLocksFailureReporter.getFailureReport(task));
             } else if (task instanceof JavaCompile) {
@@ -79,6 +65,21 @@ public final class BuildFailureReporter {
             ThrowableFailureReporter.maybeGetFailureReport(task).ifPresent(failureReports::add);
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
+    }
+
+    private static List<TaskExecutionException> getTaskExecutionExceptions(Throwable buildThrowable) {
+        ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();
+        if (buildThrowable instanceof MultipleBuildFailures) {
+            rootExceptions.addAll(((MultipleBuildFailures) buildThrowable).getCauses());
+        } else {
+            rootExceptions.add(buildThrowable);
+        }
+        return rootExceptions.build().stream()
+                .map(Throwables::getCausalChain)
+                .flatMap(Collection::stream)
+                .filter(throwable -> throwable instanceof TaskExecutionException)
+                .map(throwable -> (TaskExecutionException) throwable)
+                .collect(Collectors.toList());
     }
 
     private BuildFailureReporter() {}
