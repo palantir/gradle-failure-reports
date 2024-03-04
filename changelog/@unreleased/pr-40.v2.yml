@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Report all TaskExceptions
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/40

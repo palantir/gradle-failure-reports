@@ -408,7 +408,13 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
             tasks.register('throwGradleException') {
                 doLast {
-                    throw new GradleException("This is a gradle exception that is ignored")
+                    throw new GradleException("This is a normal gradle exception")
+                }
+            }
+            
+            tasks.register('throwExceptionNoMessage') {
+                doLast {
+                    throw new OutOfMemoryError()
                 }
             }
         '''.stripIndent(true))
@@ -416,7 +422,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         enableTestCiRun()
 
         when:
-        runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', '--continue')
+        runTasksWithFailure( 'throwExceptionWithSuggestedFix', 'throwInnerExceptionWithSuggestedFix', 'throwGradleException', 'throwExceptionNoMessage', '--continue')
 
         then:
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException", getDefaultOutputFile(gradleVersionNumber))
