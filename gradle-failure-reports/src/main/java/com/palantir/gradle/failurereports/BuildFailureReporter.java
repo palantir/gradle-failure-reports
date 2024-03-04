@@ -31,6 +31,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.execution.MultipleBuildFailures;
 
 public final class BuildFailureReporter {
@@ -60,7 +61,8 @@ public final class BuildFailureReporter {
             } else if (task instanceof Checkstyle) {
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
                         .collect(Collectors.toList()));
-            } else {
+            } else if (!(task instanceof Test)) {
+                // test failures are already reported
                 failureReports.add(ThrowableFailureReporter.getFailureReport(task));
             }
         }
