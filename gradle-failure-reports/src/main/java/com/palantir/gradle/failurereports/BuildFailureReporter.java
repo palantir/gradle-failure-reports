@@ -60,9 +60,9 @@ public final class BuildFailureReporter {
             } else if (task instanceof Checkstyle) {
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
                         .collect(Collectors.toList()));
+            } else {
+                failureReports.add(ThrowableFailureReporter.getFailureReport(task));
             }
-
-            ThrowableFailureReporter.maybeGetFailureReport(task).ifPresent(failureReports::add);
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
     }

@@ -25,15 +25,16 @@ import org.gradle.api.Task;
 
 public final class ThrowableFailureReporter {
 
-    public static <T extends Task> Optional<FailureReport> maybeGetFailureReport(T task) {
+    public static <T extends Task> FailureReport getFailureReport(T task) {
         Throwable throwable = task.getState().getFailure();
         // try to get the last ExtraInfoException in the causal chain
         Optional<ExceptionWithSuggestion> maybeExtraInfoException = Throwables.getCausalChain(throwable).stream()
                 .filter(ExceptionWithSuggestion.class::isInstance)
                 .map(ExceptionWithSuggestion.class::cast)
                 .findFirst();
-        return maybeExtraInfoException.map(
-                exception -> getEnhancedExceptionReport(task.getPath(), throwable, exception));
+        return maybeExtraInfoException
+                .map(exception -> getEnhancedExceptionReport(task.getPath(), throwable, exception))
+                .orElseGet(() -> getGenericExceptionReport(task, throwable));
     }
 
     @SuppressWarnings("NullAway")
@@ -44,6 +45,14 @@ public final class ThrowableFailureReporter {
                 .clickableSource(extraInfoException.getSuggestion())
                 .errorMessage(ThrowableResources.formatThrowableWithMessage(
                         initialThrowable, extraInfoException.getMessage()))
+                .build();
+    }
+
+    private static <T extends Task> FailureReport getGenericExceptionReport(T task, Throwable throwable) {
+        return FailureReport.builder()
+                .header(FailureReporterResources.getTaskErrorHeader(task.getPath(), throwable))
+                .clickableSource(task.getPath())
+                .errorMessage(ThrowableResources.formatThrowable(throwable))
                 .build();
     }
 

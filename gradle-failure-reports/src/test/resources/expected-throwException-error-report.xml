@@ -1,4 +1,18 @@
 <testsuite>
+  <testsuites name=":myProject:throwExceptionNoMessage" tests="1">
+    <testcase name="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" className="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
+
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwExceptionNoMessage'.
+	java.lang.OutOfMemoryError
+
+* Full exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwExceptionNoMessage'.
+Caused by: java.lang.OutOfMemoryError
+</failure>
+    </testcase>
+  </testsuites>
   <testsuites name="./gradlew runFix" tests="1">
     <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">ExceptionWithSuggestedFixMessage
@@ -10,6 +24,20 @@
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
 Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
+</failure>
+    </testcase>
+  </testsuites>
+  <testsuites name=":myProject:throwGradleException" tests="1">
+    <testcase name="[:myProject:throwGradleException] error: This is a normal gradle exception" className="[:myProject:throwGradleException] error: This is a normal gradle exception" time="0">
+      <failure message="_IGNORED_IN_TESTS" type="ERROR">This is a normal gradle exception
+
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
+	org.gradle.api.GradleException: This is a normal gradle exception
+
+* Full exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
+Caused by: org.gradle.api.GradleException: This is a normal gradle exception
 </failure>
     </testcase>
   </testsuites>
