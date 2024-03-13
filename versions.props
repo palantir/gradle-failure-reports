@@ -4,7 +4,7 @@ com.fasterxml.jackson.*:* = 2.15.3
 org.immutables:* = 2.10.1
 one.util:streamex = 0.8.2
 com.palantir.gradle.auto-parallelizable:* = 1.4.0
-com.google.guava:guava = 33.0.0-jre
+com.google.guava:guava = 33.1.0-jre
 org.apache.commons:commons-lang3 = 3.14.0
 com.palantir.gradle.utils:environment-variables = 0.6.0
 
