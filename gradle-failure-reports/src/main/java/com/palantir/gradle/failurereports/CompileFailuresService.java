@@ -49,10 +49,10 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
     }
 
     private static final Pattern COMPILE_ERROR_FIRST_LINE_PATTERN =
-            Pattern.compile("^(?<sourcePath>.*):(?<lineNumber>\\d+): (?<errorMessage>error: .*)$");
-    private static final Pattern COMPILE_ERROR_LAST_LINE_PATTERN = Pattern.compile("^\\d+ error(s)*$");
+            Pattern.compile("^(?<sourcePath>[^:]*):(?<lineNumber>\\d+): (?<errorMessage>error: .*)$");
+    private static final Pattern COMPILE_ERROR_LAST_LINE_PATTERN = Pattern.compile("^\\d+ errors?$");
     private static final Pattern COMPILE_ERROR_PATTERN =
-            Pattern.compile("(?m)^(?<sourcePath>.*):(?<lineNumber>\\d+): (?<errorMessage>error: (.|\\s)*)");
+            Pattern.compile("^(?<sourcePath>[^:]*):(?<lineNumber>\\d+): (?<errorMessage>error: [\\s\\S]*)$");
 
     private final ConcurrentMap<String, Boolean> startedCompileErrorsByTaskPath = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, StringBuilder> compilerErrorsByTaskPath = new ConcurrentHashMap<>();
@@ -60,7 +60,7 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
     public final <T extends AbstractCompile> void maybeCollectErrorMessage(
             T task, CharSequence charSequence, Set<String> taskCompiledSourcePaths) {
         Matcher firstCompileErrorMatcher = COMPILE_ERROR_FIRST_LINE_PATTERN.matcher(charSequence);
-        if (firstCompileErrorMatcher.find()) {
+        if (firstCompileErrorMatcher.matches()) {
             String sourcePathFromError = firstCompileErrorMatcher.group("sourcePath");
 
             // When running in parallel, javaCompileTasks will see the output of other tasks,
@@ -79,8 +79,8 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
         if (!isCompileErrorStarted(task.getPath())) {
             return;
         }
-        Matcher lastCompileErrorMessage = COMPILE_ERROR_LAST_LINE_PATTERN.matcher(charSequence);
-        if (lastCompileErrorMessage.find()) {
+        Matcher lastCompileErrorMatcher = COMPILE_ERROR_LAST_LINE_PATTERN.matcher(charSequence);
+        if (lastCompileErrorMatcher.matches()) {
             markCompileErrorFinished(task.getPath());
             return;
         }
@@ -127,7 +127,7 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
 
     private Optional<FailureReport> maybeGetFailureReport(String multiLineError) {
         Matcher matcher = COMPILE_ERROR_PATTERN.matcher(multiLineError);
-        if (!matcher.find()) {
+        if (!matcher.matches()) {
             return Optional.empty();
         }
         String sourcePathFromError = matcher.group("sourcePath");
