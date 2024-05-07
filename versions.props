@@ -4,14 +4,14 @@ com.fasterxml.jackson.*:* = 2.15.3
 org.immutables:* = 2.10.1
 one.util:streamex = 0.8.2
 com.palantir.gradle.auto-parallelizable:* = 1.4.0
-com.google.guava:guava = 33.1.0-jre
+com.google.guava:guava = 33.2.0-jre
 org.apache.commons:commons-lang3 = 3.14.0
 com.palantir.gradle.utils:environment-variables = 0.6.0
 
 # conflict resolution
 com.google.code.findbugs:jsr305 = 3.0.2
 com.google.errorprone:error_prone_annotations = 2.11.0
-org.checkerframework:checker-qual = 3.42.0
+org.checkerframework:checker-qual = 3.43.0
 
 # unit testing
 org.assertj:* = 3.25.3
