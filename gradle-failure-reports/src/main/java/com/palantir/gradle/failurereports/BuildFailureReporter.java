@@ -52,9 +52,7 @@ public final class BuildFailureReporter {
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
         for (TaskExecutionException taskExecutionException : getTaskExecutionExceptions(buildThrowable)) {
             Task task = taskExecutionException.getTask();
-            if (task.getName().equals("verifyLocks")) {
-                failureReports.add(VerifyLocksFailureReporter.getFailureReport(task));
-            } else if (task instanceof JavaCompile) {
+            if (task instanceof JavaCompile) {
                 // TODO(crogoz): use compileFailuresService to report the errors once everything is on gradle >= 8.6
                 // for now this is a noop, once the {@link CompileFailuresService} is closed, it will report all the
                 // errors that were collected
