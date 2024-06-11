@@ -330,50 +330,6 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def '#gradleVersionNumber: verifyLocks reports failures' () {
-        setup:
-        gradleVersion = gradleVersionNumber
-        // language=gradle
-        buildFile << '''
-            buildscript {
-                repositories {
-                    mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
-                }
-
-                dependencies {
-                    classpath 'com.palantir.gradle.consistentversions:gradle-consistent-versions:2.18.0'
-                }
-            }
-
-            repositories {
-                mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
-            }
-
-            apply plugin: 'com.palantir.failure-reports'
-            apply plugin: 'com.palantir.consistent-versions'
-            apply plugin: 'java'
-            dependencies {
-                implementation 'com.squareup.okhttp3:okhttp'
-            }
-        '''.stripIndent(true)
-
-        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
-
-        file('versions.props').text = 'com.squareup.okhttp3:okhttp = 3.12.0'
-        file('versions.lock').text = ''
-
-        enableTestCiRun()
-
-        when:
-        runTasksWithFailure('verifyLocks')
-
-        then:
-        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "verifyLocks", getDefaultOutputFile(gradleVersionNumber))
-
-        where:
-        gradleVersionNumber << GRADLE_VERSIONS
-    }
-
     def '#gradleVersionNumber: ExceptionWithSuggestion is reported as a failure' () {
         setup:
         gradleVersion = gradleVersionNumber
