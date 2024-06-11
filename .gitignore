@@ -2,7 +2,8 @@
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea/*
+!.idea/gradle.xml
 .profileconfig.json
 
 # Eclipse
