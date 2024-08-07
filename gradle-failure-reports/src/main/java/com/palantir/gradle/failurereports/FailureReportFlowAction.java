@@ -33,6 +33,9 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
         @Input
         Property<File> getOutputFile();
 
+        @Input
+        Property<File> getGithubActionsFile();
+
         @ServiceReference
         Property<CompileFailuresService> getCompileFailuresService();
     }
@@ -43,7 +46,9 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
                 .getBuildResult()
                 .get()
                 .getFailure()
-                .ifPresent(failure ->
-                        BuildFailureReporter.report(parameters.getOutputFile().get(), failure));
+                .ifPresent(failure -> BuildFailureReporter.report(
+                        parameters.getOutputFile().get(),
+                        parameters.getGithubActionsFile().get(),
+                        failure));
     }
 }

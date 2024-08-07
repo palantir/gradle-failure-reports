@@ -16,21 +16,23 @@
 
 package com.palantir.gradle.failurereports;
 
+import com.palantir.gradle.failurereports.actions.GithubActionAnnotation;
 import com.palantir.gradle.failurereports.checkstyle.CheckstyleOutput;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.XmlResources;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.quality.Checkstyle;
 
 public final class CheckstyleFailureReporter {
 
-    public static Stream<FailureReport> collect(Project project, Checkstyle checkstyleTask) {
+    public static List<FailureReport> collectFailureReports(Project project, Checkstyle checkstyleTask) {
         if (!FailureReporterResources.executedAndFailed(checkstyleTask)) {
-            return Stream.empty();
+            return List.of();
         }
         File checkstyleReportXml = checkstyleTask
                 .getReports()
@@ -40,14 +42,47 @@ public final class CheckstyleFailureReporter {
                 .get();
         try {
             CheckstyleOutput checkstyleOutputReport = XmlResources.readXml(checkstyleReportXml, CheckstyleOutput.class);
-            return from(project, checkstyleOutputReport);
+            return toFailureReports(project, checkstyleOutputReport);
         } catch (IOException e) {
             project.getLogger().error("Unable to read the checkstyleReport", e);
-            return Stream.empty();
+            return List.of();
         }
     }
 
-    private static Stream<FailureReport> from(Project project, CheckstyleOutput checkstyleOutputReport) {
+    public static List<GithubActionAnnotation> collectGithubActionAnnotations(
+            Project project, Checkstyle checkstyleTask) {
+        if (!FailureReporterResources.executedAndFailed(checkstyleTask)) {
+            return List.of();
+        }
+        File checkstyleReportXml = checkstyleTask
+                .getReports()
+                .getXml()
+                .getOutputLocation()
+                .getAsFile()
+                .get();
+        try {
+            CheckstyleOutput checkstyleOutputReport = XmlResources.readXml(checkstyleReportXml, CheckstyleOutput.class);
+            return toGithubActionAnnotations(checkstyleOutputReport);
+        } catch (IOException e) {
+            project.getLogger().error("Unable to read the checkstyleReport", e);
+            return List.of();
+        }
+    }
+
+    private static List<GithubActionAnnotation> toGithubActionAnnotations(CheckstyleOutput checkstyleOutputReport) {
+        return checkstyleOutputReport.files().stream()
+                .flatMap(checkstyleFileFailure -> checkstyleFileFailure.errors().stream()
+                        .map(checkstyleError -> GithubActionAnnotation.builder()
+                                .file(checkstyleFileFailure.name())
+                                .line(checkstyleError.line())
+                                .message(checkstyleError.message())
+                                .title(FailureReporterResources.getFileName(checkstyleFileFailure.name()))
+                                .severity("error")
+                                .build()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<FailureReport> toFailureReports(Project project, CheckstyleOutput checkstyleOutputReport) {
         return checkstyleOutputReport.files().stream()
                 .flatMap(checkstyleFileFailure -> checkstyleFileFailure.errors().stream()
                         .map(checkstyleError -> FailureReport.builder()
@@ -61,7 +96,8 @@ public final class CheckstyleFailureReporter {
                                         Path.of(checkstyleFileFailure.name()),
                                         checkstyleError.line()))
                                 .errorMessage(checkstyleError.message())
-                                .build()));
+                                .build()))
+                .collect(Collectors.toList());
     }
 
     private CheckstyleFailureReporter() {}

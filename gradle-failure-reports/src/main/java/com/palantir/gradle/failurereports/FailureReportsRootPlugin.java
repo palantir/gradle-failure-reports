@@ -63,6 +63,10 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
                                     .getFailureReportOutputFile()
                                     .getAsFile()
                                     .get(),
+                            failureReportsExtension
+                                    .getGithubActionsFile()
+                                    .getAsFile()
+                                    .get(),
                             result.getFailure());
                 }
             });

@@ -18,13 +18,9 @@ package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+import com.palantir.gradle.failurereports.actions.GithubActionAnnotation;
+import com.palantir.gradle.failurereports.actions.GithubActionsReporter;
 import com.palantir.gradle.failurereports.junit.JunitReporter;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
@@ -34,22 +30,31 @@ import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.execution.MultipleBuildFailures;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public final class BuildFailureReporter {
 
     private static Logger log = Logging.getLogger(BuildFailureReporter.class);
 
-    public static void report(File outputFile, Throwable buildThrowable) {
+    public static void report(File outputFile, File githubActionOutputFile, Throwable buildThrowable) {
         Optional.ofNullable(buildThrowable).ifPresent(failure -> {
             try {
-                reportFailures(outputFile, failure);
+                reportFailures(outputFile, githubActionOutputFile, failure);
             } catch (IOException e) {
                 log.error("Failed to report build failures", e);
             }
         });
     }
 
-    private static void reportFailures(File outputFile, Throwable buildThrowable) throws IOException {
+    private static void reportFailures(File outputFile, File githubActionOutputFile, Throwable buildThrowable)
+            throws IOException {
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
+        ImmutableList.Builder<GithubActionAnnotation> githubActionAnnotationBuilder = ImmutableList.builder();
         for (TaskExecutionException taskExecutionException : getTaskExecutionExceptions(buildThrowable)) {
             Task task = taskExecutionException.getTask();
             if (task instanceof JavaCompile) {
@@ -57,14 +62,17 @@ public final class BuildFailureReporter {
                 // for now this is a noop, once the {@link CompileFailuresService} is closed, it will report all the
                 // errors that were collected
             } else if (task instanceof Checkstyle) {
-                failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
-                        .collect(Collectors.toList()));
+                failureReports.addAll(
+                        CheckstyleFailureReporter.collectFailureReports(task.getProject(), (Checkstyle) task));
+                githubActionAnnotationBuilder.addAll(
+                        CheckstyleFailureReporter.collectGithubActionAnnotations(task.getProject(), (Checkstyle) task));
             } else if (!(task instanceof Test)) {
                 // test failures are already reported
                 failureReports.add(ThrowableFailureReporter.getFailureReport(task));
             }
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
+        GithubActionsReporter.reportGithubActionFailures(githubActionOutputFile, githubActionAnnotationBuilder.build());
     }
 
     private static List<TaskExecutionException> getTaskExecutionExceptions(Throwable buildThrowable) {

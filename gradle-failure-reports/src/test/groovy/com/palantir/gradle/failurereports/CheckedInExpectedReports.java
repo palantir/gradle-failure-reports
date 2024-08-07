@@ -52,8 +52,8 @@ public final class CheckedInExpectedReports {
      * @param projectDir the current project's dir.
      * @param testName the name of the current test. It is used to generate and read the expected reportXml file.
      */
-    public static void checkOrUpdateFor(File projectDir, String testName, Path actualReportPath) throws IOException {
-        Path expectedReportPath = TEST_RESOURCES_PATH.resolve(getExpectedReportFilename(testName));
+    public static void checkOrUpdateXmlFor(File projectDir, String testName, Path actualReportPath) throws IOException {
+        Path expectedReportPath = TEST_RESOURCES_PATH.resolve(getExpectedReportFilename(testName, "xml"));
         String actualReportXmlContent = getReportWithProjectPlaceholder(
                 actualReportPath, projectDir.toPath().toAbsolutePath());
         // making sure the redacted string content is still a valid TestSuites object
@@ -71,6 +71,23 @@ public final class CheckedInExpectedReports {
         Files.write(expectedReportPath, actualReportXmlContent.getBytes(StandardCharsets.UTF_8));
     }
 
+    public static void checkOrUpdateTxtFor(File projectDir, String testName, Path actualReportPath) throws IOException {
+        Path expectedReportPath = TEST_RESOURCES_PATH.resolve(getExpectedReportFilename(testName, "txt"));
+        String actualReportContent = getReportWithProjectPlaceholder(
+                actualReportPath, projectDir.toPath().toAbsolutePath());
+
+        if (runningInCi()) {
+            String expectedReportContent = Files.readString(expectedReportPath);
+            assertThat(actualReportContent)
+                    .describedAs("Rerun this test locally to regenerate the examples")
+                    .isEqualTo(expectedReportContent);
+            return;
+        }
+        Files.deleteIfExists(expectedReportPath);
+        log.lifecycle("Running locally, updating the report.txt files");
+        Files.write(expectedReportPath, actualReportContent.getBytes(StandardCharsets.UTF_8));
+    }
+
     private static String getReportWithProjectPlaceholder(Path reportPath, Path projectDir) throws IOException {
         return maybeRedactStacktrace(Files.readString(reportPath)
                 // if local paths are too big, they might get truncated in the errorMessage
@@ -82,8 +99,8 @@ public final class CheckedInExpectedReports {
         return ciEnv.isPresent() && Boolean.parseBoolean(ciEnv.get());
     }
 
-    private static String getExpectedReportFilename(String testName) {
-        return String.format("expected-%s-error-report.xml", testName);
+    private static String getExpectedReportFilename(String testName, String extension) {
+        return String.format("expected-%s-error-report.%s", testName, extension);
     }
 
     private static String maybeRedactStacktrace(String report) {

@@ -26,6 +26,8 @@ public abstract class FailureReportsExtension {
 
     public abstract RegularFileProperty getFailureReportCompileOutputFile();
 
+    public abstract RegularFileProperty getGithubActionsFile();
+
     @Inject
     public abstract ProjectLayout getProjectLayout();
 
@@ -34,5 +36,8 @@ public abstract class FailureReportsExtension {
                 .convention(getProjectLayout().getBuildDirectory().file("failure-reports/build-TEST.xml"));
         getFailureReportCompileOutputFile()
                 .convention(getProjectLayout().getBuildDirectory().file("failure-reports/build-compile-TEST.xml"));
+        getGithubActionsFile()
+                .convention(
+                        getProjectLayout().getBuildDirectory().file("failure-reports/github-actions-annotations.txt"));
     }
 }

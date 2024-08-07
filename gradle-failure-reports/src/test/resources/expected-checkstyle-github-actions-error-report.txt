@@ -1,0 +1,2 @@
+::error file=_PROJECT_DIR/myProject/src/main/java/app/ClassA.java,line=3,title=ClassA.java::Utility classes should not have a public or default constructor.
+::error file=_PROJECT_DIR/myProject/src/main/java/app/ClassA.java,line=5,title=ClassA.java::Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info("Message").
