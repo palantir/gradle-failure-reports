@@ -40,7 +40,6 @@ public final class CheckedInExpectedReports {
     private static final String PROJECT_DIR_PLACEHOLDER = "_PROJECT_DIR";
     private static final String OTHER_STACK_FRAMES_REGEX = "(?m)^\\sat (?!com\\.palantir\\.).*\n";
     private static final String STACKFRAME_MORE_REGEX = "... \\d+ more";
-    private static final String IGNORE_FAILURE_MESSAGE_ATTRIBUTE = "<failure message=\".*\" type=\".*\">";
 
     /**
      * When ran _locally_, it copies the generated reports from the tests to the "src/test/resources/" path.
@@ -87,14 +86,9 @@ public final class CheckedInExpectedReports {
     }
 
     private static String maybeRedactStacktrace(String report) {
-        return dropFailureMessage(report.replaceAll(OTHER_STACK_FRAMES_REGEX, "")
+        return report.replaceAll(OTHER_STACK_FRAMES_REGEX, "")
                 // the number of stacktrace frames might differ between local runs and CI runs
-                .replaceAll(STACKFRAME_MORE_REGEX, "... PLACEHOLDER_NUMBER more"));
-    }
-
-    private static String dropFailureMessage(String report) {
-        return report.replaceAll(
-                IGNORE_FAILURE_MESSAGE_ATTRIBUTE, "<failure message=\"_IGNORED_IN_TESTS\" type=\"ERROR\">");
+                .replaceAll(STACKFRAME_MORE_REGEX, "... PLACEHOLDER_NUMBER more");
     }
 
     private CheckedInExpectedReports() {}
