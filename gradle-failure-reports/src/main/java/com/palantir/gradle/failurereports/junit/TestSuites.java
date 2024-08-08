@@ -39,6 +39,7 @@ import org.immutables.value.Value.Default;
 @JacksonXmlRootElement(localName = "testsuites")
 public interface TestSuites {
 
+    @JsonProperty("testsuite")
     @JacksonXmlElementWrapper(useWrapping = false)
     List<TestSuite> testSuite();
 
@@ -52,7 +53,6 @@ public interface TestSuites {
     @Value.Immutable
     @JsonSerialize(as = ImmutableTestSuite.class)
     @JsonDeserialize(as = ImmutableTestSuite.class)
-    @JacksonXmlRootElement(localName = "testsuite")
     interface TestSuite {
 
         @JacksonXmlProperty(isAttribute = true)

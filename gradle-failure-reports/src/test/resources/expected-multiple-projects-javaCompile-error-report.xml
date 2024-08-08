@@ -1,5 +1,5 @@
 <testsuites>
-  <testSuite name="myProject1/src/main/java/app/ClassFoo.java:6" tests="1">
+  <testsuite name="myProject1/src/main/java/app/ClassFoo.java:6" tests="1">
     <testcase name="ClassFoo.java:6: error: illegal start of expression" className="ClassFoo.java:6: error: illegal start of expression" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject1/src/main/java/app/ClassFoo.java:6: error: illegal start of expression
         / wrong
@@ -9,8 +9,8 @@ _PROJECT_DIR/myProject1/src/main/java/app/ClassFoo.java:6: error: ';' expected
                ^
 </failure>
     </testcase>
-  </testSuite>
-  <testSuite name="myProject2/src/main/java/app/ClassA.java:4" tests="1">
+  </testsuite>
+  <testsuite name="myProject2/src/main/java/app/ClassA.java:4" tests="1">
     <testcase name="ClassA.java:4: error: cannot find symbol" className="ClassA.java:4: error: cannot find symbol" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject2/src/main/java/app/ClassA.java:4: error: cannot find symbol
 public class ClassA extends AnotherClass {
@@ -18,5 +18,5 @@ public class ClassA extends AnotherClass {
   symbol: class AnotherClass
 </failure>
     </testcase>
-  </testSuite>
+  </testsuite>
 </testsuites>
