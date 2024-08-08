@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.file.Path;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.gradle.api.GradleException;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import spock.util.environment.Jvm;
 
@@ -65,5 +66,18 @@ public class FailureReporterResourcesTest {
                         + "\torg.gradle.api.GradleException: lock out of date\n\n"
                         + "* Full exception is:\n"
                         + "org.gradle.api.GradleException: lock out of date");
+    }
+
+    @Nested
+    class ANotherClass {
+        @Test
+        public void canFormatThrowable() {
+            assertThat(Jvm.getCurrent().getJavaVersion().toString()).contains("vvv");
+            assertThat(ThrowableResources.formatThrowable(new GradleException("lock out of date")))
+                    .contains("* Causal chain is:\n"
+                            + "\torg.gradle.api.GradleException: lock out of date\n\n"
+                            + "* Full exception is:\n"
+                            + "org.gradle.api.GradleException: lock out of date");
+        }
     }
 }
