@@ -35,7 +35,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
+        //buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         def subProjectDir = addSubproject("myProject", '''
             apply plugin: 'java'
@@ -74,7 +74,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
-        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
+        //buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
 
         def subProjectDir = addSubproject('myProject', '''
             apply plugin: 'java'

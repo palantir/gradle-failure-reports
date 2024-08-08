@@ -1,10 +1,10 @@
-<testsuite>
-  <testsuites name="myProject/src/main/java/app/ClassA.java:6" tests="1">
+<testsuites>
+  <testSuite name="myProject/src/main/java/app/ClassA.java:6" tests="1">
     <testcase name="ClassA.java:6: error: ';' expected" className="ClassA.java:6: error: ';' expected" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject/src/main/java/app/ClassA.java:6: error: ';' expected
         return 0
                 ^
 </failure>
     </testcase>
-  </testsuites>
-</testsuite>
+  </testSuite>
+</testsuites>

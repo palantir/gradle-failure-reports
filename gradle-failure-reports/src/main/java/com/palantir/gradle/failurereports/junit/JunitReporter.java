@@ -55,7 +55,7 @@ public final class JunitReporter {
                 })
                 .collect(Collectors.toList());
         XmlResources.writeXml(
-                junitXmlFile, TestSuites.builder().testSuites(testSuites).build());
+                junitXmlFile, TestSuites.builder().testSuite(testSuites).build());
     }
 
     private static TestCase from(FailureReport failureReport) {

@@ -109,7 +109,7 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
                     spec.getParameters()
                             .getCompileOutputFile()
                             .set(failureReportsExtension.getFailureReportCompileOutputFile());
-                    spec.getParameters().getRootDir().set(project.provider(() -> project.getRootDir()));
+                    spec.getParameters().getRootDir().set(project.provider(project::getRootDir));
                 });
     }
 

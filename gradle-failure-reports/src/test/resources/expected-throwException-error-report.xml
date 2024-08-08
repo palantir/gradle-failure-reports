@@ -1,5 +1,5 @@
-<testsuite>
-  <testsuites name=":myProject:throwExceptionNoMessage" tests="1">
+<testsuites>
+  <testSuite name=":myProject:throwExceptionNoMessage" tests="1">
     <testcase name="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" className="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
 
@@ -12,8 +12,8 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProje
 Caused by: java.lang.OutOfMemoryError
 </failure>
     </testcase>
-  </testsuites>
-  <testsuites name="./gradlew runFix" tests="1">
+  </testSuite>
+  <testSuite name="./gradlew runFix" tests="1">
     <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">ExceptionWithSuggestedFixMessage
 
@@ -26,8 +26,8 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwEx
 Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
 </failure>
     </testcase>
-  </testsuites>
-  <testsuites name=":myProject:throwGradleException" tests="1">
+  </testSuite>
+  <testSuite name=":myProject:throwGradleException" tests="1">
     <testcase name="[:myProject:throwGradleException] error: This is a normal gradle exception" className="[:myProject:throwGradleException] error: This is a normal gradle exception" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">This is a normal gradle exception
 
@@ -40,8 +40,8 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProje
 Caused by: org.gradle.api.GradleException: This is a normal gradle exception
 </failure>
     </testcase>
-  </testsuites>
-  <testsuites name="./gradlew fixMe" tests="1">
+  </testSuite>
+  <testSuite name="./gradlew fixMe" tests="1">
     <testcase name="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" className="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">InnerExceptionWithSuggestedFixMessage
 
@@ -60,5 +60,5 @@ Caused by: java.lang.RuntimeException: InnerRuntimeException
 	... PLACEHOLDER_NUMBER more
 </failure>
     </testcase>
-  </testsuites>
-</testsuite>
+  </testSuite>
+</testsuites>

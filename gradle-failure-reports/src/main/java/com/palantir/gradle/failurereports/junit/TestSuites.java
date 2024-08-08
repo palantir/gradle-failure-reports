@@ -36,12 +36,11 @@ import org.immutables.value.Value.Default;
 @Value.Immutable
 @JsonSerialize(as = ImmutableTestSuites.class)
 @JsonDeserialize(as = ImmutableTestSuites.class)
-@JacksonXmlRootElement(localName = "testsuite")
+@JacksonXmlRootElement(localName = "testsuites")
 public interface TestSuites {
 
-    @JsonProperty("testsuites")
     @JacksonXmlElementWrapper(useWrapping = false)
-    List<TestSuite> testSuites();
+    List<TestSuite> testSuite();
 
     static Builder builder() {
         return new Builder();

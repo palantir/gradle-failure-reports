@@ -1,10 +1,10 @@
-<testsuite>
-  <testsuites name="myProject2/src/main/java/foo/Foo.java:3" tests="1">
+<testsuites>
+  <testSuite name="myProject2/src/main/java/foo/Foo.java:3" tests="1">
     <testcase name="Foo.java:3: error: reached end of file while parsing" className="Foo.java:3: error: reached end of file while parsing" time="0">
       <failure message="_IGNORED_IN_TESTS" type="ERROR">_PROJECT_DIR/myProject2/src/main/java/foo/Foo.java:3: error: reached end of file while parsing
 public class Foo extends NonExistentClass
                                          ^
 </failure>
     </testcase>
-  </testsuites>
-</testsuite>
+  </testSuite>
+</testsuites>
