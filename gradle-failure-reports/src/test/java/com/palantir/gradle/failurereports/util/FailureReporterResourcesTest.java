@@ -62,5 +62,4 @@ public class FailureReporterResourcesTest {
                         + "* Full exception is:\n"
                         + "org.gradle.api.GradleException: lock out of date");
     }
-
 }

@@ -80,7 +80,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         writeJavaSourceFile('''
             package app;
 
-            public class ClassA {
+            public class TestsThatCircleCiCanRenderTheFailureReport {
                 public static void main() {
                     return 0
                 }
