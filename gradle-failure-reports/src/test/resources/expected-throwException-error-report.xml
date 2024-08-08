@@ -1,7 +1,7 @@
-<testsuite>
-  <testsuites name=":myProject:throwExceptionNoMessage" tests="1">
-    <testcase name="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" className="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
+<testsuites>
+  <testsuite name=":myProject:throwExceptionNoMessage" tests="1">
+    <testcase name="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" className=":myProject:throwExceptionNoMessage">
+      <failure type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
 
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwExceptionNoMessage'.
@@ -12,10 +12,10 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProje
 Caused by: java.lang.OutOfMemoryError
 </failure>
     </testcase>
-  </testsuites>
-  <testsuites name="./gradlew runFix" tests="1">
-    <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">ExceptionWithSuggestedFixMessage
+  </testsuite>
+  <testsuite name="./gradlew runFix" tests="1">
+    <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="./gradlew runFix">
+      <failure type="ERROR">ExceptionWithSuggestedFixMessage
 
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
@@ -26,10 +26,10 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwEx
 Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
 </failure>
     </testcase>
-  </testsuites>
-  <testsuites name=":myProject:throwGradleException" tests="1">
-    <testcase name="[:myProject:throwGradleException] error: This is a normal gradle exception" className="[:myProject:throwGradleException] error: This is a normal gradle exception" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">This is a normal gradle exception
+  </testsuite>
+  <testsuite name=":myProject:throwGradleException" tests="1">
+    <testcase name="[:myProject:throwGradleException] error: This is a normal gradle exception" className=":myProject:throwGradleException">
+      <failure type="ERROR">This is a normal gradle exception
 
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
@@ -40,10 +40,10 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProje
 Caused by: org.gradle.api.GradleException: This is a normal gradle exception
 </failure>
     </testcase>
-  </testsuites>
-  <testsuites name="./gradlew fixMe" tests="1">
-    <testcase name="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" className="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" time="0">
-      <failure message="_IGNORED_IN_TESTS" type="ERROR">InnerExceptionWithSuggestedFixMessage
+  </testsuite>
+  <testsuite name="./gradlew fixMe" tests="1">
+    <testcase name="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" className="./gradlew fixMe">
+      <failure type="ERROR">InnerExceptionWithSuggestedFixMessage
 
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithSuggestedFix'.
@@ -60,5 +60,5 @@ Caused by: java.lang.RuntimeException: InnerRuntimeException
 	... PLACEHOLDER_NUMBER more
 </failure>
     </testcase>
-  </testsuites>
-</testsuite>
+  </testsuite>
+</testsuites>

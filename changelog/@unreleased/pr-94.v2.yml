@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Fix Junit report format
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/94

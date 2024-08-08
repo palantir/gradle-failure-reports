@@ -55,18 +55,14 @@ public final class JunitReporter {
                 })
                 .collect(Collectors.toList());
         XmlResources.writeXml(
-                junitXmlFile, TestSuites.builder().testSuites(testSuites).build());
+                junitXmlFile, TestSuites.builder().testSuite(testSuites).build());
     }
 
     private static TestCase from(FailureReport failureReport) {
         return TestCase.builder()
                 .name(failureReport.header())
-                .className(failureReport.header())
-                .failure(Failure.builder()
-                        .value(failureReport.errorMessage())
-                        .message(failureReport.errorMessage())
-                        .build())
-                .time(0L)
+                .className(failureReport.clickableSource())
+                .failure(Failure.builder().value(failureReport.errorMessage()).build())
                 .build();
     }
 

@@ -36,12 +36,12 @@ import org.immutables.value.Value.Default;
 @Value.Immutable
 @JsonSerialize(as = ImmutableTestSuites.class)
 @JsonDeserialize(as = ImmutableTestSuites.class)
-@JacksonXmlRootElement(localName = "testsuite")
+@JacksonXmlRootElement(localName = "testsuites")
 public interface TestSuites {
 
-    @JsonProperty("testsuites")
+    @JsonProperty("testsuite")
     @JacksonXmlElementWrapper(useWrapping = false)
-    List<TestSuite> testSuites();
+    List<TestSuite> testSuite();
 
     static Builder builder() {
         return new Builder();
@@ -53,7 +53,6 @@ public interface TestSuites {
     @Value.Immutable
     @JsonSerialize(as = ImmutableTestSuite.class)
     @JsonDeserialize(as = ImmutableTestSuite.class)
-    @JacksonXmlRootElement(localName = "testsuite")
     interface TestSuite {
 
         @JacksonXmlProperty(isAttribute = true)
@@ -85,9 +84,6 @@ public interface TestSuites {
             @JsonProperty("classname")
             String className();
 
-            @JacksonXmlProperty(isAttribute = true)
-            Long time();
-
             Failure failure();
 
             @ImmutablesStyle
@@ -95,9 +91,6 @@ public interface TestSuites {
             @JsonSerialize(as = ImmutableFailure.class)
             @JsonDeserialize(as = ImmutableFailure.class)
             interface Failure {
-
-                @JacksonXmlProperty(isAttribute = true)
-                String message();
 
                 @Default
                 @JacksonXmlProperty(isAttribute = true)

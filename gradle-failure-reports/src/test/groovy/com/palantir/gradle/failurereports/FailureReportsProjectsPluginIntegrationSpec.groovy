@@ -66,6 +66,31 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         gradleVersionNumber << GRADLE_VERSIONS
     }
 
+    def 'dummyTest: generates a failure report to make sure CircleCi renders it correctly'() {
+        setup:
+        // language=gradle
+        buildFile << '''
+            apply plugin: 'com.palantir.failure-reports'
+        '''.stripIndent(true)
+
+        def subProjectDir = addSubproject("myProject", '''
+            apply plugin: 'java'
+        '''.stripIndent(true))
+        // language=java
+        writeJavaSourceFile('''
+            package app;
+
+            public class TestsThatCircleCiCanRenderTheFailureReport {
+                public static void main() {
+                    return 0
+                }
+            }
+        '''.stripIndent(true), subProjectDir)
+
+        enableTestCiRun()
+        runTasksWithFailure('compileJava')
+    }
+
     def '#gradleVersionNumber: multiple javaCompile errors are reported'() {
         setup:
         gradleVersion = gradleVersionNumber
