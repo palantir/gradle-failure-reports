@@ -62,11 +62,7 @@ public final class JunitReporter {
         return TestCase.builder()
                 .name(failureReport.header())
                 .className(failureReport.header())
-                .failure(Failure.builder()
-                        .value(failureReport.errorMessage())
-                        .message(failureReport.errorMessage())
-                        .build())
-                .time(0L)
+                .failure(Failure.builder().value(failureReport.errorMessage()).build())
                 .build();
     }
 

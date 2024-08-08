@@ -84,9 +84,6 @@ public interface TestSuites {
             @JsonProperty("classname")
             String className();
 
-            @JacksonXmlProperty(isAttribute = true)
-            Long time();
-
             Failure failure();
 
             @ImmutablesStyle
@@ -94,9 +91,6 @@ public interface TestSuites {
             @JsonSerialize(as = ImmutableFailure.class)
             @JsonDeserialize(as = ImmutableFailure.class)
             interface Failure {
-
-                @JacksonXmlProperty(isAttribute = true)
-                String message();
 
                 @Default
                 @JacksonXmlProperty(isAttribute = true)
