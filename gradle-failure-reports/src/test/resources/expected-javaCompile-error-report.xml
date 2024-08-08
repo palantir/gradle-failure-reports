@@ -1,6 +1,6 @@
 <testsuites>
   <testsuite name="myProject/src/main/java/app/ClassA.java:6" tests="1">
-    <testcase name="ClassA.java:6: error: ';' expected" className="ClassA.java:6: error: ';' expected">
+    <testcase name="ClassA.java:6: error: ';' expected" className="myProject/src/main/java/app/ClassA.java:6">
       <failure type="ERROR">_PROJECT_DIR/myProject/src/main/java/app/ClassA.java:6: error: ';' expected
         return 0
                 ^

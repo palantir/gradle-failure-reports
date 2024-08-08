@@ -1,6 +1,6 @@
 <testsuites>
   <testsuite name="myProject2/src/main/java/foo/Foo.java:3" tests="1">
-    <testcase name="Foo.java:3: error: reached end of file while parsing" className="Foo.java:3: error: reached end of file while parsing">
+    <testcase name="Foo.java:3: error: reached end of file while parsing" className="myProject2/src/main/java/foo/Foo.java:3">
       <failure type="ERROR">_PROJECT_DIR/myProject2/src/main/java/foo/Foo.java:3: error: reached end of file while parsing
 public class Foo extends NonExistentClass
                                          ^

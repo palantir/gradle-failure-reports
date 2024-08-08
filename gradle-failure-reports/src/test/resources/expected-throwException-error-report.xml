@@ -1,6 +1,6 @@
 <testsuites>
   <testsuite name=":myProject:throwExceptionNoMessage" tests="1">
-    <testcase name="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" className="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown">
+    <testcase name="[:myProject:throwExceptionNoMessage] error: java.lang.OutOfMemoryError exception thrown" className=":myProject:throwExceptionNoMessage">
       <failure type="ERROR">An error occurred, java.lang.OutOfMemoryError exception thrown
 
 * Causal chain is:
@@ -14,7 +14,7 @@ Caused by: java.lang.OutOfMemoryError
     </testcase>
   </testsuite>
   <testsuite name="./gradlew runFix" tests="1">
-    <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage">
+    <testcase name="[:throwExceptionWithSuggestedFix] error: ExceptionWithSuggestedFixMessage" className="./gradlew runFix">
       <failure type="ERROR">ExceptionWithSuggestedFixMessage
 
 * Causal chain is:
@@ -28,7 +28,7 @@ Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
     </testcase>
   </testsuite>
   <testsuite name=":myProject:throwGradleException" tests="1">
-    <testcase name="[:myProject:throwGradleException] error: This is a normal gradle exception" className="[:myProject:throwGradleException] error: This is a normal gradle exception">
+    <testcase name="[:myProject:throwGradleException] error: This is a normal gradle exception" className=":myProject:throwGradleException">
       <failure type="ERROR">This is a normal gradle exception
 
 * Causal chain is:
@@ -42,7 +42,7 @@ Caused by: org.gradle.api.GradleException: This is a normal gradle exception
     </testcase>
   </testsuite>
   <testsuite name="./gradlew fixMe" tests="1">
-    <testcase name="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" className="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage">
+    <testcase name="[:myProject:throwInnerExceptionWithSuggestedFix] error: InnerExceptionWithSuggestedFixMessage" className="./gradlew fixMe">
       <failure type="ERROR">InnerExceptionWithSuggestedFixMessage
 
 * Causal chain is:
