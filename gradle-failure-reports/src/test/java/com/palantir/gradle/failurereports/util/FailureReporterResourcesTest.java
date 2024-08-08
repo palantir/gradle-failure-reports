@@ -22,11 +22,13 @@ import java.nio.file.Path;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.gradle.api.GradleException;
 import org.junit.jupiter.api.Test;
+import spock.util.environment.Jvm;
 
 public class FailureReporterResourcesTest {
 
     @Test
     public void canGenerateRelativeSourcePath() {
+        assertThat(Jvm.getCurrent().getJavaVersion().toString()).contains("dasdas");
         assertThat(FailureReporterResources.getRelativePathWithLineNumber(
                         Path.of("/Volumes/git/some-path"), Path.of("/Volumes/git/some-path/src/main/java/Foo.java"), 2))
                 .isEqualTo("src/main/java/Foo.java:2");
@@ -34,6 +36,7 @@ public class FailureReporterResourcesTest {
 
     @Test
     public void canFormatHeader() {
+        assertThat(Jvm.getCurrent().getJavaVersion().toString()).contains("sadaa");
         assertThat(FailureReporterResources.getTaskErrorHeader(":compileJava", "this is my error"))
                 .isEqualTo("[:compileJava] error: this is my error");
 
@@ -56,6 +59,7 @@ public class FailureReporterResourcesTest {
 
     @Test
     public void canFormatThrowable() {
+        assertThat(Jvm.getCurrent().getJavaVersion().toString()).contains("vvv");
         assertThat(ThrowableResources.formatThrowable(new GradleException("lock out of date")))
                 .contains("* Causal chain is:\n"
                         + "\torg.gradle.api.GradleException: lock out of date\n\n"
