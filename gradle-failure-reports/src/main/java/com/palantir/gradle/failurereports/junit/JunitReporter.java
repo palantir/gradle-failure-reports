@@ -61,7 +61,7 @@ public final class JunitReporter {
     private static TestCase from(FailureReport failureReport) {
         return TestCase.builder()
                 .name(failureReport.header())
-                .className(failureReport.header())
+                .className(failureReport.clickableSource())
                 .failure(Failure.builder().value(failureReport.errorMessage()).build())
                 .build();
     }
