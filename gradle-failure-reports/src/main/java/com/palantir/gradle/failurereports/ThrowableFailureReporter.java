@@ -18,6 +18,7 @@ package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Throwables;
 import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion;
+import com.palantir.gradle.failurereports.exceptions.MinimalException;
 import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.ThrowableResources;
 import java.util.Optional;
@@ -27,14 +28,20 @@ public final class ThrowableFailureReporter {
 
     public static <T extends Task> FailureReport getFailureReport(T task) {
         Throwable throwable = task.getState().getFailure();
-        // try to get the last ExtraInfoException in the causal chain
-        Optional<ExceptionWithSuggestion> maybeExtraInfoException = Throwables.getCausalChain(throwable).stream()
+        // try to get the last ExceptionWithSuggestion in the causal chain
+        Optional<ExceptionWithSuggestion> maybeExceptionWithSuggestion = Throwables.getCausalChain(throwable).stream()
                 .filter(ExceptionWithSuggestion.class::isInstance)
                 .map(ExceptionWithSuggestion.class::cast)
                 .findFirst();
-        return maybeExtraInfoException
+        Optional<MinimalException> maybeMinimalException = Throwables.getCausalChain(throwable).stream()
+                .filter(MinimalException.class::isInstance)
+                .map(MinimalException.class::cast)
+                .findFirst();
+        return maybeExceptionWithSuggestion
                 .map(exception -> getEnhancedExceptionReport(task.getPath(), throwable, exception))
-                .orElseGet(() -> getGenericExceptionReport(task, throwable));
+                .orElseGet(() -> maybeMinimalException
+                        .map(exception -> getExceptionReport(task.getPath(), exception))
+                        .orElseGet(() -> getGenericExceptionReport(task, throwable)));
     }
 
     @SuppressWarnings("NullAway")
@@ -45,6 +52,14 @@ public final class ThrowableFailureReporter {
                 .clickableSource(extraInfoException.getSuggestion())
                 .errorMessage(ThrowableResources.formatThrowableWithMessage(
                         initialThrowable, extraInfoException.getMessage()))
+                .build();
+    }
+
+    public static FailureReport getExceptionReport(String taskPath, MinimalException exception) {
+        return FailureReport.builder()
+                .header(FailureReporterResources.getTaskErrorHeader(taskPath, exception.getMessage()))
+                .clickableSource(taskPath)
+                .errorMessage(exception.getMessage())
                 .build();
     }
 
