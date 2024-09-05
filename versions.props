@@ -1,5 +1,5 @@
 com.fasterxml.jackson.core:jackson-databind = 2.15.3
-com.netflix.nebula:nebula-test = 10.0.0
+com.netflix.nebula:nebula-test = 10.6.1
 com.fasterxml.jackson.*:* = 2.15.3
 org.immutables:* = 2.10.1
 one.util:streamex = 0.8.2
@@ -11,7 +11,7 @@ com.palantir.gradle.utils:environment-variables = 0.6.0
 # conflict resolution
 com.google.code.findbugs:jsr305 = 3.0.2
 com.google.errorprone:error_prone_annotations = 2.11.0
-org.checkerframework:checker-qual = 3.46.0
+org.checkerframework:checker-qual = 3.47.0
 
 # unit testing
 org.assertj:* = 3.26.3
