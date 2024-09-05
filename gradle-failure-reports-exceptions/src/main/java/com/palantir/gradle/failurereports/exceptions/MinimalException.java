@@ -16,6 +16,10 @@
 
 package com.palantir.gradle.failurereports.exceptions;
 
+/**
+ * An exception type that simply surfaces the given exception message and does not assume the exception
+ * has a useful stacktrace, and thus is useful for surfacing errors derived from a subprocess.
+ */
 public class MinimalException extends RuntimeException {
 
     public MinimalException(String message) {
