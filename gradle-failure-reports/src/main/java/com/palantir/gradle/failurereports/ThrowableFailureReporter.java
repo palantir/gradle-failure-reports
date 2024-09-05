@@ -40,12 +40,11 @@ public final class ThrowableFailureReporter {
         return maybeExceptionWithSuggestion
                 .map(exception -> getEnhancedExceptionReport(task.getPath(), throwable, exception))
                 .orElseGet(() -> maybeMinimalException
-                        .map(exception -> getExceptionReport(task.getPath(), exception))
+                        .map(exception -> getMinimalExceptionReport(task.getPath(), exception))
                         .orElseGet(() -> getGenericExceptionReport(task, throwable)));
     }
 
-    @SuppressWarnings("NullAway")
-    public static FailureReport getEnhancedExceptionReport(
+    private static FailureReport getEnhancedExceptionReport(
             String taskPath, Throwable initialThrowable, ExceptionWithSuggestion extraInfoException) {
         return FailureReport.builder()
                 .header(FailureReporterResources.getTaskErrorHeader(taskPath, extraInfoException.getMessage()))
@@ -55,7 +54,7 @@ public final class ThrowableFailureReporter {
                 .build();
     }
 
-    public static FailureReport getExceptionReport(String taskPath, MinimalException exception) {
+    private static FailureReport getMinimalExceptionReport(String taskPath, MinimalException exception) {
         return FailureReport.builder()
                 .header(FailureReporterResources.getTaskErrorHeader(taskPath, exception.getMessage()))
                 .clickableSource(taskPath)
