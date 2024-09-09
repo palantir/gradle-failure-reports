@@ -28,7 +28,11 @@ public final class ThrowableFailureReporter {
 
     public static <T extends Task> FailureReport getFailureReport(T task) {
         Throwable throwable = task.getState().getFailure();
-        // try to get the last ExceptionWithSuggestion in the causal chain
+        return getFailureReport(throwable, task.getPath());
+    }
+
+    static FailureReport getFailureReport(Throwable throwable, String taskPath) {
+        // try to get the last ExceptionWithSuggestion or MinimalException in the causal chain
         Optional<ExceptionWithSuggestion> maybeExceptionWithSuggestion = Throwables.getCausalChain(throwable).stream()
                 .filter(ExceptionWithSuggestion.class::isInstance)
                 .map(ExceptionWithSuggestion.class::cast)
@@ -38,10 +42,9 @@ public final class ThrowableFailureReporter {
                 .map(MinimalException.class::cast)
                 .findFirst();
         return maybeExceptionWithSuggestion
-                .map(exception -> getEnhancedExceptionReport(task.getPath(), throwable, exception))
-                .orElseGet(() -> maybeMinimalException
-                        .map(exception -> getMinimalExceptionReport(task.getPath(), exception))
-                        .orElseGet(() -> getGenericExceptionReport(task, throwable)));
+                .map(exception -> getEnhancedExceptionReport(taskPath, throwable, exception))
+                .or(() -> maybeMinimalException.map(exception -> getMinimalExceptionReport(taskPath, exception)))
+                .orElseGet(() -> getGenericExceptionReport(taskPath, throwable));
     }
 
     private static FailureReport getEnhancedExceptionReport(
@@ -62,10 +65,10 @@ public final class ThrowableFailureReporter {
                 .build();
     }
 
-    private static <T extends Task> FailureReport getGenericExceptionReport(T task, Throwable throwable) {
+    private static FailureReport getGenericExceptionReport(String taskPath, Throwable throwable) {
         return FailureReport.builder()
-                .header(FailureReporterResources.getTaskErrorHeader(task.getPath(), throwable))
-                .clickableSource(task.getPath())
+                .header(FailureReporterResources.getTaskErrorHeader(taskPath, throwable))
+                .clickableSource(taskPath)
                 .errorMessage(ThrowableResources.formatThrowable(throwable))
                 .build();
     }

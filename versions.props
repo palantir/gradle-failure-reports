@@ -16,4 +16,3 @@ org.checkerframework:checker-qual = 3.47.0
 # unit testing
 org.assertj:* = 3.26.3
 org.junit.jupiter:* = 5.11.0
-org.mockito:* = 5.12.0
