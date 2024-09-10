@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
+        gradlePluginPortal() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
+    }
+    dependencies {
+        classpath 'com.palantir.gradle.jdks:gradle-jdks-settings:0.46.0'
+    }
+}
+apply plugin: 'com.palantir.jdks.settings'
 rootProject.name = 'gradle-failure-reports-root'
 
 include 'gradle-failure-reports'
