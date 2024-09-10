@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Add minimal exception type
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/107
