@@ -35,9 +35,8 @@ public class ThrowableFailureReporterTest {
                 .startsWith(EXCEPTION_MESSAGE
                         + "\n\n* Causal chain is:\n\t"
                         + "com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: "
-                        + EXCEPTION_MESSAGE + "\n\n* Full exception is:\n"
-                        + "com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: "
-                        + EXCEPTION_MESSAGE);
+                        + "\n\n* Full exception is:\n"
+                        + "com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ");
     }
 
     @Test
