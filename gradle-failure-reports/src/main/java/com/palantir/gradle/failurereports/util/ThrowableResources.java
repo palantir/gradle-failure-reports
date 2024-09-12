@@ -38,9 +38,9 @@ public final class ThrowableResources {
                 "%s\n\n%s\n%s\n\n%s\n%s",
                 errorMessage,
                 CAUSAL_CHAIN,
-                causalChain,
+                causalChain.replace(errorMessage, ""),
                 EXCEPTION_MESSAGE,
-                Throwables.getStackTraceAsString(throwable));
+                Throwables.getStackTraceAsString(throwable).replace(errorMessage, ""));
     }
 
     public static String printThrowableCause(Throwable throwableCause) {

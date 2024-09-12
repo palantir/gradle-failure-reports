@@ -19,11 +19,11 @@ Caused by: java.lang.OutOfMemoryError
 
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
-	com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
+	com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: 
 
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
-Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
+Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: 
 </failure>
     </testcase>
   </testsuite>
@@ -33,11 +33,11 @@ Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
 
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
-	org.gradle.api.GradleException: This is a normal gradle exception
+	org.gradle.api.GradleException: 
 
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
-Caused by: org.gradle.api.GradleException: This is a normal gradle exception
+Caused by: org.gradle.api.GradleException: 
 </failure>
     </testcase>
   </testsuite>
@@ -48,13 +48,13 @@ Caused by: org.gradle.api.GradleException: This is a normal gradle exception
 * Causal chain is:
 	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithSuggestedFix'.
 	org.gradle.api.GradleException: OuterGradleException
-	com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: InnerExceptionWithSuggestedFixMessage
+	com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: 
 	java.lang.RuntimeException: InnerRuntimeException
 
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithSuggestedFix'.
 Caused by: org.gradle.api.GradleException: OuterGradleException
-Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: InnerExceptionWithSuggestedFixMessage
+Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: 
 	... PLACEHOLDER_NUMBER more
 Caused by: java.lang.RuntimeException: InnerRuntimeException
 	... PLACEHOLDER_NUMBER more

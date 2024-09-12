@@ -1,0 +1,5 @@
+type: improvement
+improvement:
+  description: Only print error message once when formatting error output
+  links:
+  - https://github.com/palantir/gradle-failure-reports/pull/116

@@ -58,8 +58,8 @@ public class FailureReporterResourcesTest {
     public void canFormatThrowable() {
         assertThat(ThrowableResources.formatThrowable(new GradleException("lock out of date")))
                 .contains("* Causal chain is:\n"
-                        + "\torg.gradle.api.GradleException: lock out of date\n\n"
+                        + "\torg.gradle.api.GradleException: \n\n"
                         + "* Full exception is:\n"
-                        + "org.gradle.api.GradleException: lock out of date");
+                        + "org.gradle.api.GradleException: ");
     }
 }
