@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.palantir.gradle.failurereports;
+package com.palantir.gradle.failurereports.common;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.palantir.gradle.failurereports.util.ImmutablesStyle;
 import org.immutables.value.Value;
 
 @ImmutablesStyle

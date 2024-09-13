@@ -10,11 +10,10 @@ dependencies {
     annotationProcessor 'org.immutables:value'
 
     compileOnly 'com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations'
-
-    annotationProcessor "org.immutables:value"
     compileOnly 'org.immutables:value::annotations'
 
     implementation project(':gradle-failure-reports-exceptions')
+    implementation project(':gradle-failure-reports-common')
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'com.palantir.gradle.utils:environment-variables'
     implementation 'com.google.guava:guava'

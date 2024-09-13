@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.palantir.gradle.failurereports.util.ImmutablesStyle;
+import com.palantir.gradle.failurereports.common.ImmutablesStyle;
 import java.util.List;
 import org.immutables.value.Value;
 

@@ -12,3 +12,5 @@ rootProject.name = 'gradle-failure-reports-root'
 
 include 'gradle-failure-reports'
 include 'gradle-failure-reports-exceptions'
+include 'gradle-failure-reports-common'
+

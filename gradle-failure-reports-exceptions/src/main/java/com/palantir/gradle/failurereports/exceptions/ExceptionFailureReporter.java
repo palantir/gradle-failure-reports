@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package com.palantir.gradle.failurereports.util;
+package com.palantir.gradle.failurereports.exceptions;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.immutables.value.Value.Style;
-import org.immutables.value.Value.Style.ImplementationVisibility;
+import com.palantir.gradle.failurereports.common.FailureReport;
 
-@Target({ElementType.PACKAGE, ElementType.TYPE})
-@Retention(RetentionPolicy.SOURCE)
-@Style(visibility = ImplementationVisibility.PACKAGE, overshadowImplementation = true, jdkOnly = true)
-public @interface ImmutablesStyle {}
+public interface ExceptionFailureReporter {
+
+    FailureReport getTaskFailureReport(String taskPath, Throwable initialThrowable);
+}

@@ -17,10 +17,10 @@
 package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Throwables;
-import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion;
-import com.palantir.gradle.failurereports.exceptions.MinimalException;
-import com.palantir.gradle.failurereports.util.FailureReporterResources;
-import com.palantir.gradle.failurereports.util.ThrowableResources;
+import com.palantir.gradle.failurereports.common.FailureReport;
+import com.palantir.gradle.failurereports.common.FailureReporterResources;
+import com.palantir.gradle.failurereports.common.ThrowableResources;
+import com.palantir.gradle.failurereports.exceptions.ExceptionFailureReporter;
 import java.util.Optional;
 import org.gradle.api.Task;
 
@@ -32,37 +32,14 @@ public final class ThrowableFailureReporter {
     }
 
     static FailureReport getFailureReport(Throwable throwable, String taskPath) {
-        // try to get the last ExceptionWithSuggestion or MinimalException in the causal chain
-        Optional<ExceptionWithSuggestion> maybeExceptionWithSuggestion = Throwables.getCausalChain(throwable).stream()
-                .filter(ExceptionWithSuggestion.class::isInstance)
-                .map(ExceptionWithSuggestion.class::cast)
-                .findFirst();
-        Optional<MinimalException> maybeMinimalException = Throwables.getCausalChain(throwable).stream()
-                .filter(MinimalException.class::isInstance)
-                .map(MinimalException.class::cast)
+        // try to get the last ExceptionFailureReporter in the causal chain
+        Optional<ExceptionFailureReporter> maybeExceptionWithSuggestion = Throwables.getCausalChain(throwable).stream()
+                .filter(ExceptionFailureReporter.class::isInstance)
+                .map(ExceptionFailureReporter.class::cast)
                 .findFirst();
         return maybeExceptionWithSuggestion
-                .map(exception -> getEnhancedExceptionReport(taskPath, throwable, exception))
-                .or(() -> maybeMinimalException.map(exception -> getMinimalExceptionReport(taskPath, exception)))
+                .map(exception -> exception.getTaskFailureReport(taskPath, throwable))
                 .orElseGet(() -> getGenericExceptionReport(taskPath, throwable));
-    }
-
-    private static FailureReport getEnhancedExceptionReport(
-            String taskPath, Throwable initialThrowable, ExceptionWithSuggestion extraInfoException) {
-        return FailureReport.builder()
-                .header(FailureReporterResources.getTaskErrorHeader(taskPath, extraInfoException.getMessage()))
-                .clickableSource(extraInfoException.getSuggestion())
-                .errorMessage(ThrowableResources.formatThrowableWithMessage(
-                        initialThrowable, extraInfoException.getMessage()))
-                .build();
-    }
-
-    private static FailureReport getMinimalExceptionReport(String taskPath, MinimalException exception) {
-        return FailureReport.builder()
-                .header(FailureReporterResources.getTaskErrorHeader(taskPath, exception.getMessage()))
-                .clickableSource(taskPath)
-                .errorMessage(exception.getMessage())
-                .build();
     }
 
     private static FailureReport getGenericExceptionReport(String taskPath, Throwable throwable) {

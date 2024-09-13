@@ -16,7 +16,7 @@
 
 package com.palantir.gradle.failurereports.junit;
 
-import com.palantir.gradle.failurereports.FailureReport;
+import com.palantir.gradle.failurereports.common.FailureReport;
 import com.palantir.gradle.failurereports.junit.TestSuites.TestSuite;
 import com.palantir.gradle.failurereports.junit.TestSuites.TestSuite.TestCase;
 import com.palantir.gradle.failurereports.junit.TestSuites.TestSuite.TestCase.Failure;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import one.util.streamex.EntryStream;
 
 /**
- * Helper class that writes all the failures encountered {@link com.palantir.gradle.failurereports.FailureReport}s into a JUNIT XML format that can be
+ * Helper class that writes all the failures encountered {@link FailureReport}s into a JUNIT XML format that can be
  * rendered in the CircleCi `Tests` section.
  */
 public final class JunitReporter {
