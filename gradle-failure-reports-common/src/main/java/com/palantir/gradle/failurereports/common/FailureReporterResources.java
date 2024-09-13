@@ -44,7 +44,8 @@ public final class FailureReporterResources {
         try {
             return projectDir.relativize(fullFilePath).toString();
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Failed to relative path " + fullFilePath, e);
+            throw new RuntimeException(
+                    String.format("Unable to relativize path %s from %s", fullFilePath, projectDir), e);
         }
     }
 
