@@ -12,7 +12,7 @@ com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 c
 com.google.j2objc:j2objc-annotations:3.0.0 (1 constraints: 150aeab4)
 com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations:1.4.0 (1 constraints: 0705fc35)
 com.palantir.gradle.utils:environment-variables:0.6.0 (1 constraints: 0805fd35)
-one.util:streamex:0.8.2 (1 constraints: 0c050536)
+one.util:streamex:0.8.3 (1 constraints: 0d050636)
 org.checkerframework:checker-qual:3.47.0 (2 constraints: 8b0f8fa2)
 org.codehaus.woodstox:stax2-api:4.2.1 (2 constraints: 68275cd2)
 org.immutables:value:2.10.1 (1 constraints: 3605303b)
