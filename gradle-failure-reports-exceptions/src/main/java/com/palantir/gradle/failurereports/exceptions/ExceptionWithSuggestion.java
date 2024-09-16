@@ -26,7 +26,7 @@ import com.palantir.gradle.failurereports.common.ThrowableResources;
  * a source file where changes need to be applied e.g. "versions.props:3"  (line 3 from versions.props is invalid)
  * The suggestion is intended to be quickly actionable by the user to resolve the error.
  */
-public final class ExceptionWithSuggestion extends RuntimeException implements ExceptionFailureReporter {
+public final class ExceptionWithSuggestion extends FailureReporterException {
 
     private final String suggestion;
 

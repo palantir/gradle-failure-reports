@@ -24,7 +24,7 @@ import com.palantir.gradle.failurereports.common.ThrowableResources;
  * An exception type that allows passing an extra logs field which is rendered in the CircleCi failure report.
  * It is useful for surfacing errors derived from a subprocess.
  */
-public final class ExceptionWithLogs extends RuntimeException implements ExceptionFailureReporter {
+public final class ExceptionWithLogs extends FailureReporterException {
 
     private static final int MAX_LOGS_BYTES_SIZE = 102_400;
 

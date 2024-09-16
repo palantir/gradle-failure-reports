@@ -20,7 +20,7 @@ import com.google.common.base.Throwables;
 import com.palantir.gradle.failurereports.common.FailureReport;
 import com.palantir.gradle.failurereports.common.FailureReporterResources;
 import com.palantir.gradle.failurereports.common.ThrowableResources;
-import com.palantir.gradle.failurereports.exceptions.ExceptionFailureReporter;
+import com.palantir.gradle.failurereports.exceptions.FailureReporterException;
 import java.util.Optional;
 import org.gradle.api.Task;
 
@@ -32,12 +32,12 @@ public final class ThrowableFailureReporter {
     }
 
     static FailureReport getFailureReport(Throwable throwable, String taskPath) {
-        // try to get the last ExceptionFailureReporter in the causal chain
-        Optional<ExceptionFailureReporter> maybeExceptionWithSuggestion = Throwables.getCausalChain(throwable).stream()
-                .filter(ExceptionFailureReporter.class::isInstance)
-                .map(ExceptionFailureReporter.class::cast)
+        // try to get the last FailureReporterException in the causal chain
+        Optional<FailureReporterException> maybeFailureReporterException = Throwables.getCausalChain(throwable).stream()
+                .filter(FailureReporterException.class::isInstance)
+                .map(FailureReporterException.class::cast)
                 .findFirst();
-        return maybeExceptionWithSuggestion
+        return maybeFailureReporterException
                 .map(exception -> exception.getTaskFailureReport(taskPath, throwable))
                 .orElseGet(() -> getGenericExceptionReport(taskPath, throwable));
     }
