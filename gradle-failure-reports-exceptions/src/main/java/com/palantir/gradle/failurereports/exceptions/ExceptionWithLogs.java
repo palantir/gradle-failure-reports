@@ -56,7 +56,7 @@ public final class ExceptionWithLogs extends FailureReporterException {
         return FailureReport.builder()
                 .header(FailureReporterResources.getTaskErrorHeader(taskPath, getMessage()))
                 .clickableSource(taskPath)
-                .errorMessage(String.format("%s\nOutput was:\n%s\n%s", getMessage(), logs, maybeIncludeStacktrace))
+                .errorMessage(String.format("%s\n%s\n%s", getMessage(), logs, maybeIncludeStacktrace))
                 .build();
     }
 }

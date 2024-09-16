@@ -2,7 +2,6 @@
   <testsuite name=":myProject:throwInnerExceptionWithLogs" tests="1">
     <testcase name="[:myProject:throwInnerExceptionWithLogs] error: myCustomMessage" className=":myProject:throwInnerExceptionWithLogs">
       <failure type="ERROR">myCustomMessage
-Output was:
 I have a log line
 
 * Causal chain is:
@@ -25,7 +24,6 @@ Caused by: java.lang.RuntimeException: someRuntimeException
   <testsuite name=":throwExceptionWithLogs" tests="1">
     <testcase name="[:throwExceptionWithLogs] error: Failed after 2 attempts with exit code 1" className=":throwExceptionWithLogs">
       <failure type="ERROR">Failed after 2 attempts with exit code 1
-Output was:
 this is log line1
 this is log line 2
 </failure>

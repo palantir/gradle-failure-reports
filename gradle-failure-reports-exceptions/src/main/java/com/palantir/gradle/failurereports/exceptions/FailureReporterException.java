@@ -35,7 +35,7 @@ public abstract class FailureReporterException extends RuntimeException {
     /**
      * Rendering a FailureReporterException exception that is part of the causalChain of {@code initialThrowable} as
      * a FailureReport that can be shown in the CircleCI `Tests` tab.
-     * @param taskPath The gradle task that caused the exception
+     * @param taskPath The Gradle task that caused the exception
      * @param initialThrowable the throwable that contains the FailureReporterException exception in the casualChain
      * @return the FailureReport object
      */
