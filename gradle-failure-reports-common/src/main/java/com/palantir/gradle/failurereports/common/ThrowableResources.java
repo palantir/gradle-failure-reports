@@ -34,18 +34,18 @@ public final class ThrowableResources {
         return String.format("%s\n%s%s", errorMessage, formatCausalChain(throwable), formatStacktrace(throwable));
     }
 
-    public static String formatCausalChain(Throwable throwable) {
+    private static String formatCausalChain(Throwable throwable) {
         String causalChain = Throwables.getCausalChain(throwable).stream()
                 .map(ThrowableResources::printThrowableCause)
                 .collect(Collectors.joining("\n"));
         return String.format("\n%s\n%s\n", CAUSAL_CHAIN, causalChain);
     }
 
-    public static String formatStacktrace(Throwable throwable) {
+    private static String formatStacktrace(Throwable throwable) {
         return String.format("\n%s\n%s\n", EXCEPTION_MESSAGE, Throwables.getStackTraceAsString(throwable));
     }
 
-    public static String printThrowableCause(Throwable throwableCause) {
+    private static String printThrowableCause(Throwable throwableCause) {
         if (throwableCause.getMessage() == null || throwableCause.getMessage().isEmpty()) {
             return String.format("\t%s", throwableCause.getClass().getCanonicalName());
         }

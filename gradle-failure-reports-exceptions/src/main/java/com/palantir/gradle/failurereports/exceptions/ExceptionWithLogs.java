@@ -52,7 +52,7 @@ public final class ExceptionWithLogs extends RuntimeException implements Excepti
 
     @Override
     public FailureReport getTaskFailureReport(String taskPath, Throwable initialThrowable) {
-        String maybeStacktrace = includeStackTrace ? ThrowableResources.formatStacktrace(initialThrowable) : "";
+        String maybeStacktrace = includeStackTrace ? ThrowableResources.formatThrowable(initialThrowable) : "";
         return FailureReport.builder()
                 .header(FailureReporterResources.getTaskErrorHeader(taskPath, getMessage()))
                 .clickableSource(taskPath)

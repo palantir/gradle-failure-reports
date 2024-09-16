@@ -90,7 +90,7 @@ public final class FailureReporterResources {
      * Keeps the last @param bytesSize of the fullString.
      * @param fullString the string that should be truncated if it exceeds the bytesSize.
      * @param bytesSize the size in bytes of the fullString that needs to be preserved.
-     * @return the truncated string prefixed by `...[truncated]` if it exceeds bytesSize, otherwise the fullString.
+     * @return the truncated string prefixed by `...[truncated]` if it exceeds bytesSize, otherwise the fullString
      */
     public static String keepLastBytesSizeOutput(String fullString, int bytesSize) {
         byte[] bytes = fullString.getBytes(StandardCharsets.UTF_8);

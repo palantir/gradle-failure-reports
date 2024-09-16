@@ -10,6 +10,7 @@
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwExceptionNoMessage'.
 Caused by: java.lang.OutOfMemoryError
+
 </failure>
     </testcase>
   </testsuite>
@@ -24,6 +25,7 @@ Caused by: java.lang.OutOfMemoryError
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':throwExceptionWithSuggestedFix'.
 Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion: ExceptionWithSuggestedFixMessage
+
 </failure>
     </testcase>
   </testsuite>
@@ -38,6 +40,7 @@ Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwGradleException'.
 Caused by: org.gradle.api.GradleException: This is a normal gradle exception
+
 </failure>
     </testcase>
   </testsuite>
@@ -58,6 +61,7 @@ Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
 	... PLACEHOLDER_NUMBER more
 Caused by: java.lang.RuntimeException: InnerRuntimeException
 	... PLACEHOLDER_NUMBER more
+
 </failure>
     </testcase>
   </testsuite>
