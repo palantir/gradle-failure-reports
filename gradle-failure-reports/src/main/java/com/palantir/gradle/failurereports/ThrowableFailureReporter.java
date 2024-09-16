@@ -46,7 +46,7 @@ public final class ThrowableFailureReporter {
         return FailureReport.builder()
                 .header(FailureReporterResources.getTaskErrorHeader(taskPath, throwable))
                 .clickableSource(taskPath)
-                .errorMessage(ThrowableResources.formatThrowable(throwable))
+                .errorMessage(ThrowableResources.formatThrowableWithMessage(throwable))
                 .build();
     }
 

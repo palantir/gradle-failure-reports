@@ -26,6 +26,10 @@ public final class ThrowableResources {
     public static final String EXCEPTION_MESSAGE = "* Full exception is:";
 
     public static String formatThrowable(Throwable throwable) {
+        return String.format("%s%s", formatCausalChain(throwable), formatStacktrace(throwable));
+    }
+
+    public static String formatThrowableWithMessage(Throwable throwable) {
         String errorMessage = getFormattedErrorMessage(Throwables.getRootCause(throwable));
         return formatThrowableWithMessage(throwable, errorMessage);
     }

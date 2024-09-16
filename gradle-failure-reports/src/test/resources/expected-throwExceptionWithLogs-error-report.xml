@@ -5,6 +5,12 @@
 Output was:
 I have a log line
 
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithLogs'.
+	org.gradle.api.GradleException: OuterGradleException
+	com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: myCustomMessage
+	java.lang.RuntimeException: someRuntimeException
+
 * Full exception is:
 org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithLogs'.
 Caused by: org.gradle.api.GradleException: OuterGradleException

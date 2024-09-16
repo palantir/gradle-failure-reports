@@ -49,7 +49,9 @@ public class ThrowableFailureReporterTest {
         assertThat(report.header()).isEqualTo("[taskPath] error: " + EXCEPTION_MESSAGE);
         assertThat(report.clickableSource()).isEqualTo("taskPath");
         assertThat(report.errorMessage())
-                .startsWith(EXCEPTION_MESSAGE + "\nOutput was:\n" + OUTPUT + "\n\n* Full exception is:\n"
+                .startsWith(EXCEPTION_MESSAGE + "\nOutput was:\n" + OUTPUT + "\n\n* Causal chain is:\n\t"
+                        + "com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: "
+                        + EXCEPTION_MESSAGE + "\n\n* Full exception is:\n"
                         + "com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: "
                         + EXCEPTION_MESSAGE);
     }
