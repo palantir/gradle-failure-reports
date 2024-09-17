@@ -1,2 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'com.palantir.external-publish-jar'
+
+
+dependencies {
+    implementation project(':gradle-failure-reports-common')
+}

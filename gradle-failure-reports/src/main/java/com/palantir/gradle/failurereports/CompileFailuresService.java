@@ -18,8 +18,9 @@ package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Splitter;
 import com.palantir.gradle.failurereports.CompileFailuresService.Parameters;
+import com.palantir.gradle.failurereports.common.FailureReport;
+import com.palantir.gradle.failurereports.common.FailureReporterResources;
 import com.palantir.gradle.failurereports.junit.JunitReporter;
-import com.palantir.gradle.failurereports.util.FailureReporterResources;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;

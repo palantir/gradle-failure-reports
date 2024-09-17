@@ -18,12 +18,14 @@ package com.palantir.gradle.failurereports;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.palantir.gradle.failurereports.common.FailureReport;
+import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs;
 import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion;
-import com.palantir.gradle.failurereports.exceptions.MinimalException;
 import org.junit.jupiter.api.Test;
 
 public class ThrowableFailureReporterTest {
     private static final String EXCEPTION_MESSAGE = "Exception on line 21 of script.sh";
+    private static final String OUTPUT = "These are my logs\nLine2 of the output";
 
     @Test
     public void exception_with_suggestion_provides_error_with_suggestion() {
@@ -41,11 +43,25 @@ public class ThrowableFailureReporterTest {
     }
 
     @Test
-    public void minimal_exception_provides_minimal_error_message() {
+    public void exception_with_logs_provides_error_with_logs_and_stacktrace() {
         FailureReport report =
-                ThrowableFailureReporter.getFailureReport(new MinimalException(EXCEPTION_MESSAGE), "taskPath");
+                ThrowableFailureReporter.getFailureReport(new ExceptionWithLogs(EXCEPTION_MESSAGE, OUTPUT), "taskPath");
         assertThat(report.header()).isEqualTo("[taskPath] error: " + EXCEPTION_MESSAGE);
         assertThat(report.clickableSource()).isEqualTo("taskPath");
-        assertThat(report.errorMessage()).isEqualTo(EXCEPTION_MESSAGE);
+        assertThat(report.errorMessage())
+                .startsWith(EXCEPTION_MESSAGE + "\n" + OUTPUT + "\n\n* Causal chain is:\n\t"
+                        + "com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: "
+                        + EXCEPTION_MESSAGE + "\n\n* Full exception is:\n"
+                        + "com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: "
+                        + EXCEPTION_MESSAGE);
+    }
+
+    @Test
+    public void exception_with_logs_no_stacktrace_provides_only_error_with_logs() {
+        FailureReport report = ThrowableFailureReporter.getFailureReport(
+                new ExceptionWithLogs(EXCEPTION_MESSAGE, OUTPUT, false), "taskPath");
+        assertThat(report.header()).isEqualTo("[taskPath] error: " + EXCEPTION_MESSAGE);
+        assertThat(report.clickableSource()).isEqualTo("taskPath");
+        assertThat(report.errorMessage()).isEqualTo(EXCEPTION_MESSAGE + "\n" + OUTPUT + "\n");
     }
 }

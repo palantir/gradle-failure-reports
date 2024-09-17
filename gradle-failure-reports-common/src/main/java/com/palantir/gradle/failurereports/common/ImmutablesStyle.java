@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package com.palantir.gradle.failurereports.exceptions;
+package com.palantir.gradle.failurereports.common;
 
-/**
- * An exception type that simply surfaces the given exception message and does not assume the exception
- * has a useful stacktrace, and thus is useful for surfacing errors derived from a subprocess.
- */
-public class MinimalException extends RuntimeException {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.immutables.value.Value.Style;
+import org.immutables.value.Value.Style.ImplementationVisibility;
 
-    public MinimalException(String message) {
-        super(message);
-    }
-
-    public MinimalException(String message, Throwable throwable) {
-        super(message, throwable);
-    }
-}
+@Target({ElementType.PACKAGE, ElementType.TYPE})
+@Retention(RetentionPolicy.SOURCE)
+@Style(visibility = ImplementationVisibility.PACKAGE, overshadowImplementation = true, jdkOnly = true)
+public @interface ImmutablesStyle {}

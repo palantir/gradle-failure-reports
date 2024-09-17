@@ -18,6 +18,8 @@ package com.palantir.gradle.failurereports.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.palantir.gradle.failurereports.common.FailureReporterResources;
+import com.palantir.gradle.failurereports.common.ThrowableResources;
 import java.nio.file.Path;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.gradle.api.GradleException;
@@ -56,7 +58,7 @@ public class FailureReporterResourcesTest {
 
     @Test
     public void canFormatThrowable() {
-        assertThat(ThrowableResources.formatThrowable(new GradleException("lock out of date")))
+        assertThat(ThrowableResources.formatThrowableWithMessage(new GradleException("lock out of date")))
                 .contains("* Causal chain is:\n"
                         + "\torg.gradle.api.GradleException: lock out of date\n\n"
                         + "* Full exception is:\n"

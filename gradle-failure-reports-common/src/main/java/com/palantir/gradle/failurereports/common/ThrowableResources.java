@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.palantir.gradle.failurereports.util;
+package com.palantir.gradle.failurereports.common;
 
 import com.google.common.base.Throwables;
 import java.util.stream.Collectors;
@@ -26,24 +26,30 @@ public final class ThrowableResources {
     public static final String EXCEPTION_MESSAGE = "* Full exception is:";
 
     public static String formatThrowable(Throwable throwable) {
+        return String.format("%s\n\n%s", formatCausalChain(throwable), formatStacktrace(throwable));
+    }
+
+    public static String formatThrowableWithMessage(Throwable throwable) {
         String errorMessage = getFormattedErrorMessage(Throwables.getRootCause(throwable));
         return formatThrowableWithMessage(throwable, errorMessage);
     }
 
     public static String formatThrowableWithMessage(Throwable throwable, String errorMessage) {
+        return String.format("%s\n\n%s\n\n%s", errorMessage, formatCausalChain(throwable), formatStacktrace(throwable));
+    }
+
+    private static String formatCausalChain(Throwable throwable) {
         String causalChain = Throwables.getCausalChain(throwable).stream()
                 .map(ThrowableResources::printThrowableCause)
                 .collect(Collectors.joining("\n"));
-        return String.format(
-                "%s\n\n%s\n%s\n\n%s\n%s",
-                errorMessage,
-                CAUSAL_CHAIN,
-                causalChain,
-                EXCEPTION_MESSAGE,
-                Throwables.getStackTraceAsString(throwable));
+        return String.format("%s\n%s", CAUSAL_CHAIN, causalChain);
     }
 
-    public static String printThrowableCause(Throwable throwableCause) {
+    private static String formatStacktrace(Throwable throwable) {
+        return String.format("%s\n%s", EXCEPTION_MESSAGE, Throwables.getStackTraceAsString(throwable));
+    }
+
+    private static String printThrowableCause(Throwable throwableCause) {
         if (throwableCause.getMessage() == null || throwableCause.getMessage().isEmpty()) {
             return String.format("\t%s", throwableCause.getClass().getCanonicalName());
         }

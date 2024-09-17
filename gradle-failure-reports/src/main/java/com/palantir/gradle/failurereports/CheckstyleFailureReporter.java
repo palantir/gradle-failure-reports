@@ -17,19 +17,22 @@
 package com.palantir.gradle.failurereports;
 
 import com.palantir.gradle.failurereports.checkstyle.CheckstyleOutput;
-import com.palantir.gradle.failurereports.util.FailureReporterResources;
+import com.palantir.gradle.failurereports.common.FailureReport;
+import com.palantir.gradle.failurereports.common.FailureReporterResources;
 import com.palantir.gradle.failurereports.util.XmlResources;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.quality.Checkstyle;
 
 public final class CheckstyleFailureReporter {
 
     public static Stream<FailureReport> collect(Project project, Checkstyle checkstyleTask) {
-        if (!FailureReporterResources.executedAndFailed(checkstyleTask)) {
+        if (!executedAndFailed(checkstyleTask)) {
             return Stream.empty();
         }
         File checkstyleReportXml = checkstyleTask
@@ -62,6 +65,11 @@ public final class CheckstyleFailureReporter {
                                         checkstyleError.line()))
                                 .errorMessage(checkstyleError.message())
                                 .build()));
+    }
+
+    public static boolean executedAndFailed(Task task) {
+        return task.getState().getExecuted()
+                && Optional.ofNullable(task.getState().getFailure()).isPresent();
     }
 
     private CheckstyleFailureReporter() {}

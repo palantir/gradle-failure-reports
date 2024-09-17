@@ -18,6 +18,7 @@ package com.palantir.gradle.failurereports;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+import com.palantir.gradle.failurereports.common.FailureReport;
 import com.palantir.gradle.failurereports.junit.JunitReporter;
 import java.io.File;
 import java.io.IOException;

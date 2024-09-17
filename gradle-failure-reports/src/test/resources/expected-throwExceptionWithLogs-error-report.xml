@@ -1,0 +1,31 @@
+<testsuites>
+  <testsuite name=":myProject:throwInnerExceptionWithLogs" tests="1">
+    <testcase name="[:myProject:throwInnerExceptionWithLogs] error: myCustomMessage" className=":myProject:throwInnerExceptionWithLogs">
+      <failure type="ERROR">myCustomMessage
+I have a log line
+
+* Causal chain is:
+	org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithLogs'.
+	org.gradle.api.GradleException: OuterGradleException
+	com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: myCustomMessage
+	java.lang.RuntimeException: someRuntimeException
+
+* Full exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':myProject:throwInnerExceptionWithLogs'.
+Caused by: org.gradle.api.GradleException: OuterGradleException
+Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: myCustomMessage
+	... PLACEHOLDER_NUMBER more
+Caused by: java.lang.RuntimeException: someRuntimeException
+	... PLACEHOLDER_NUMBER more
+</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name=":throwExceptionWithLogs" tests="1">
+    <testcase name="[:throwExceptionWithLogs] error: Failed after 2 attempts with exit code 1" className=":throwExceptionWithLogs">
+      <failure type="ERROR">Failed after 2 attempts with exit code 1
+this is log line1
+this is log line 2
+</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

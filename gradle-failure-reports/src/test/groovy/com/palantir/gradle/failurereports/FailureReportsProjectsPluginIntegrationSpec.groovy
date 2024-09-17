@@ -412,6 +412,52 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         gradleVersionNumber << GRADLE_VERSIONS
     }
 
+    def '#gradleVersionNumber: ExceptionWithLogs is reported as a failure' () {
+        setup:
+        gradleVersion = gradleVersionNumber
+        // language=gradle
+        buildFile << '''
+            import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
+
+            apply plugin: 'com.palantir.failure-reports'
+            apply plugin: 'java'
+
+            tasks.register('throwExceptionWithLogs') {
+                doLast {
+                    throw new ExceptionWithLogs("Failed after 2 attempts with exit code 1", "this is log line1\\nthis is log line 2", false)
+                }
+            }
+        '''.stripIndent(true)
+
+        buildFile << setDefaultReportsOutputFiles(gradleVersionNumber)
+
+        // language=gradle
+        addSubproject("myProject", '''
+            import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
+
+            apply plugin: 'java'
+
+            tasks.register('throwInnerExceptionWithLogs') {
+                doLast {
+                    throw new GradleException("OuterGradleException",
+                        new ExceptionWithLogs("myCustomMessage", "I have a log line", new RuntimeException("someRuntimeException")))
+                }
+            }
+        '''.stripIndent(true))
+
+        enableTestCiRun()
+
+        when:
+        runTasksWithFailure( 'throwExceptionWithLogs', 'throwInnerExceptionWithLogs', '--continue')
+
+        then:
+        CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwExceptionWithLogs", getDefaultOutputFile(gradleVersionNumber))
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
+    }
+
+
     def '#gradleVersionNumber: when running locally, no failure report is created'() {
         setup:
         gradleVersion = gradleVersionNumber

@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package com.palantir.gradle.failurereports.util;
+package com.palantir.gradle.failurereports.common;
 
 import com.google.common.base.Throwables;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Optional;
-import org.gradle.api.Task;
-import org.gradle.api.logging.Logging;
-import org.slf4j.Logger;
 
 public final class FailureReporterResources {
 
     private static final Integer MAX_TITLE_ERROR_LENGTH = 150;
     private static final String ERROR_SEVERITY = "Error";
     private static final String EMPTY_SPACE = " ";
-
-    public static final Logger log = Logging.getLogger(FailureReporterResources.class);
 
     public static String getFileName(String fullPath) {
         return Path.of(fullPath).getFileName().toString();
@@ -48,8 +44,8 @@ public final class FailureReporterResources {
         try {
             return projectDir.relativize(fullFilePath).toString();
         } catch (IllegalArgumentException e) {
-            log.warn("Unable to relativize path {} from {}", fullFilePath, projectDir, e);
-            throw e;
+            throw new RuntimeException(
+                    String.format("Unable to relativize path %s from %s", fullFilePath, projectDir), e);
         }
     }
 
@@ -90,9 +86,19 @@ public final class FailureReporterResources {
         return errorMessage;
     }
 
-    public static boolean executedAndFailed(Task task) {
-        return task.getState().getExecuted()
-                && Optional.ofNullable(task.getState().getFailure()).isPresent();
+    /**
+     * Keeps the last @param bytesSize of the fullString.
+     * @param fullString the string that should be truncated if it exceeds the bytesSize.
+     * @param bytesSize the size in bytes of the fullString that needs to be preserved.
+     * @return the truncated string prefixed by `...[truncated]` if it exceeds bytesSize, otherwise the fullString
+     */
+    public static String keepLastBytesSizeOutput(String fullString, int bytesSize) {
+        byte[] bytes = fullString.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length > bytesSize) {
+            int startIndex = bytes.length - bytesSize;
+            return "...[truncated]" + new String(bytes, startIndex, bytesSize, StandardCharsets.UTF_8);
+        }
+        return fullString;
     }
 
     private FailureReporterResources() {}
