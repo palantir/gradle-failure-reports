@@ -26,8 +26,6 @@ import com.palantir.gradle.failurereports.common.ThrowableResources;
  */
 public final class ExceptionWithLogs extends FailureReporterException {
 
-    private static final int MAX_LOGS_BYTES_SIZE = 102_400;
-
     private final String logs;
     private final boolean includeStackTrace;
 
@@ -45,18 +43,19 @@ public final class ExceptionWithLogs extends FailureReporterException {
 
     public ExceptionWithLogs(String message, String logs, Throwable throwable, boolean includeStackTrace) {
         super(message, throwable);
-        // making sure we only keep the last 100kb of logs
-        this.logs = FailureReporterResources.keepLastBytesSizeOutput(logs, MAX_LOGS_BYTES_SIZE);
+        // keeping only the last 100kb of logs to avoid any potential OOM issues if the logs are really large.
+        this.logs = FailureReporterResources.keepLastBytesSizeOutput(logs, 100 * 1024);
         this.includeStackTrace = includeStackTrace;
     }
 
     @Override
     public FailureReport getTaskFailureReport(String taskPath, Throwable initialThrowable) {
-        String maybeIncludeStacktrace = includeStackTrace ? ThrowableResources.formatThrowable(initialThrowable) : "";
+        String maybeIncludeStacktrace =
+                includeStackTrace ? "\n" + ThrowableResources.formatThrowable(initialThrowable) : "";
         return FailureReport.builder()
                 .header(FailureReporterResources.getTaskErrorHeader(taskPath, getMessage()))
                 .clickableSource(taskPath)
-                .errorMessage(String.format("%s\n%s\n%s", getMessage(), logs, maybeIncludeStacktrace))
+                .errorMessage(String.join("\n", getMessage(), logs, maybeIncludeStacktrace))
                 .build();
     }
 }

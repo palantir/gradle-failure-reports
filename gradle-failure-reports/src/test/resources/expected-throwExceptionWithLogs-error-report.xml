@@ -17,7 +17,6 @@ Caused by: com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs: myCu
 	... PLACEHOLDER_NUMBER more
 Caused by: java.lang.RuntimeException: someRuntimeException
 	... PLACEHOLDER_NUMBER more
-
 </failure>
     </testcase>
   </testsuite>

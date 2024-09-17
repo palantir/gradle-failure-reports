@@ -26,7 +26,7 @@ public final class ThrowableResources {
     public static final String EXCEPTION_MESSAGE = "* Full exception is:";
 
     public static String formatThrowable(Throwable throwable) {
-        return String.format("%s%s", formatCausalChain(throwable), formatStacktrace(throwable));
+        return String.format("%s\n\n%s", formatCausalChain(throwable), formatStacktrace(throwable));
     }
 
     public static String formatThrowableWithMessage(Throwable throwable) {
@@ -35,18 +35,18 @@ public final class ThrowableResources {
     }
 
     public static String formatThrowableWithMessage(Throwable throwable, String errorMessage) {
-        return String.format("%s\n%s%s", errorMessage, formatCausalChain(throwable), formatStacktrace(throwable));
+        return String.format("%s\n\n%s\n\n%s", errorMessage, formatCausalChain(throwable), formatStacktrace(throwable));
     }
 
     private static String formatCausalChain(Throwable throwable) {
         String causalChain = Throwables.getCausalChain(throwable).stream()
                 .map(ThrowableResources::printThrowableCause)
                 .collect(Collectors.joining("\n"));
-        return String.format("\n%s\n%s\n", CAUSAL_CHAIN, causalChain);
+        return String.format("%s\n%s", CAUSAL_CHAIN, causalChain);
     }
 
     private static String formatStacktrace(Throwable throwable) {
-        return String.format("\n%s\n%s\n", EXCEPTION_MESSAGE, Throwables.getStackTraceAsString(throwable));
+        return String.format("%s\n%s", EXCEPTION_MESSAGE, Throwables.getStackTraceAsString(throwable));
     }
 
     private static String printThrowableCause(Throwable throwableCause) {

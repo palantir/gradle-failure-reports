@@ -19,7 +19,7 @@ package com.palantir.gradle.failurereports.exceptions;
 import com.palantir.gradle.failurereports.common.FailureReport;
 
 /**
- * Superclass of RuntimeException that can display the exception as a Failure Report in Circle CI.
+ * Subclass of RuntimeException that can display the exception as a Failure Report in Circle CI.
  * For examples of usages see {@link ExceptionWithLogs} and {@link ExceptionWithSuggestion}.
  */
 public abstract class FailureReporterException extends RuntimeException {
