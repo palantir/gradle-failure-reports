@@ -46,8 +46,7 @@ allprojects {
 }
 
 javaVersions {
-    libraryTarget = 11
-    distributionTarget = 17
+    libraryTarget = 17
 }
 
 jdks {
