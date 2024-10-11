@@ -13,7 +13,7 @@ com.google.j2objc:j2objc-annotations:3.0.0 (1 constraints: 150aeab4)
 com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations:1.4.0 (1 constraints: 0705fc35)
 com.palantir.gradle.utils:environment-variables:0.6.0 (1 constraints: 0805fd35)
 one.util:streamex:0.8.3 (1 constraints: 0d050636)
-org.checkerframework:checker-qual:3.48.0 (2 constraints: 8c0fb2a2)
+org.checkerframework:checker-qual:3.48.1 (2 constraints: 8d0fd3a2)
 org.codehaus.woodstox:stax2-api:4.2.1 (2 constraints: 68275cd2)
 org.immutables:value:2.10.1 (1 constraints: 3605303b)
 
