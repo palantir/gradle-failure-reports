@@ -19,13 +19,11 @@ package com.palantir.gradle.failurereports
 import nebula.test.IntegrationSpec
 import nebula.test.functional.ExecutionResult
 import org.assertj.core.util.Throwables
+import com.palantir.gradle.plugintesting.GradleTestVersions
 
 import java.nio.file.Path
 
 class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
-
-    public static final List<String> GRADLE_VERSIONS =
-            List.of("7.6", "8.6");
 
     def '#gradleVersionNumber: javaCompile error is reported'() {
         setup:
@@ -63,7 +61,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile", getDefaultOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def 'dummyTest: generates a failure report to make sure CircleCi renders it correctly'() {
@@ -133,7 +131,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-javaCompile", getDefaultOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: multiple project errors are reported'() {
@@ -186,7 +184,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multiple-projects-javaCompile", getDefaultOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: successful build does not report failures ' () {
@@ -221,7 +219,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         !reportXml.exists()
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
 
@@ -263,7 +261,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "checkstyle", getDefaultOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: checkstyle and javaCompile report failures' () {
@@ -315,7 +313,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "multi-errors-compile", getCompileOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: successful checkstyle does not report failures' () {
@@ -352,7 +350,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         !reportXml.exists()
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: ExceptionWithSuggestion is reported as a failure' () {
@@ -409,7 +407,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwException", getDefaultOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: ExceptionWithLogs is reported as a failure' () {
@@ -454,7 +452,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "throwExceptionWithLogs", getDefaultOutputFile(gradleVersionNumber))
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
 
@@ -477,7 +475,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         !reportXml.exists()
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: when CIRCLE_NODE_INDEX is not 0, no failure report is created'() {
@@ -501,7 +499,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         !reportXml.exists()
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def '#gradleVersionNumber: when CIRCLE_NODE_INDEX is not set, javaCompile errors are reported'() {
@@ -526,7 +524,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         reportXml.exists()
 
         where:
-        gradleVersionNumber << GRADLE_VERSIONS
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
     def setupCompileErrorsWthGradleProperties(String gradleProperties) {
