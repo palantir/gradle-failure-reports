@@ -1,6 +1,6 @@
 <testsuites>
   <testsuite name=":myProject:throwInnerExceptionWithLogs" tests="1">
-    <testcase name="[:myProject:throwInnerExceptionWithLogs] error: myCustomMessage" className=":myProject:throwInnerExceptionWithLogs">
+    <testcase name="[:myProject:throwInnerExceptionWithLogs] error: myCustomMessage" classname=":myProject:throwInnerExceptionWithLogs">
       <failure type="ERROR">myCustomMessage
 I have a log line
 
@@ -21,7 +21,7 @@ Caused by: java.lang.RuntimeException: someRuntimeException
     </testcase>
   </testsuite>
   <testsuite name=":throwExceptionWithLogs" tests="1">
-    <testcase name="[:throwExceptionWithLogs] error: Failed after 2 attempts with exit code 1" className=":throwExceptionWithLogs">
+    <testcase name="[:throwExceptionWithLogs] error: Failed after 2 attempts with exit code 1" classname=":throwExceptionWithLogs">
       <failure type="ERROR">Failed after 2 attempts with exit code 1
 this is log line1
 this is log line 2
