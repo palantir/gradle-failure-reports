@@ -1,5 +1,5 @@
 com.fasterxml.jackson.core:jackson-databind = 2.18.2
-com.netflix.nebula:nebula-test = 10.6.1
+com.netflix.nebula:nebula-test = 10.6.2
 com.fasterxml.jackson.*:* = 2.18.2
 org.immutables:* = 2.10.1
 one.util:streamex = 0.8.3
