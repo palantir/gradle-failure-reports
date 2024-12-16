@@ -15,4 +15,4 @@ org.checkerframework:checker-qual = 3.48.3
 
 # unit testing
 org.assertj:* = 3.26.3
-org.junit.jupiter:* = 5.11.3
+org.junit.jupiter:* = 5.11.4
