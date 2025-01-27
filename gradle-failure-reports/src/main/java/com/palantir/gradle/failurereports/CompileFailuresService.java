@@ -97,8 +97,7 @@ public abstract class CompileFailuresService implements BuildService<Parameters>
         return Splitter.on(COMPILE_ERROR_LAST_LINE_PATTERN)
                 .splitToStream(compilerErrorsByTaskPath.get(taskPath).toString())
                 .map(this::maybeGetFailureReport)
-                .filter(Optional::isPresent)
-                .map(Optional::get);
+                .mapMulti(Optional::ifPresent);
     }
 
     public static Provider<CompileFailuresService> getSharedCompileFailuresService(
