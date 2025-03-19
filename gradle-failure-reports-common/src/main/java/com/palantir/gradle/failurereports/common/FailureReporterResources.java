@@ -92,7 +92,7 @@ public final class FailureReporterResources {
      * @param bytesSize the size in bytes of the fullString that needs to be preserved.
      * @return the truncated string prefixed by `...[truncated]` if it exceeds bytesSize, otherwise the fullString
      */
-    @SuppressWarnings("for-rollout:InvalidInlineTag")
+    @SuppressWarnings({"for-rollout:InvalidInlineTag", "for-rollout:RemoveRolloutSuppressions"})
     public static String keepLastBytesSizeOutput(String fullString, int bytesSize) {
         byte[] bytes = fullString.getBytes(StandardCharsets.UTF_8);
         if (bytes.length > bytesSize) {
