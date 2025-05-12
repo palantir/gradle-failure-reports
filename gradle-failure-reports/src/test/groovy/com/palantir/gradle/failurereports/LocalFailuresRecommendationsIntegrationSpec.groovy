@@ -30,6 +30,11 @@ class LocalFailuresRecommendationsIntegrationSpec extends IntegrationSpec {
             apply plugin: 'com.palantir.failure-reports'
         '''.stripIndent(true)
 
+        file('gradle.properties') << """
+            __TESTING = true
+            __TESTING_CI = false
+        """.stripIndent(true)
+
         //language=Groovy
         addSubproject("myProject", '''
             apply plugin: 'java'
