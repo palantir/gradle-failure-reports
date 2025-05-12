@@ -16,16 +16,18 @@
 
 package com.palantir.gradle.failurereports.util;
 
+import com.palantir.gradle.failurereports.FailureReportsRootPlugin;
 import com.palantir.gradle.utils.environmentvariables.EnvironmentVariables;
 import java.util.Optional;
 import org.gradle.api.Project;
+import org.gradle.util.GradleVersion;
 
 public final class PluginResources {
 
     private static final String CIRCLE_NODE_INDEX = "CIRCLE_NODE_INDEX";
     private static final Integer INITIAL_CIRCLE_NODE = 0;
 
-    public static boolean shouldApplyPlugin(Project project) {
+    public static boolean isRunningOnInitialCircleNode(Project project) {
         EnvironmentVariables environmentVariables = project.getObjects().newInstance(EnvironmentVariables.class);
         if (!environmentVariables.isCi().get()) {
             return false;
@@ -35,6 +37,17 @@ public final class PluginResources {
                 .map(circleNode -> circleNode.equals(INITIAL_CIRCLE_NODE))
                 // even without parallelism this node always exists.
                 .orElse(true);
+    }
+
+    public static boolean canUseFlowActions(Project project) {
+        return GradleVersion.version(project.getGradle().getGradleVersion())
+                        .compareTo(FailureReportsRootPlugin.GRADLE_FLOW_ACTIONS_ENABLED)
+                >= 0;
+    }
+
+    public static boolean isRunningLocally(Project project) {
+        EnvironmentVariables environmentVariables = project.getObjects().newInstance(EnvironmentVariables.class);
+        return !environmentVariables.isCi().get();
     }
 
     private static Optional<Integer> maybeGetCircleNode(EnvironmentVariables environmentVariables) {

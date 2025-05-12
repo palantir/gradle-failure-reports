@@ -33,7 +33,7 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        if (!PluginResources.shouldApplyPlugin(project)) {
+        if (!PluginResources.isRunningOnInitialCircleNode(project)) {
             return;
         }
         FailureReportsExtension failureReportsExtension =

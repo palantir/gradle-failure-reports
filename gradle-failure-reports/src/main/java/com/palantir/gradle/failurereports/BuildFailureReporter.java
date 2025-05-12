@@ -16,14 +16,11 @@
 
 package com.palantir.gradle.failurereports;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.palantir.gradle.failurereports.common.FailureReport;
 import com.palantir.gradle.failurereports.junit.JunitReporter;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.gradle.api.Task;
@@ -33,7 +30,6 @@ import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
-import org.gradle.execution.MultipleBuildFailures;
 
 public final class BuildFailureReporter {
 
@@ -51,7 +47,7 @@ public final class BuildFailureReporter {
 
     private static void reportFailures(File outputFile, Throwable buildThrowable) throws IOException {
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
-        for (TaskExecutionException taskExecutionException : getTaskExecutionExceptions(buildThrowable)) {
+        for (TaskExecutionException taskExecutionException : BuildFailures.getTaskExecutionExceptions(buildThrowable)) {
             Task task = taskExecutionException.getTask();
             if (task instanceof JavaCompile) {
                 // TODO(crogoz): use compileFailuresService to report the errors once everything is on gradle >= 8.6
@@ -66,21 +62,6 @@ public final class BuildFailureReporter {
             }
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
-    }
-
-    private static List<TaskExecutionException> getTaskExecutionExceptions(Throwable buildThrowable) {
-        ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();
-        if (buildThrowable instanceof MultipleBuildFailures) {
-            rootExceptions.addAll(((MultipleBuildFailures) buildThrowable).getCauses());
-        } else {
-            rootExceptions.add(buildThrowable);
-        }
-        return rootExceptions.build().stream()
-                .map(Throwables::getCausalChain)
-                .flatMap(Collection::stream)
-                .filter(throwable -> throwable instanceof TaskExecutionException)
-                .map(throwable -> (TaskExecutionException) throwable)
-                .collect(Collectors.toList());
     }
 
     private BuildFailureReporter() {}

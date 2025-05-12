@@ -28,16 +28,34 @@ import org.gradle.util.GradleVersion;
 
 public final class FailureReportsRootPlugin implements Plugin<Project> {
 
-    private static final GradleVersion GRADLE_FLOW_ACTIONS_ENABLED = GradleVersion.version("8.6");
+    public static final GradleVersion GRADLE_FLOW_ACTIONS_ENABLED = GradleVersion.version("8.6");
 
     @Override
     public void apply(Project project) {
-        if (!PluginResources.shouldApplyPlugin(project)) {
-            return;
-        }
         if (project.getRootProject() != project) {
             throw new IllegalArgumentException("com.palantir.failure-reports must be applied to the root project only");
         }
+
+        applyLocalRecommendationsPlugin(project);
+
+        applyFailureReportsPlugin(project);
+    }
+
+    private static void applyLocalRecommendationsPlugin(Project project) {
+        if (!PluginResources.isRunningLocally(project)) {
+            return;
+        }
+        if (!PluginResources.canUseFlowActions(project)) {
+            return;
+        }
+        project.getPluginManager().apply(LocalFailuresRecommendationsPlugin.class);
+    }
+
+    private static void applyFailureReportsPlugin(Project project) {
+        if (!PluginResources.isRunningOnInitialCircleNode(project)) {
+            return;
+        }
+
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
