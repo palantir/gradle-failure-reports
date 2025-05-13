@@ -16,13 +16,12 @@
 
 package com.palantir.gradle.failurereports
 
-import com.palantir.gradle.plugintesting.GradleTestVersions
 import nebula.test.IntegrationSpec
 import nebula.test.functional.ExecutionResult
 import org.assertj.core.util.Throwables
 
 class LocalFailuresRecommendationsIntegrationSpec extends IntegrationSpec {
-
+    
     def '#gradleVersionNumber: reproduce gradle/issues/10483'() {
         setup:
         gradleVersion = gradleVersionNumber
@@ -49,6 +48,7 @@ class LocalFailuresRecommendationsIntegrationSpec extends IntegrationSpec {
 
         then:
         result.standardError.contains('gradle/issues/10483')
+        result.standardError.contains('please migrate the Exec task `myExecTask` to BetterExec')
         result.failure.causes.size() == 2
         result.failure.causes.each { failure ->
             assert Throwables.getRootCause(failure).getMessage().contains("gradle/issues/10483") ||

@@ -34,16 +34,29 @@ public final class ExecCommandNotFoundJava21 implements FailureHandler {
         if (task instanceof Exec) {
             Throwable rootCause = Throwables.getRootCause(throwable);
             if (rootCause instanceof IOException && rootCause.getMessage().contains("No such file or directory")) {
-                String firstCommand = ((Exec) task).getCommandLine().get(0);
+                String command = ((Exec) task).getCommandLine().get(0);
+                boolean commandFound = commandExists(command);
+                String messageIfCommandExists = commandFound
+                        ? "The command `%s` is present in the PATH, but executing the task via Gradle does not"
+                                + "recognize it."
+                        : "";
                 String message = String.format(
                         """
-                                Failed to run `%s`.
-                                A Gradle Bug (https://github.com/gradle/gradle/issues/10483) when running\
-                                 an Exec task on the Daemon Java version == 21 on macos prevents the executable `%s` to\
-                                 be found in the PATH.
-                                In order to fix this error please migrate all Exec tasks to BetterExec:\
-                                 https://github.com/palantir/better-exec/tree/develop?tab=readme-ov-file#usage.""",
-                        task.getPath(), firstCommand);
+                            Execution of `%s` failed.
+
+                            %s
+
+                            This issue might occur due to a Gradle bug (https://github.com/gradle/gradle/issues/10483)
+                            when running an Exec task on the Daemon Java version 21 on macOS, which prevents the
+                            executable `%s` from being located in the PATH.
+
+                            To determine if the issue is related to Gradle, execute the following command in bash:
+                                `%s`
+                            If the command completes successfully, it indicates that the Gradle bug is responsible.
+
+                            To resolve this issue, please migrate the Exec task `%s` to BetterExec:
+                            https://github.com/palantir/better-exec/tree/develop?tab=readme-ov-file#usage.""",
+                        task.getPath(), messageIfCommandExists, command, command, task.getName());
                 int maxLineSize = Arrays.stream(message.split("\n"))
                         .mapToInt(String::length)
                         .max()
@@ -52,6 +65,17 @@ public final class ExecCommandNotFoundJava21 implements FailureHandler {
                 log.error(String.join("\n", headerFooter, message, headerFooter));
                 throw new GradleException(message);
             }
+        }
+    }
+
+    public static boolean commandExists(String commandName) {
+        try {
+            ProcessBuilder builder = new ProcessBuilder("sh", "-c", "command -v " + commandName);
+            Process process = builder.start();
+            int exitCode = process.waitFor();
+            return exitCode == 0;
+        } catch (IOException | InterruptedException e) {
+            return false;
         }
     }
 }
