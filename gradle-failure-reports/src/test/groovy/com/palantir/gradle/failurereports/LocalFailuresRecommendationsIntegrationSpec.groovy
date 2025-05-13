@@ -36,25 +36,31 @@ class LocalFailuresRecommendationsIntegrationSpec extends IntegrationSpec {
         """.stripIndent(true)
 
         //language=Groovy
-        addSubproject("myProject", '''
+        addSubproject("myProject", '''import org.gradle.api.DefaultTask
             apply plugin: 'java'
             
             tasks.register("myExecTask", Exec.class, task -> {
                 task.setCommandLine("non-existing")
             })
+            
+            tasks.register("execSpecTask", DefaultTask.class, task -> {
+                doFirst {
+                    project.exec {
+                      executable = "non-existing-execSpec"
+                    }
+                }
+            })
         '''.stripIndent(true))
         when:
-        ExecutionResult result = runTasksWithFailure('myExecTask')
+        ExecutionResult result = runTasksWithFailure('myExecTask', 'execSpecTask', '--continue')
 
         then:
-        result.standardError.contains('gradle/issues/10483')
-        result.standardError.contains('please migrate the Exec task `myExecTask` to BetterExec')
-        result.failure.causes.size() == 2
-        result.failure.causes.each { failure ->
-            assert Throwables.getRootCause(failure).getMessage().contains("gradle/issues/10483") ||
-                    Throwables.getRootCause(failure).getMessage().contains("No such file or directory")
-        }
-
+        result.failure.causes.size() == 3
+        result.standardError.contains("Execution of `:myProject:myExecTask, :myProject:execSpecTask` failed.")
+        result.standardError.contains("gradle/issues/10483")
+        result.standardError.contains("`./gradlew :myProject:myExecTask :myProject:execSpecTask` from the *terminal*")
+        result.standardError.contains("- non-existing")
+        result.standardError.contains("- non-existing-execSpec")
 
         where:
         gradleVersionNumber << List.of("8.8")

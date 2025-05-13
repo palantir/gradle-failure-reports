@@ -16,21 +16,26 @@
 
 package com.palantir.gradle.failurereports;
 
+import com.google.common.collect.ImmutableList;
 import com.palantir.gradle.failurereports.LocalFailureRecommendationFlowAction.Parameters;
-import com.palantir.gradle.failurereports.handlers.ExecCommandNotFoundJava21;
-import com.palantir.gradle.failurereports.handlers.FailureHandler;
+import com.palantir.gradle.failurereports.handlers.ExecCommandNotFoundFailure;
+import com.palantir.gradle.failurereports.handlers.ExecCommandNotFoundHandler;
 import java.util.List;
+import org.gradle.api.GradleException;
 import org.gradle.api.Task;
 import org.gradle.api.flow.BuildWorkResult;
 import org.gradle.api.flow.FlowAction;
 import org.gradle.api.flow.FlowParameters;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskExecutionException;
 
 public final class LocalFailureRecommendationFlowAction implements FlowAction<Parameters> {
 
-    private static List<FailureHandler> failureHandlers = List.of(new ExecCommandNotFoundJava21());
+    private static Logger log = Logging.getLogger(LocalFailureRecommendationFlowAction.class);
+    private static ExecCommandNotFoundHandler failureHandler = new ExecCommandNotFoundHandler();
 
     interface Parameters extends FlowParameters {
         @Input
@@ -47,11 +52,15 @@ public final class LocalFailureRecommendationFlowAction implements FlowAction<Pa
     }
 
     public static void checkRecommendations(Throwable buildThrowable) {
+        ImmutableList.Builder<ExecCommandNotFoundFailure> expandedFailuresBuilder = ImmutableList.builder();
         for (TaskExecutionException taskExecutionException : BuildFailures.getTaskExecutionExceptions(buildThrowable)) {
             Task task = taskExecutionException.getTask();
-            for (FailureHandler failureHandler : failureHandlers) {
-                failureHandler.handle(task, buildThrowable);
-            }
+            failureHandler.handle(task, taskExecutionException).ifPresent(expandedFailuresBuilder::add);
+        }
+
+        List<ExecCommandNotFoundFailure> expandedFailures = expandedFailuresBuilder.build();
+        if (!expandedFailures.isEmpty()) {
+            throw new GradleException(ExecCommandNotFoundFailure.renderMessage(expandedFailures));
         }
     }
 }
