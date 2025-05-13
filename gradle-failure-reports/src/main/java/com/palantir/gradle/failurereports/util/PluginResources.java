@@ -16,7 +16,6 @@
 
 package com.palantir.gradle.failurereports.util;
 
-import com.palantir.gradle.failurereports.FailureReportsRootPlugin;
 import com.palantir.gradle.utils.environmentvariables.EnvironmentVariables;
 import java.util.Optional;
 import org.gradle.api.Project;
@@ -24,6 +23,7 @@ import org.gradle.util.GradleVersion;
 
 public final class PluginResources {
 
+    public static final GradleVersion GRADLE_FLOW_ACTIONS_ENABLED = GradleVersion.version("8.6");
     private static final String CIRCLE_NODE_INDEX = "CIRCLE_NODE_INDEX";
     private static final Integer INITIAL_CIRCLE_NODE = 0;
 
@@ -40,8 +40,7 @@ public final class PluginResources {
     }
 
     public static boolean canUseFlowActions(Project project) {
-        return GradleVersion.version(project.getGradle().getGradleVersion())
-                        .compareTo(FailureReportsRootPlugin.GRADLE_FLOW_ACTIONS_ENABLED)
+        return GradleVersion.version(project.getGradle().getGradleVersion()).compareTo(GRADLE_FLOW_ACTIONS_ENABLED)
                 >= 0;
     }
 

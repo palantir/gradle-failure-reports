@@ -19,7 +19,8 @@ package com.palantir.gradle.failurereports.handlers;
 import org.gradle.api.Task;
 
 /**
- * Handles different failure tye
+ * Matches failures and adds extra explanations/throws an error with extra information about the root cause of the
+ * failure/workarounds.
  */
 public interface FailureHandler {
 

@@ -19,6 +19,7 @@ package com.palantir.gradle.failurereports
 import com.palantir.gradle.plugintesting.GradleTestVersions
 import nebula.test.IntegrationSpec
 import nebula.test.functional.ExecutionResult
+import org.assertj.core.util.Throwables
 
 class LocalFailuresRecommendationsIntegrationSpec extends IntegrationSpec {
 
@@ -48,6 +49,12 @@ class LocalFailuresRecommendationsIntegrationSpec extends IntegrationSpec {
 
         then:
         result.standardError.contains('gradle/issues/10483')
+        result.failure.causes.size() == 2
+        result.failure.causes.each { failure ->
+            assert Throwables.getRootCause(failure).getMessage().contains("gradle/issues/10483") ||
+                    Throwables.getRootCause(failure).getMessage().contains("No such file or directory")
+        }
+
 
         where:
         gradleVersionNumber << List.of("8.8")

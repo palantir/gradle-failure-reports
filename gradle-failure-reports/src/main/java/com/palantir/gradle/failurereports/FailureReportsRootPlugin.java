@@ -24,11 +24,8 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.invocation.Gradle;
-import org.gradle.util.GradleVersion;
 
 public final class FailureReportsRootPlugin implements Plugin<Project> {
-
-    public static final GradleVersion GRADLE_FLOW_ACTIONS_ENABLED = GradleVersion.version("8.6");
 
     @Override
     public void apply(Project project) {
@@ -61,7 +58,7 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
         CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
 
         project.allprojects(subproject -> subproject.getPluginManager().apply(FailureReportsProjectsPlugin.class));
-        if (GradleVersion.version(project.getGradle().getGradleVersion()).compareTo(GRADLE_FLOW_ACTIONS_ENABLED) >= 0) {
+        if (PluginResources.canUseFlowActions(project)) {
             project.getPluginManager().apply(FailureReportsFlowActionsPlugin.class);
         } else {
             project.getGradle().addBuildListener(new BuildListener() {
