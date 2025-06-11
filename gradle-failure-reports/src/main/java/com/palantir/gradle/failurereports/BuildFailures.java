@@ -28,8 +28,8 @@ public final class BuildFailures {
 
     public static List<TaskExecutionException> getTaskExecutionExceptions(Throwable buildThrowable) {
         ImmutableList.Builder<Throwable> rootExceptions = ImmutableList.builder();
-        if (buildThrowable instanceof MultipleBuildFailures) {
-            rootExceptions.addAll(((MultipleBuildFailures) buildThrowable).getCauses());
+        if (buildThrowable instanceof MultipleBuildFailures multipleBuildFailures) {
+            rootExceptions.addAll(multipleBuildFailures.getCauses());
         } else {
             rootExceptions.add(buildThrowable);
         }

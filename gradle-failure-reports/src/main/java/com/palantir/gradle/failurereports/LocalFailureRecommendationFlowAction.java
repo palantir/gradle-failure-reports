@@ -34,7 +34,10 @@ import org.gradle.api.tasks.TaskExecutionException;
 
 public final class LocalFailureRecommendationFlowAction implements FlowAction<Parameters> {
 
+    @SuppressWarnings("for-rollout:NonFinalStaticField")
     private static Logger log = Logging.getLogger(LocalFailureRecommendationFlowAction.class);
+
+    @SuppressWarnings("for-rollout:NonFinalStaticField")
     private static ExecCommandNotFoundHandler failureHandler = new ExecCommandNotFoundHandler();
 
     interface Parameters extends FlowParameters {
@@ -58,6 +61,7 @@ public final class LocalFailureRecommendationFlowAction implements FlowAction<Pa
             failureHandler.handle(task, taskExecutionException).ifPresent(expandedFailuresBuilder::add);
         }
 
+        @SuppressWarnings("for-rollout:PreferredInterfaceType")
         List<ExecCommandNotFoundFailure> expandedFailures = expandedFailuresBuilder.build();
         if (!expandedFailures.isEmpty()) {
             throw new GradleException(ExecCommandNotFoundFailure.renderMessage(expandedFailures));

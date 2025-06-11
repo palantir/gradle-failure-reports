@@ -25,9 +25,11 @@ import org.gradle.api.flow.FlowScope;
 
 public abstract class LocalFailuresRecommendationsPlugin implements Plugin<Project> {
 
+    @SuppressWarnings("for-rollout:UnnecessarilyVisible")
     @Inject
     protected abstract FlowScope getFlowScope();
 
+    @SuppressWarnings("for-rollout:UnnecessarilyVisible")
     @Inject
     protected abstract FlowProviders getFlowProviders();
 

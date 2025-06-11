@@ -56,6 +56,7 @@ public class FailureReporterResourcesTest {
                 .isEqualTo(String.format("[:compileJava] error: %s...", message1));
     }
 
+    @SuppressWarnings("for-rollout:StringConcatToTextBlock")
     @Test
     public void canFormatThrowable() {
         assertThat(ThrowableResources.formatThrowableWithMessage(new GradleException("lock out of date")))
