@@ -27,7 +27,9 @@ import org.gradle.api.logging.Logging;
 
 public final class ExecCommandNotFoundHandler {
 
+    @SuppressWarnings("for-rollout:NonFinalStaticField")
     private static Logger log = Logging.getLogger(ExecCommandNotFoundHandler.class);
+
     private static final Pattern NO_SUCH_COMMAND = Pattern.compile("Cannot run program \"(.+)\" .*");
 
     public Optional<ExecCommandNotFoundFailure> handle(Task task, Throwable throwable) {
@@ -52,8 +54,7 @@ public final class ExecCommandNotFoundHandler {
                     }
                     return Optional.<String>empty();
                 })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .<String>mapMulti(Optional::ifPresent)
                 .findFirst();
     }
 

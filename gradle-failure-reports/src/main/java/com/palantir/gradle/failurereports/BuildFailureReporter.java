@@ -33,6 +33,7 @@ import org.gradle.api.tasks.testing.Test;
 
 public final class BuildFailureReporter {
 
+    @SuppressWarnings("for-rollout:NonFinalStaticField")
     private static Logger log = Logging.getLogger(BuildFailureReporter.class);
 
     public static void report(File outputFile, Throwable buildThrowable) {
@@ -53,8 +54,8 @@ public final class BuildFailureReporter {
                 // TODO(crogoz): use compileFailuresService to report the errors once everything is on gradle >= 8.6
                 // for now this is a noop, once the {@link CompileFailuresService} is closed, it will report all the
                 // errors that were collected
-            } else if (task instanceof Checkstyle) {
-                failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), (Checkstyle) task)
+            } else if (task instanceof Checkstyle checkstyle) {
+                failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), checkstyle)
                         .collect(Collectors.toList()));
             } else if (!(task instanceof Test)) {
                 // test failures are already reported
