@@ -61,7 +61,6 @@ public final class LocalFailureRecommendationFlowAction implements FlowAction<Pa
             failureHandler.handle(task, taskExecutionException).ifPresent(expandedFailuresBuilder::add);
         }
 
-        @SuppressWarnings("for-rollout:PreferredInterfaceType")
         List<ExecCommandNotFoundFailure> expandedFailures = expandedFailuresBuilder.build();
         if (!expandedFailures.isEmpty()) {
             throw new GradleException(ExecCommandNotFoundFailure.renderMessage(expandedFailures));

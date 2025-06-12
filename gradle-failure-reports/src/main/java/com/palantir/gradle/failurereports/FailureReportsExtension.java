@@ -26,7 +26,6 @@ public abstract class FailureReportsExtension {
 
     public abstract RegularFileProperty getFailureReportCompileOutputFile();
 
-    @SuppressWarnings("for-rollout:UnnecessarilyVisible")
     @Inject
     public abstract ProjectLayout getProjectLayout();
 
