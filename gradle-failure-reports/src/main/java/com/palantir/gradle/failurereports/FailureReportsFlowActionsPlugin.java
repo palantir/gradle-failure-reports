@@ -27,11 +27,9 @@ import org.gradle.api.provider.Provider;
 
 public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project> {
 
-    @SuppressWarnings("for-rollout:UnnecessarilyVisible")
     @Inject
     protected abstract FlowScope getFlowScope();
 
-    @SuppressWarnings("for-rollout:UnnecessarilyVisible")
     @Inject
     protected abstract FlowProviders getFlowProviders();
 

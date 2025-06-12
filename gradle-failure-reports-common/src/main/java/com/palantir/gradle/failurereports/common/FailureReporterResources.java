@@ -41,7 +41,6 @@ public final class FailureReporterResources {
         return getPathWithLineNumber(getRelativePathToProject(sourceDir, fullFilePath), lineNumber);
     }
 
-    @SuppressWarnings("for-rollout:ThrowSpecificExceptions")
     private static String getRelativePathToProject(Path projectDir, Path fullFilePath) {
         try {
             return projectDir.relativize(fullFilePath).toString();
