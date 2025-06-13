@@ -32,7 +32,6 @@ public final class FailureReporterResources {
         return Path.of(fullPath).getFileName().toString();
     }
 
-    @SuppressWarnings("for-rollout:DefaultLocale")
     public static String getPathWithLineNumber(String path, Integer lineNumber) {
         return String.format("%s:%d", path, lineNumber);
     }
@@ -68,12 +67,10 @@ public final class FailureReporterResources {
                 "[%s] %s: %s", taskPath, severity.toLowerCase(Locale.ROOT), getTruncatedErrorMessage(errorDescription));
     }
 
-    @SuppressWarnings("for-rollout:DefaultLocale")
     public static String sourceFileWithErrorMessage(String sourceFile, Integer lineNumber, String errorMessage) {
         return String.format("%s:%d: %s", sourceFile, lineNumber, errorMessage);
     }
 
-    @SuppressWarnings("for-rollout:DefaultLocale")
     public static String sourceFileWithErrorMessage(
             String sourceFile, Integer lineNumber, String errorMessage, String severity) {
         return String.format("%s:%d: %s: %s", sourceFile, lineNumber, severity, errorMessage);

@@ -33,7 +33,6 @@ import org.gradle.api.tasks.testing.Test;
 
 public final class BuildFailureReporter {
 
-    @SuppressWarnings("for-rollout:NonFinalStaticField")
     private static Logger log = Logging.getLogger(BuildFailureReporter.class);
 
     public static void report(File outputFile, Throwable buildThrowable) {
