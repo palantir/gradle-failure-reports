@@ -44,8 +44,8 @@ public final class XmlResources {
 
     private static ObjectMapper createXmlMapper() {
         XMLInputFactory input = new WstxInputFactory();
-        input.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.FALSE);
-        input.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+        input.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
+        input.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         JacksonXmlModule xmlModule = new JacksonXmlModule();
         xmlModule.setDefaultUseWrapper(false);
         ObjectMapper objectMapper = new XmlMapper(
