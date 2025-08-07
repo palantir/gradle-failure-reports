@@ -11,7 +11,7 @@ com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava (1 c
 com.google.j2objc:j2objc-annotations:3.0.0 (1 constraints: 150aeab4)
 com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations:1.4.0 (1 constraints: 0705fc35)
 com.palantir.gradle.utils:environment-variables:0.15.0 (1 constraints: 3805323b)
-one.util:streamex:0.8.3 (1 constraints: 0d050636)
+one.util:streamex:0.8.4 (1 constraints: 0e050736)
 org.codehaus.woodstox:stax2-api:4.2.2 (2 constraints: 6a278bd2)
 org.immutables:value:2.11.2 (1 constraints: 3805343b)
 org.jspecify:jspecify:1.0.0 (1 constraints: 130ae0b4)
