@@ -13,7 +13,7 @@ com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations:1.4.0 (1
 com.palantir.gradle.utils:environment-variables:0.15.0 (1 constraints: 3805323b)
 one.util:streamex:0.8.4 (1 constraints: 0e050736)
 org.codehaus.woodstox:stax2-api:4.2.2 (2 constraints: 6a278bd2)
-org.immutables:value:2.11.2 (1 constraints: 3805343b)
+org.immutables:value:2.11.3 (1 constraints: 3905353b)
 org.jspecify:jspecify:1.0.0 (1 constraints: 130ae0b4)
 
 [Test dependencies]
