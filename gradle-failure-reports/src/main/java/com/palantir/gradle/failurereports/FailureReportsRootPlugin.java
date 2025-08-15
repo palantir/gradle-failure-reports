@@ -51,9 +51,6 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
     private static void applyFailureReportsPlugin(Project project) {
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
-        if (!PluginResources.shouldGenerateReport(project, failureReportsExtension)) {
-            return;
-        }
 
         CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
 
@@ -73,6 +70,9 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
 
                 @Override
                 public void buildFinished(BuildResult result) {
+                    if (!PluginResources.shouldGenerateReport(project, failureReportsExtension)) {
+                        return;
+                    }
                     BuildFailureReporter.report(
                             failureReportsExtension
                                     .getFailureReportOutputFile()

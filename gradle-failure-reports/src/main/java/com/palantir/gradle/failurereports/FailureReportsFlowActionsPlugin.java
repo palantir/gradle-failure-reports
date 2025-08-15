@@ -37,9 +37,6 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
     public final void apply(Project project) {
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
-        if (!PluginResources.shouldGenerateReport(project, failureReportsExtension)) {
-            return;
-        }
         Provider<CompileFailuresService> compileFailuresService =
                 CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         getFlowScope().always(FailureReportFlowAction.class, spec -> {
@@ -47,6 +44,10 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
                     .getOutputFile()
                     .set(failureReportsExtension.getFailureReportOutputFile().getAsFile());
             spec.getParameters().getBuildResult().set(getFlowProviders().getBuildWorkResult());
+            spec.getParameters()
+                    .getShouldGenerateReport()
+                    .set(project.provider(
+                            () -> PluginResources.shouldGenerateReport(project, failureReportsExtension)));
             spec.getParameters().getCompileFailuresService().set(compileFailuresService);
         });
     }

@@ -17,7 +17,6 @@
 package com.palantir.gradle.failurereports;
 
 import com.palantir.gradle.failurereports.util.ExtensionUtils;
-import com.palantir.gradle.failurereports.util.PluginResources;
 import java.io.File;
 import java.util.Optional;
 import java.util.Set;
@@ -36,9 +35,6 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
 
-        if (!PluginResources.shouldGenerateReport(project, failureReportsExtension)) {
-            return;
-        }
         Provider<CompileFailuresService> compileService =
                 CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         project.getPluginManager().withPlugin("java", _javaPlugin -> {
