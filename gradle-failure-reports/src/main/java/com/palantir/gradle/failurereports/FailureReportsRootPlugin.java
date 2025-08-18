@@ -51,7 +51,6 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
     private static void applyFailureReportsPlugin(Project project) {
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
-
         CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
 
         project.allprojects(subproject -> subproject.getPluginManager().apply(FailureReportsProjectsPlugin.class));

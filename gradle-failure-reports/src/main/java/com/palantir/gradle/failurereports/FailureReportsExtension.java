@@ -61,7 +61,6 @@ public abstract class FailureReportsExtension {
                 .getBuildDirectory()
                 .file("failure-reports/build-compile-TEST" + s + ".xml")
                 .get()));
-
         getEnableParallelWorkerReports().convention(false);
     }
 }

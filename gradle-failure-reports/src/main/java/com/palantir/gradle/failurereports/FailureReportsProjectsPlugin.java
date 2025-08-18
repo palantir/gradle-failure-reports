@@ -34,7 +34,6 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
     public void apply(Project project) {
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
-
         Provider<CompileFailuresService> compileService =
                 CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         project.getPluginManager().withPlugin("java", _javaPlugin -> {
