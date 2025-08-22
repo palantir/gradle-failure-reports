@@ -45,10 +45,6 @@ public final class BuildFailureReporter {
         });
     }
 
-    public static void report(File outputFile, Throwable buildThrowable) {
-        report(outputFile, buildThrowable, Set.of("Test"));
-    }
-
     private static void reportFailures(File outputFile, Throwable buildThrowable, Set<String> skipTaskTypes)
             throws IOException {
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
@@ -61,22 +57,12 @@ public final class BuildFailureReporter {
             } else if (task instanceof Checkstyle checkstyle) {
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), checkstyle)
                         .collect(Collectors.toList()));
-            } else if (!isTaskTypeSkipped(task, skipTaskTypes)) {
+            } else if (!skipTaskTypes.contains(task.getClass().getSimpleName())) {
                 // test failures are already reported
                 failureReports.add(ThrowableFailureReporter.getFailureReport(task));
             }
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
-    }
-
-    private static boolean isTaskTypeSkipped(Task task, Set<String> skipTaskTypes) {
-        String taskClassName = task.getClass().getSimpleName();
-        for (String skipType : skipTaskTypes) {
-            if (taskClassName.equals(skipType) || taskClassName.endsWith(skipType)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private BuildFailureReporter() {}
