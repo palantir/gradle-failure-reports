@@ -57,12 +57,27 @@ public final class BuildFailureReporter {
             } else if (task instanceof Checkstyle checkstyle) {
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), checkstyle)
                         .collect(Collectors.toList()));
-            } else if (!skipTaskTypes.contains(task.getClass().getSimpleName())) {
+            } else if (!isTaskTypeSkipped(task, skipTaskTypes)) {
                 // test failures are already reported
                 failureReports.add(ThrowableFailureReporter.getFailureReport(task));
             }
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
+    }
+
+    /**
+     * Checks if a task should be skipped based on its class name or any of its superclasses.
+     * This maintains backward compatibility with instanceof checks while using simple class names.
+     */
+    private static boolean isTaskTypeSkipped(Task task, Set<String> skipTaskTypes) {
+        Class<?> currentClass = task.getClass();
+        while (currentClass != null) {
+            if (skipTaskTypes.contains(currentClass.getSimpleName())) {
+                return true;
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+        return false;
     }
 
     private BuildFailureReporter() {}
