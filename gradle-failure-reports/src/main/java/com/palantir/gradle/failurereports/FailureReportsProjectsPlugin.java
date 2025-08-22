@@ -17,6 +17,7 @@
 package com.palantir.gradle.failurereports;
 
 import com.palantir.gradle.failurereports.util.ExtensionUtils;
+import com.palantir.gradle.failurereports.util.PluginResources;
 import java.io.File;
 import java.util.Optional;
 import java.util.Set;
@@ -32,6 +33,9 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        if (!PluginResources.isRunningOnInitialCircleNode(project)) {
+            return;
+        }
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         Provider<CompileFailuresService> compileService =

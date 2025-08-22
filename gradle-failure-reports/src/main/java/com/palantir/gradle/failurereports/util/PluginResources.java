@@ -16,7 +16,6 @@
 
 package com.palantir.gradle.failurereports.util;
 
-import com.palantir.gradle.failurereports.FailureReportsExtension;
 import com.palantir.gradle.utils.environmentvariables.EnvironmentVariables;
 import java.util.Optional;
 import org.gradle.api.Project;
@@ -28,16 +27,11 @@ public final class PluginResources {
     private static final String CIRCLE_NODE_INDEX = "CIRCLE_NODE_INDEX";
     private static final Integer INITIAL_CIRCLE_NODE = 0;
 
-    public static boolean shouldGenerateReport(Project project, FailureReportsExtension extension) {
+    public static boolean isRunningOnInitialCircleNode(Project project) {
         EnvironmentVariables environmentVariables = project.getObjects().newInstance(EnvironmentVariables.class);
         if (!environmentVariables.isCi().get()) {
             return false;
         }
-
-        if (extension.getEnableParallelWorkerReports().get()) {
-            return true;
-        }
-
         return maybeGetCircleNode(environmentVariables)
                 // when parallelism is configured, we only run on the first node.
                 .map(circleNode -> circleNode.equals(INITIAL_CIRCLE_NODE))
@@ -55,7 +49,7 @@ public final class PluginResources {
         return !environmentVariables.isCi().get();
     }
 
-    public static Optional<Integer> maybeGetCircleNode(EnvironmentVariables environmentVariables) {
+    private static Optional<Integer> maybeGetCircleNode(EnvironmentVariables environmentVariables) {
         return Optional.ofNullable(environmentVariables
                         .envVarOrFromTestingProperty(CIRCLE_NODE_INDEX)
                         .getOrNull())

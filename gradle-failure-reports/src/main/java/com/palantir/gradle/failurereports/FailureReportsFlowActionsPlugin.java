@@ -35,6 +35,9 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
 
     @Override
     public final void apply(Project project) {
+        if (!PluginResources.isRunningOnInitialCircleNode(project)) {
+            return;
+        }
         FailureReportsExtension failureReportsExtension =
                 ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         Provider<CompileFailuresService> compileFailuresService =
@@ -44,10 +47,6 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
                     .getOutputFile()
                     .set(failureReportsExtension.getFailureReportOutputFile().getAsFile());
             spec.getParameters().getBuildResult().set(getFlowProviders().getBuildWorkResult());
-            spec.getParameters()
-                    .getShouldGenerateReport()
-                    .set(project.provider(
-                            () -> PluginResources.shouldGenerateReport(project, failureReportsExtension)));
             spec.getParameters().getCompileFailuresService().set(compileFailuresService);
         });
     }

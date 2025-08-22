@@ -33,18 +33,12 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
         @Input
         Property<File> getOutputFile();
 
-        @Input
-        Property<Boolean> getShouldGenerateReport();
-
         @ServiceReference
         Property<CompileFailuresService> getCompileFailuresService();
     }
 
     @Override
     public void execute(Parameters parameters) {
-        if (!parameters.getShouldGenerateReport().get()) {
-            return;
-        }
         parameters
                 .getBuildResult()
                 .get()
