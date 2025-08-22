@@ -47,6 +47,7 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
                     .getOutputFile()
                     .set(failureReportsExtension.getFailureReportOutputFile().getAsFile());
             spec.getParameters().getBuildResult().set(getFlowProviders().getBuildWorkResult());
+            spec.getParameters().getSkipTaskTypes().set(failureReportsExtension.getSkipTaskTypes());
             spec.getParameters().getCompileFailuresService().set(compileFailuresService);
         });
     }

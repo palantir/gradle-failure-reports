@@ -22,6 +22,7 @@ import com.palantir.gradle.failurereports.junit.JunitReporter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.gradle.api.Task;
 import org.gradle.api.logging.Logger;
@@ -29,23 +30,27 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.gradle.api.tasks.testing.Test;
 
 public final class BuildFailureReporter {
 
     private static Logger log = Logging.getLogger(BuildFailureReporter.class);
 
-    public static void report(File outputFile, Throwable buildThrowable) {
+    public static void report(File outputFile, Throwable buildThrowable, Set<String> skipTaskTypes) {
         Optional.ofNullable(buildThrowable).ifPresent(failure -> {
             try {
-                reportFailures(outputFile, failure);
+                reportFailures(outputFile, failure, skipTaskTypes);
             } catch (IOException e) {
                 log.error("Failed to report build failures", e);
             }
         });
     }
 
-    private static void reportFailures(File outputFile, Throwable buildThrowable) throws IOException {
+    public static void report(File outputFile, Throwable buildThrowable) {
+        report(outputFile, buildThrowable, Set.of("Test"));
+    }
+
+    private static void reportFailures(File outputFile, Throwable buildThrowable, Set<String> skipTaskTypes)
+            throws IOException {
         ImmutableList.Builder<FailureReport> failureReports = ImmutableList.builder();
         for (TaskExecutionException taskExecutionException : BuildFailures.getTaskExecutionExceptions(buildThrowable)) {
             Task task = taskExecutionException.getTask();
@@ -56,12 +61,22 @@ public final class BuildFailureReporter {
             } else if (task instanceof Checkstyle checkstyle) {
                 failureReports.addAll(CheckstyleFailureReporter.collect(task.getProject(), checkstyle)
                         .collect(Collectors.toList()));
-            } else if (!(task instanceof Test)) {
+            } else if (!isTaskTypeSkipped(task, skipTaskTypes)) {
                 // test failures are already reported
                 failureReports.add(ThrowableFailureReporter.getFailureReport(task));
             }
         }
         JunitReporter.reportFailures(outputFile, failureReports.build());
+    }
+
+    private static boolean isTaskTypeSkipped(Task task, Set<String> skipTaskTypes) {
+        String taskClassName = task.getClass().getSimpleName();
+        for (String skipType : skipTaskTypes) {
+            if (taskClassName.equals(skipType) || taskClassName.endsWith(skipType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private BuildFailureReporter() {}
