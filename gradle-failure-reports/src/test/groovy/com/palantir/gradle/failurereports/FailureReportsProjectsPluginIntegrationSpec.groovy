@@ -455,6 +455,45 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
     }
 
+    def '#gradleVersionNumber: ignored task failures are not reported' () {
+        setup:
+        gradleVersion = gradleVersionNumber
+        // language=gradle
+        buildFile << '''
+            import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
+
+            apply plugin: 'com.palantir.failure-reports'
+            apply plugin: 'java'
+
+            abstract class ParentCustomTask extends DefaultTask {}
+            abstract class MyCustomTask extends ParentCustomTask {}
+            
+            tasks.register('throwExceptionWithLogs', MyCustomTask.class) {
+                doLast {
+                    throw new ExceptionWithLogs("Failed after 2 attempts with exit code 1", "this is log line1\\nthis is log line 2", false)
+                }
+            }
+            
+            failureReports {
+                getIgnoredTasks().add(ParentCustomTask.class)
+            }
+        '''.stripIndent(true)
+
+        enableTestCiRun()
+
+        when:
+        ExecutionResult result = runTasksWithFailure( 'throwExceptionWithLogs', '--continue')
+
+        then:
+        result.failure.message.contains('Execution failed for task \':throwExceptionWithLogs\'.')
+
+        def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
+        !reportXml.exists()
+
+        where:
+        gradleVersionNumber << GradleTestVersions.gradleVersionsForTests
+    }
+
 
     def '#gradleVersionNumber: when running locally, no failure report is created'() {
         setup:

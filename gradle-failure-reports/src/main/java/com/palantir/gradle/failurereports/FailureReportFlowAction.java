@@ -20,6 +20,7 @@ import java.io.File;
 import org.gradle.api.flow.BuildWorkResult;
 import org.gradle.api.flow.FlowAction;
 import org.gradle.api.flow.FlowParameters;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.services.ServiceReference;
 import org.gradle.api.tasks.Input;
@@ -33,6 +34,9 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
         @Input
         Property<File> getOutputFile();
 
+        @Input
+        ListProperty<Class<?>> getIgnoredTasks();
+
         @ServiceReference
         Property<CompileFailuresService> getCompileFailuresService();
     }
@@ -43,7 +47,9 @@ public final class FailureReportFlowAction implements FlowAction<FailureReportFl
                 .getBuildResult()
                 .get()
                 .getFailure()
-                .ifPresent(failure ->
-                        BuildFailureReporter.report(parameters.getOutputFile().get(), failure));
+                .ifPresent(failure -> BuildFailureReporter.report(
+                        parameters.getOutputFile().get(),
+                        failure,
+                        parameters.getIgnoredTasks().get()));
     }
 }

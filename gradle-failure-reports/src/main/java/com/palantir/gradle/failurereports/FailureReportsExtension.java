@@ -19,12 +19,16 @@ package com.palantir.gradle.failurereports;
 import javax.inject.Inject;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
+import org.gradle.api.tasks.testing.Test;
 
 public abstract class FailureReportsExtension {
 
     public abstract RegularFileProperty getFailureReportOutputFile();
 
     public abstract RegularFileProperty getFailureReportCompileOutputFile();
+
+    public abstract ListProperty<Class<?>> getIgnoredTasks();
 
     @Inject
     public abstract ProjectLayout getProjectLayout();
@@ -34,5 +38,6 @@ public abstract class FailureReportsExtension {
                 .convention(getProjectLayout().getBuildDirectory().file("failure-reports/build-TEST.xml"));
         getFailureReportCompileOutputFile()
                 .convention(getProjectLayout().getBuildDirectory().file("failure-reports/build-compile-TEST.xml"));
+        getIgnoredTasks().add(Test.class);
     }
 }
