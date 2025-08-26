@@ -30,6 +30,7 @@ import org.gradle.api.logging.Logging;
 import org.gradle.api.plugins.quality.Checkstyle;
 import org.gradle.api.tasks.TaskExecutionException;
 import org.gradle.api.tasks.compile.JavaCompile;
+import org.gradle.api.tasks.testing.Test;
 
 public final class BuildFailureReporter {
 
@@ -66,7 +67,8 @@ public final class BuildFailureReporter {
     }
 
     private static boolean shouldTaskBeReported(Task task, List<Class<?>> ignoredClasses) {
-        return ignoredClasses.stream().noneMatch(ignoredClass -> ignoredClass.isInstance(task));
+        return !(task instanceof Test)
+                && ignoredClasses.stream().noneMatch(ignoredClass -> ignoredClass.isInstance(task));
     }
 
     private BuildFailureReporter() {}
