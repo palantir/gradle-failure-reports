@@ -32,3 +32,12 @@ apply plugin: 'com.palantir.failure-reports'
 ```
 
 The plugin generates a `build/failure-reports/build-TEST.xml` file which encapsulates the errors during the CircleCI job into a JUnit format.
+
+In situations where reporting from certain failed tasks should be ignored — such as for custom pytest tasks that already generate their own junit.xml files - Gradle plugin consumers can configure the plugin as follows:
+```groovy
+project.getPluginManager().withPlugin("com.palantir.failure-reports", _plugin -> {
+  FailureReportsExtension extension =
+          project.getExtensions().getByType(FailureReportsExtension.class);
+  extension.getIgnoredTasks().add(SomeTestTask.class);
+});
+```
