@@ -19,12 +19,15 @@ package com.palantir.gradle.failurereports;
 import javax.inject.Inject;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
 
 public abstract class FailureReportsExtension {
 
     public abstract RegularFileProperty getFailureReportOutputFile();
 
     public abstract RegularFileProperty getFailureReportCompileOutputFile();
+
+    public abstract ListProperty<Class<?>> getIgnoredTasks();
 
     @Inject
     public abstract ProjectLayout getProjectLayout();

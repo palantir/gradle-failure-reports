@@ -78,7 +78,8 @@ public final class FailureReportsRootPlugin implements Plugin<Project> {
                                     .getFailureReportOutputFile()
                                     .getAsFile()
                                     .get(),
-                            result.getFailure());
+                            result.getFailure(),
+                            failureReportsExtension.getIgnoredTasks().get());
                 }
             });
         }
