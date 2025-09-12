@@ -466,10 +466,10 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             
             abstract class ParentCustomTask extends DefaultTask {}
             abstract class MyCustomTask extends ParentCustomTask {}
-            
+
             tasks.register('throwExceptionWithLogs', MyCustomTask.class) {
                 doLast {
-                    throw new ExceptionWithLogs("Failed after 2 attempts with exit code 1", "this is log line1\\\\nthis is log line 2", false)
+                    throw new ExceptionWithLogs("Failed after 2 attempts with exit code 1", "this is log line1\\nthis is log line 2", false)
                 }
             }
             
