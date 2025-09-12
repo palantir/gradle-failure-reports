@@ -479,13 +479,32 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
             }
         '''.stripIndent(true)
 
+        // language=gradle
+        addSubproject("mySubproject", '''
+            import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
+            import com.palantir.gradle.failurereports.FailureReportsExtension
+            apply plugin: 'java'
+
+            abstract class SubProjectTask extends DefaultTask {}
+
+            tasks.register('throwExceptionWithLogsFromSubproject', SubProjectTask.class) {
+                doLast {
+                    throw new ExceptionWithLogs("Failed", "log line", false)
+                }
+            }
+
+            project.getRootProject().getPluginManager().withPlugin("com.palantir.failure-reports", _plugin -> {
+                 project.getRootProject().getExtensions().getByType(FailureReportsExtension.class).getIgnoredTasks().add(SubProjectTask.class)
+            })
+            '''.stripIndent())
         enableTestCiRun()
 
         when:
-        ExecutionResult result = runTasksWithFailure( 'throwExceptionWithLogs', '--continue')
+        ExecutionResult result = runTasksWithFailure( 'throwExceptionWithLogs', 'throwExceptionWithLogsFromSubproject', '--continue')
 
         then:
-        result.failure.message.contains('Execution failed for task \':throwExceptionWithLogs\'.')
+        getThrowableCauses(result.failure).stream().filter(it -> it.message.contains('Execution failed for task \':throwExceptionWithLogs\'.')
+                || it.message.contains('Execution failed for task \':mySubproject:throwExceptionWithLogsFromSubproject\'.')).count() == 2
 
         def reportXml = new File(projectDir, "build/failure-reports/build-TEST.xml")
         !reportXml.exists()
@@ -647,5 +666,16 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
 
     private Path getDefaultOutputFile(String gradleVersionNumber) {
         return Path.of(projectDir.getPath()).resolve(String.format('build/failure-reports/unit-test-%s.xml', gradleVersionNumber));
+    }
+
+
+    private static List<Throwable> getThrowableCauses(Throwable failure) {
+        List<Throwable> causes = new ArrayList<>();
+        Throwable cause = failure.getCause();
+        while (cause != null && !causes.contains(cause)) {
+            causes.add(cause);
+            cause = cause.getCause();
+        }
+        return causes;
     }
 }
