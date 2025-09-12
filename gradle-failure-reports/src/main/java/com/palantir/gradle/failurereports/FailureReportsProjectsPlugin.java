@@ -33,11 +33,11 @@ public final class FailureReportsProjectsPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        FailureReportsExtension failureReportsExtension =
+                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         if (!PluginResources.isRunningOnInitialCircleNode(project)) {
             return;
         }
-        FailureReportsExtension failureReportsExtension =
-                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         Provider<CompileFailuresService> compileService =
                 CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         project.getPluginManager().withPlugin("java", _javaPlugin -> {

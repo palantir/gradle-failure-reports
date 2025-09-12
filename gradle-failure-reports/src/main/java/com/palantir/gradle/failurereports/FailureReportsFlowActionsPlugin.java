@@ -35,11 +35,11 @@ public abstract class FailureReportsFlowActionsPlugin implements Plugin<Project>
 
     @Override
     public final void apply(Project project) {
+        FailureReportsExtension failureReportsExtension =
+                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         if (!PluginResources.isRunningOnInitialCircleNode(project)) {
             return;
         }
-        FailureReportsExtension failureReportsExtension =
-                ExtensionUtils.maybeCreate(project, "failureReports", FailureReportsExtension.class);
         Provider<CompileFailuresService> compileFailuresService =
                 CompileFailuresService.getSharedCompileFailuresService(project, failureReportsExtension);
         getFlowScope().always(FailureReportFlowAction.class, spec -> {
