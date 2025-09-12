@@ -461,8 +461,9 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         // language=gradle
         buildFile << '''
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
-            apply plugin: 'com.palantir.failure-reports\'
-            apply plugin: 'java\'
+            apply plugin: 'com.palantir.failure-reports'
+            apply plugin: 'java'
+            
             abstract class ParentCustomTask extends DefaultTask {}
             abstract class MyCustomTask extends ParentCustomTask {}
             
