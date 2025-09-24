@@ -4,7 +4,7 @@ org.immutables:* = 2.11.3
 one.util:streamex = 0.8.4
 com.palantir.gradle.auto-parallelizable:* = 1.4.0
 com.google.guava:guava = 33.5.0-jre
-org.apache.commons:commons-lang3 = 3.18.0
+org.apache.commons:commons-lang3 = 3.19.0
 com.palantir.gradle.utils:environment-variables = 0.19.0
 
 # conflict resolution
