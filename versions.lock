@@ -28,7 +28,7 @@ one.util:streamex:0.8.4 (1 constraints: 0e050736)
 
 org.codehaus.woodstox:stax2-api:4.2.2 (2 constraints: 6a278bd2)
 
-org.immutables:value:2.11.5 (1 constraints: 3b05373b)
+org.immutables:value:2.11.6 (1 constraints: 3c05383b)
 
 org.jspecify:jspecify:1.0.0 (7 constraints: 5370d26f)
 
