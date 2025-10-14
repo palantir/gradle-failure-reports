@@ -50,24 +50,23 @@ public record ExecCommandNotFoundFailure(String taskPath, String missingCommand,
                         "The command(s) `%s` are present in the PATH, but executing the task via Gradle does not"
                                 + "recognize it.",
                         String.join(", ", foundCommandsOnPath));
-        return String.format(
-                """
-                Execution of `%s` failed.
-                %s
-                This issue might occur due to a Gradle bug (https://github.com/gradle/gradle/issues/10483)
-                when running an Exec task on the Daemon Java version 21 on macOS, which prevents the
-                executable(s) `%s` from being located in the PATH.
+        return String.format("""
+            Execution of `%s` failed.
+            %s
+            This issue might occur due to a Gradle bug (https://github.com/gradle/gradle/issues/10483)
+            when running an Exec task on the Daemon Java version 21 on macOS, which prevents the
+            executable(s) `%s` from being located in the PATH.
 
-                To determine if the issue is related to Gradle, execute the following commands in bash:
-                %s
-                If the command completes successfully, it indicates that the Gradle bug is responsible.
+            To determine if the issue is related to Gradle, execute the following commands in bash:
+            %s
+            If the command completes successfully, it indicates that the Gradle bug is responsible.
 
-                A quick workaround is running:
-                    - `./gradlew --stop` to stop all the Gradle Daemons
-                    - `./gradlew %s` from the *terminal* (NOT through Intellij)
+            A quick workaround is running:
+                - `./gradlew --stop` to stop all the Gradle Daemons
+                - `./gradlew %s` from the *terminal* (NOT through Intellij)
 
-                To resolve this issue, please migrate the Exec tasks and ExecSpecs usages to BetterExec:
-                https://github.com/palantir/better-exec/tree/develop?tab=readme-ov-file#usage.""",
-                taskPaths, foundCommandsMessage, executables, commandsToRun, tasksToRun);
+            To resolve this issue, please migrate the Exec tasks and ExecSpecs usages to BetterExec:
+            https://github.com/palantir/better-exec/tree/develop?tab=readme-ov-file#usage.\
+            """, taskPaths, foundCommandsMessage, executables, commandsToRun, tasksToRun);
     }
 }
