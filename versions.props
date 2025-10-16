@@ -1,5 +1,6 @@
+com.fasterxml.jackson.core:jackson-annotations = 2.20
 com.netflix.nebula:nebula-test = 10.6.2
-com.fasterxml.jackson.*:* = 2.19.2
+com.fasterxml.jackson.*:* = 2.20.0
 org.immutables:* = 2.11.6
 one.util:streamex = 0.8.4
 com.palantir.gradle.auto-parallelizable:* = 1.4.0
