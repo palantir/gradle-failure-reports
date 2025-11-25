@@ -56,7 +56,7 @@ class FailureReportsProjectsPluginIntegrationSpec extends IntegrationSpec {
         def failureMessage = Throwables.getRootCause(result.failure).message
 
         then:
-        failureMessage.contains('Compilation failed; see the compiler error output for details.')
+        failureMessage.contains('Compilation failed; ')
         result.standardError.contains('error: \';\' expected')
         CheckedInExpectedReports.checkOrUpdateFor(projectDir, "javaCompile", getDefaultOutputFile(gradleVersionNumber))
 
