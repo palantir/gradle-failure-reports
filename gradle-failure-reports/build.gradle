@@ -46,3 +46,7 @@ tasks.named('test', {
     // ignore deprecation warnings for gradle 9.0 found by nebula-test
     systemProperty 'ignoreDeprecations', 'true'
 })
+
+gradleTestUtils {
+    gradleVersions = ['8.14.3']
+}
