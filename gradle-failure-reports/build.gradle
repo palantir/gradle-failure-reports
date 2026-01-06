@@ -47,6 +47,3 @@ tasks.named('test', {
     systemProperty 'ignoreDeprecations', 'true'
 })
 
-gradleTestUtils {
-    gradleVersions = ['8.14.3']
-}
