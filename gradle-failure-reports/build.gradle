@@ -46,7 +46,11 @@ tasks.named('test', {
     // ignore deprecation warnings for gradle 9.0 found by nebula-test
     systemProperty 'ignoreDeprecations', 'true'
 
-    // _JAVA_OPTIONS for main build leaking into test builds. Printing superfluous diagnostic logs that only fail in circle.
-    environment '_JAVA_OPTIONS', ''
+    // _JAVA_OPTIONS for the main build is leaking into test builds. This ends up non-deterministically printing
+    // superfluous diagnostic logs that only fail in circle - as we explicitly set _JAVA_OPTIONS in circle to control
+    // the gradle build.
+    def newEnvironment  = new HashMap(environment)
+    newEnvironment.remove("_JAVA_OPTIONS")
+    environment = newEnvironment
 })
 
