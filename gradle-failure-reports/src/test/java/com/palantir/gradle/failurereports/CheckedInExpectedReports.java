@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2024 Palantir Technologies Inc. All rights reserved.
+ * (c) Copyright 2026 Palantir Technologies Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ public final class CheckedInExpectedReports {
     private static final String PROJECT_DIR_PLACEHOLDER = "_PROJECT_DIR";
     private static final String OTHER_STACK_FRAMES_REGEX = "(?m)^\\sat (?!com\\.palantir\\.).*\n";
     private static final String STACKFRAME_MORE_REGEX = "... \\d+ more";
+    private static final String JAVA_OPTIONS_REGEX = "(?m)^\\s*Picked up _JAVA_OPTIONS.*\n";
 
     /**
      * When ran _locally_, it copies the generated reports from the tests to the "src/test/resources/" path.
@@ -72,8 +73,11 @@ public final class CheckedInExpectedReports {
 
     private static String getReportWithProjectPlaceholder(Path reportPath, Path projectDir) throws IOException {
         return maybeRedactStacktrace(Files.readString(reportPath)
-                // if local paths are too big, they might get truncated in the errorMessage
-                .replaceAll(projectDir.toString(), PROJECT_DIR_PLACEHOLDER));
+                        // if local paths are too big, they might get truncated in the errorMessage
+                        .replaceAll(projectDir.toString(), PROJECT_DIR_PLACEHOLDER))
+                // if a new java process is started during a task run, _JAVA_OPTIONS will be captured and prevent
+                // comparison
+                .replaceAll(JAVA_OPTIONS_REGEX, "");
     }
 
     private static boolean runningInCi() {
