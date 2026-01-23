@@ -1,16 +1,16 @@
 <testsuites>
-  <testsuite name="myProject/src/main/java/app/ClassA.java:4" tests="1">
-    <testcase name="ClassA.java:4: error: cannot find symbol" classname="myProject/src/main/java/app/ClassA.java:4">
-      <failure type="ERROR">_PROJECT_DIR/myProject/src/main/java/app/ClassA.java:4: error: cannot find symbol
+  <testsuite name="myProject/src/main/java/app/ClassA.java:3" tests="1">
+    <testcase name="ClassA.java:3: error: cannot find symbol" classname="myProject/src/main/java/app/ClassA.java:3">
+      <failure type="ERROR">_PROJECT_DIR/myProject/src/main/java/app/ClassA.java:3: error: cannot find symbol
 public class ClassA extends ClassThatDoesNotExist{
                             ^
   symbol: class ClassThatDoesNotExist
 </failure>
     </testcase>
   </testsuite>
-  <testsuite name="myProject/src/foo/java/app/ClassFoo.java:6" tests="1">
-    <testcase name="ClassFoo.java:6: error: ';' expected" classname="myProject/src/foo/java/app/ClassFoo.java:6">
-      <failure type="ERROR">_PROJECT_DIR/myProject/src/foo/java/app/ClassFoo.java:6: error: ';' expected
+  <testsuite name="myProject/src/foo/java/app/ClassFoo.java:5" tests="1">
+    <testcase name="ClassFoo.java:5: error: ';' expected" classname="myProject/src/foo/java/app/ClassFoo.java:5">
+      <failure type="ERROR">_PROJECT_DIR/myProject/src/foo/java/app/ClassFoo.java:5: error: ';' expected
         return 0
                 ^
 </failure>

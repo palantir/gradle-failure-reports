@@ -18,7 +18,6 @@ package com.palantir.gradle.failurereports;
 
 import static com.palantir.gradle.testing.assertion.GradlePluginTestAssertions.assertThat;
 
-import com.palantir.gradle.testing.execution.DefaultGradleInvoker;
 import com.palantir.gradle.testing.execution.GradleInvoker;
 import com.palantir.gradle.testing.execution.InvocationResult;
 import com.palantir.gradle.testing.files.gradle.GradleFile;
@@ -57,11 +56,8 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void javacompile_error_is_reported(GradleInvoker gradle, RootProject rootProject, SubProject myProject)
             throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
         myProject.buildGradle().plugins().add("java");
         myProject.mainSourceSet().java().writeClass("""
@@ -81,17 +77,14 @@ class FailureReportsProjectsPluginIntegrationTest {
         assertThat(result).output().contains("Compilation failed; ");
         assertThat(result).output().contains("error: ';' expected");
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(), "javaCompile", getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "javaCompile", getDefaultOutputFile(rootProject));
     }
 
     @Test
     void multiple_javacompile_errors_are_reported(GradleInvoker gradle, RootProject rootProject, SubProject myProject)
             throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
         myProject.buildGradle().plugins().add("java");
         myProject.buildGradle().append("""
@@ -121,20 +114,15 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .buildsWithFailure();
 
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(),
-                "multiple-javaCompile",
-                getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "multiple-javaCompile", getDefaultOutputFile(rootProject));
     }
 
     @Test
     void multiple_project_errors_are_reported(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject1, SubProject myProject2)
             throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
         myProject1.buildGradle().plugins().add("java");
 
@@ -163,25 +151,20 @@ class FailureReportsProjectsPluginIntegrationTest {
         gradle.withArgs("compileJava", "--continue", "--parallel").buildsWithFailure();
 
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(),
-                "multiple-projects-javaCompile",
-                getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "multiple-projects-javaCompile", getDefaultOutputFile(rootProject));
     }
 
     @Test
     void successful_build_does_not_report_failures(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject) {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
         myProject.buildGradle().plugins().add("java");
         myProject.buildGradle().append("""
             tasks.withType(JavaCompile.class).configureEach(javaCompileTask ->{
                 javaCompileTask.doFirst {
-                project.getLogger().Error("This is a warning") }
+                project.getLogger().error("This is a warning") }
             })
             """);
 
@@ -208,19 +191,15 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void checkstyle_reports_failures(GradleInvoker gradle, RootProject rootProject, SubProject myProject)
             throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         setupRootCheckstyleBuild(rootProject);
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
+        myProject.buildGradle().plugins().add("com.palantir.baseline-checkstyle");
+        myProject.buildGradle().plugins().add("java");
         myProject.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
             }
-
-            apply plugin: 'com.palantir.baseline-checkstyle'
-            apply plugin: 'java'
             """);
 
         myProject.mainSourceSet().java().writeClass("""
@@ -239,26 +218,22 @@ class FailureReportsProjectsPluginIntegrationTest {
 
         assertThat(executionResult).output().contains("Checkstyle rule violations were found.");
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(), "checkstyle", getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "checkstyle", getDefaultOutputFile(rootProject));
     }
 
     @Test
     void checkstyle_and_javacompile_report_failures(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject1, SubProject myProject2)
             throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         setupRootCheckstyleBuild(rootProject);
-        setReportsOutputFiles(rootProject, gradleVersionNumber);
+        setReportsOutputFiles(rootProject);
 
+        myProject1.buildGradle().plugins().add("com.palantir.baseline-checkstyle");
+        myProject1.buildGradle().plugins().add("java");
         myProject1.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
             }
-
-            apply plugin: 'com.palantir.baseline-checkstyle'
-            apply plugin: 'java'
             """);
 
         myProject1.mainSourceSet().java().writeClass("""
@@ -270,12 +245,11 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
+        myProject2.buildGradle().plugins().add("java");
         myProject2.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
             }
-
-            apply plugin: 'java'
             """);
 
         myProject2.mainSourceSet().java().writeClass("""
@@ -290,31 +264,23 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .buildsWithFailure();
 
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(),
-                "multi-errors-checkstyle",
-                getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "multi-errors-checkstyle", getDefaultOutputFile(rootProject));
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(),
-                "multi-errors-compile",
-                getCompileOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "multi-errors-compile", getCompileOutputFile(rootProject));
     }
 
     @Test
     void successful_checkstyle_does_not_report_failures(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject) {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         setupRootCheckstyleBuild(rootProject);
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
+        myProject.buildGradle().plugins().add("com.palantir.baseline-checkstyle");
+        myProject.buildGradle().plugins().add("java");
         myProject.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
             }
-
-            apply plugin: 'com.palantir.baseline-checkstyle'
-            apply plugin: 'java'
             """);
 
         myProject.mainSourceSet().java().writeClass("""
@@ -327,10 +293,10 @@ class FailureReportsProjectsPluginIntegrationTest {
         gradle.withArgs("baselineUpdateConfig").buildsSuccessfully();
         InvocationResult executionResult = gradle.withArgs("checkstyleMain").buildsSuccessfully();
 
-        assertThat(executionResult).task(":checkstyleMain").succeeded();
+        assertThat(executionResult).task(":myProject:checkstyleMain").succeeded();
         rootProject
                 .buildDir()
-                .file(String.format("failure-reports/unit-test-%s.xml", gradleVersionNumber))
+                .file("failure-reports/unit-test.xml")
                 .assertThat()
                 .as("report XML should not exist for successful build")
                 .doesNotExist();
@@ -339,14 +305,10 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void exceptionwithsuggestion_is_reported_as_a_failure(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject) throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
+        rootProject.buildGradle().plugins().add("java");
         rootProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
-
-            apply plugin: 'com.palantir.failure-reports'
-            apply plugin: 'java'
 
             tasks.register('throwExceptionWithSuggestedFix') {
                 doLast {
@@ -355,12 +317,11 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
+        myProject.buildGradle().plugins().add("java");
         myProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
-
-            apply plugin: 'java'
 
             tasks.register('throwInnerExceptionWithSuggestedFix') {
                 doLast {
@@ -393,20 +354,16 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .buildsWithFailure();
 
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(), "throwException", getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "throwException", getDefaultOutputFile(rootProject));
     }
 
     @Test
     void exceptionwithlogs_is_reported_as_a_failure(GradleInvoker gradle, RootProject rootProject, SubProject myProject)
             throws IOException {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
+        rootProject.buildGradle().plugins().add("java");
         rootProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
-
-            apply plugin: 'com.palantir.failure-reports'
-            apply plugin: 'java'
 
             tasks.register('throwExceptionWithLogs') {
                 doLast {
@@ -415,12 +372,11 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
+        myProject.buildGradle().plugins().add("java");
         myProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
-
-            apply plugin: 'java'
 
             tasks.register('throwInnerExceptionWithLogs') {
                 doLast {
@@ -436,19 +392,16 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .buildsWithFailure();
 
         CheckedInExpectedReports.checkOrUpdateFor(
-                rootProject.path().toFile(),
-                "throwExceptionWithLogs",
-                getDefaultOutputFile(rootProject, gradleVersionNumber));
+                rootProject.path().toFile(), "throwExceptionWithLogs", getDefaultOutputFile(rootProject));
     }
 
     @Test
     void ignored_task_failures_are_not_reported(
             GradleInvoker gradle, RootProject rootProject, SubProject mySubproject) {
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
+        rootProject.buildGradle().plugins().add("java");
         rootProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
-
-            apply plugin: 'com.palantir.failure-reports'
-            apply plugin: 'java'
 
             abstract class ParentCustomTask extends DefaultTask {}
             abstract class MyCustomTask extends ParentCustomTask {}
@@ -464,10 +417,10 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
+        mySubproject.buildGradle().plugins().add("java");
         mySubproject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
             import com.palantir.gradle.failurereports.FailureReportsExtension
-            apply plugin: 'java'
 
             abstract class SubProjectTask extends DefaultTask {}
 
@@ -565,9 +518,6 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void when_circle_node_index_is_not_set_javacompile_errors_are_reported(
             GradleInvoker gradle, RootProject rootProject) {
-        String gradleVersionNumber =
-                ((DefaultGradleInvoker) gradle).gradleVersion().version();
-
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
         rootProject.buildGradle().plugins().add("java");
 
@@ -583,7 +533,7 @@ class FailureReportsProjectsPluginIntegrationTest {
 
         rootProject.gradlePropertiesFile().appendProperty("__TESTING", "true").appendProperty("__TESTING_CI", "true");
 
-        setDefaultReportsOutputFiles(rootProject, gradleVersionNumber);
+        setDefaultReportsOutputFiles(rootProject);
 
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
 
@@ -592,31 +542,19 @@ class FailureReportsProjectsPluginIntegrationTest {
 
         rootProject
                 .buildDir()
-                .file(String.format("failure-reports/unit-test-%s.xml", gradleVersionNumber))
+                .file("failure-reports/unit-test.xml")
                 .assertThat()
                 .exists();
     }
 
     private GradleFile setupRootCheckstyleBuild(RootProject rootProject) {
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
+        rootProject.buildGradle().plugins().add("com.palantir.baseline");
         rootProject.buildGradle().append("""
-            buildscript {
-                repositories {
-                    gradlePluginPortal()
-                    mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
-                }
-
-                dependencies {
-                    classpath 'com.palantir.baseline:gradle-baseline-java:5.38.0'
-                }
-            }
-
             repositories {
                 gradlePluginPortal()
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
             }
-
-            apply plugin: 'com.palantir.failure-reports'
-            apply plugin: 'com.palantir.baseline'
             """);
 
         return rootProject.buildGradle();
@@ -630,39 +568,33 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .appendProperty("__TESTING_CIRCLE_NODE_INDEX", "0");
     }
 
-    private GradleFile setDefaultReportsOutputFiles(RootProject rootProject, String gradleVersionNumber) {
+    private GradleFile setDefaultReportsOutputFiles(RootProject rootProject) {
         // changing the report failure location to prevent the failure reports from this tests from being displayed
         // in the CircleCi Tests tab
         return rootProject.buildGradle().append("""
             failureReports {
-                failureReportOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
-                failureReportCompileOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
+                failureReportOutputFile = project.file('build/failure-reports/unit-test.xml')
+                failureReportCompileOutputFile = project.file('build/failure-reports/unit-test.xml')
             }
-            """, gradleVersionNumber, gradleVersionNumber);
+            """);
     }
 
-    private GradleFile setReportsOutputFiles(RootProject rootProject, String gradleVersionNumber) {
+    private GradleFile setReportsOutputFiles(RootProject rootProject) {
         // changing the report failure location to prevent the failure reports from this tests from being displayed
         // in the CircleCi Tests tab
         return rootProject.buildGradle().append("""
             failureReports {
-                failureReportOutputFile = project.file('build/failure-reports/unit-test-%s.xml')
-                failureReportCompileOutputFile = project.file('build/failure-reports/unit-test-compile--%s.xml')
+                failureReportOutputFile = project.file('build/failure-reports/unit-test.xml')
+                failureReportCompileOutputFile = project.file('build/failure-reports/unit-test-compile.xml')
             }
-            """, gradleVersionNumber, gradleVersionNumber);
+            """);
     }
 
-    private Path getCompileOutputFile(RootProject rootProject, String gradleVersionNumber) {
-        return rootProject
-                .buildDir()
-                .path()
-                .resolve(String.format("failure-reports/unit-test-compile--%s.xml", gradleVersionNumber));
+    private Path getCompileOutputFile(RootProject rootProject) {
+        return rootProject.buildDir().path().resolve("failure-reports/unit-test-compile.xml");
     }
 
-    private Path getDefaultOutputFile(RootProject rootProject, String gradleVersionNumber) {
-        return rootProject
-                .buildDir()
-                .path()
-                .resolve(String.format("failure-reports/unit-test-%s.xml", gradleVersionNumber));
+    private Path getDefaultOutputFile(RootProject rootProject) {
+        return rootProject.buildDir().path().resolve("failure-reports/unit-test.xml");
     }
 }

@@ -1,7 +1,7 @@
 <testsuites>
-  <testsuite name="myProject/src/main/java/app/ClassA.java:6" tests="1">
-    <testcase name="ClassA.java:6: error: ';' expected" classname="myProject/src/main/java/app/ClassA.java:6">
-      <failure type="ERROR">_PROJECT_DIR/myProject/src/main/java/app/ClassA.java:6: error: ';' expected
+  <testsuite name="myProject/src/main/java/app/ClassA.java:5" tests="1">
+    <testcase name="ClassA.java:5: error: ';' expected" classname="myProject/src/main/java/app/ClassA.java:5">
+      <failure type="ERROR">_PROJECT_DIR/myProject/src/main/java/app/ClassA.java:5: error: ';' expected
         return 0
                 ^
 </failure>
