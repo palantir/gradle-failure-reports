@@ -194,8 +194,11 @@ class FailureReportsProjectsPluginIntegrationTest {
         setupRootCheckstyleBuild(rootProject);
         setDefaultReportsOutputFiles(rootProject);
 
-        myProject.buildGradle().plugins().add("com.palantir.baseline-checkstyle");
-        myProject.buildGradle().plugins().add("java");
+        myProject
+                .buildGradle()
+                .plugins()
+                .add("com.palantir.baseline-checkstyle")
+                .add("java");
         myProject.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
@@ -228,8 +231,11 @@ class FailureReportsProjectsPluginIntegrationTest {
         setupRootCheckstyleBuild(rootProject);
         setReportsOutputFiles(rootProject);
 
-        myProject1.buildGradle().plugins().add("com.palantir.baseline-checkstyle");
-        myProject1.buildGradle().plugins().add("java");
+        myProject1
+                .buildGradle()
+                .plugins()
+                .add("com.palantir.baseline-checkstyle")
+                .add("java");
         myProject1.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
@@ -275,8 +281,11 @@ class FailureReportsProjectsPluginIntegrationTest {
         setupRootCheckstyleBuild(rootProject);
         setDefaultReportsOutputFiles(rootProject);
 
-        myProject.buildGradle().plugins().add("com.palantir.baseline-checkstyle");
-        myProject.buildGradle().plugins().add("java");
+        myProject
+                .buildGradle()
+                .plugins()
+                .add("com.palantir.baseline-checkstyle")
+                .add("java");
         myProject.buildGradle().append("""
             repositories {
                 mavenCentral() { metadataSources { mavenPom(); ignoreGradleMetadataRedirection() } }
@@ -305,8 +314,7 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void exceptionwithsuggestion_is_reported_as_a_failure(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject) throws IOException {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("java");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
         rootProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithSuggestion
 
@@ -360,8 +368,7 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void exceptionwithlogs_is_reported_as_a_failure(GradleInvoker gradle, RootProject rootProject, SubProject myProject)
             throws IOException {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("java");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
         rootProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
 
@@ -398,8 +405,7 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void ignored_task_failures_are_not_reported(
             GradleInvoker gradle, RootProject rootProject, SubProject mySubproject) {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("java");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
         rootProject.buildGradle().append("""
             import com.palantir.gradle.failurereports.exceptions.ExceptionWithLogs
 
@@ -455,8 +461,7 @@ class FailureReportsProjectsPluginIntegrationTest {
 
     @Test
     void when_running_locally_no_failure_report_is_created(GradleInvoker gradle, RootProject rootProject) {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("java");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
 
         rootProject.mainSourceSet().java().writeClass("""
             package app;
@@ -484,8 +489,7 @@ class FailureReportsProjectsPluginIntegrationTest {
 
     @Test
     void when_circle_node_index_is_not_0_no_failure_report_is_created(GradleInvoker gradle, RootProject rootProject) {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("java");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
 
         rootProject.mainSourceSet().java().writeClass("""
             package app;
@@ -518,8 +522,7 @@ class FailureReportsProjectsPluginIntegrationTest {
     @Test
     void when_circle_node_index_is_not_set_javacompile_errors_are_reported(
             GradleInvoker gradle, RootProject rootProject) {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("java");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
 
         rootProject.mainSourceSet().java().writeClass("""
             package app;
@@ -548,8 +551,7 @@ class FailureReportsProjectsPluginIntegrationTest {
     }
 
     private GradleFile setupRootCheckstyleBuild(RootProject rootProject) {
-        rootProject.buildGradle().plugins().add("com.palantir.failure-reports");
-        rootProject.buildGradle().plugins().add("com.palantir.baseline");
+        rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("com.palantir.baseline");
         rootProject.buildGradle().append("""
             repositories {
                 gradlePluginPortal()
