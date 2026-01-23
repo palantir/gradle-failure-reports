@@ -1,11 +1,11 @@
 <testsuites>
-  <testsuite name="myProject1/src/main/java/app/ClassA.java:5" tests="1">
-    <testcase name="ClassA.java:5: error: Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info(&quot;Message&quot;)." classname="myProject1/src/main/java/app/ClassA.java:5">
+  <testsuite name="myProject1/src/main/java/app/ClassA.java:4" tests="1">
+    <testcase name="ClassA.java:4: error: Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info(&quot;Message&quot;)." classname="myProject1/src/main/java/app/ClassA.java:4">
       <failure type="ERROR">Logging with System.out is not allowed because it has no metadata and cant be configured at runtime. Please use an SLF4J logger instead, e.g. log.info("Message").</failure>
     </testcase>
   </testsuite>
-  <testsuite name="myProject1/src/main/java/app/ClassA.java:3" tests="1">
-    <testcase name="ClassA.java:3: error: Utility classes should not have a public or default constructor." classname="myProject1/src/main/java/app/ClassA.java:3">
+  <testsuite name="myProject1/src/main/java/app/ClassA.java:2" tests="1">
+    <testcase name="ClassA.java:2: error: Utility classes should not have a public or default constructor." classname="myProject1/src/main/java/app/ClassA.java:2">
       <failure type="ERROR">Utility classes should not have a public or default constructor.</failure>
     </testcase>
   </testsuite>
