@@ -10,7 +10,7 @@ com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.0 (1 constraints: 3
 
 com.fasterxml.woodstox:woodstox-core:7.1.1 (1 constraints: 3d174926)
 
-com.google.errorprone:error_prone_annotations:2.41.0 (3 constraints: a91f3a50)
+com.google.errorprone:error_prone_annotations:2.47.0 (3 constraints: b21f2853)
 
 com.google.guava:failureaccess:1.0.3 (2 constraints: f3154f13)
 
