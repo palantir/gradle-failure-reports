@@ -147,7 +147,7 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
-        rootProject.gradlePropertiesFile().appendProperty("__TESTING", "true").appendProperty("__TESTING_CI", "true");
+        rootProject.gradlePropertiesFile().setProperty("__TESTING", "true").setProperty("__TESTING_CI", "true");
 
         gradle.withArgs("compileJava", "--continue", "--parallel").buildsWithFailure();
 
@@ -475,7 +475,7 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
-        rootProject.gradlePropertiesFile().appendProperty("__TESTING", "true");
+        rootProject.gradlePropertiesFile().setProperty("__TESTING", "true");
 
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
 
@@ -506,9 +506,9 @@ class FailureReportsProjectsPluginIntegrationTest {
 
         rootProject
                 .gradlePropertiesFile()
-                .appendProperty("__TESTING", "true")
-                .appendProperty("__TESTING_CI", "true")
-                .appendProperty("__TESTING_CIRCLE_NODE_INDEX", "5");
+                .setProperty("__TESTING", "true")
+                .setProperty("__TESTING_CI", "true")
+                .setProperty("__TESTING_CIRCLE_NODE_INDEX", "5");
 
         InvocationResult result = gradle.withArgs("compileJava").buildsWithFailure();
 
@@ -538,7 +538,7 @@ class FailureReportsProjectsPluginIntegrationTest {
             }
             """);
 
-        rootProject.gradlePropertiesFile().appendProperty("__TESTING", "true").appendProperty("__TESTING_CI", "true");
+        rootProject.gradlePropertiesFile().setProperty("__TESTING", "true").setProperty("__TESTING_CI", "true");
 
         setDefaultReportsOutputFiles(rootProject);
 
@@ -570,9 +570,9 @@ class FailureReportsProjectsPluginIntegrationTest {
     private void enableTestCiRun(RootProject rootProject) {
         rootProject
                 .gradlePropertiesFile()
-                .appendProperty("__TESTING", "true")
-                .appendProperty("__TESTING_CI", "true")
-                .appendProperty("__TESTING_CIRCLE_NODE_INDEX", "0");
+                .setProperty("__TESTING", "true")
+                .setProperty("__TESTING_CI", "true")
+                .setProperty("__TESTING_CIRCLE_NODE_INDEX", "0");
     }
 
     private GradleFile setDefaultReportsOutputFiles(RootProject rootProject) {
