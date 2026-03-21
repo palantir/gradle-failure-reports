@@ -138,7 +138,7 @@ org.apiguardian:apiguardian-api:1.1.2 (6 constraints: 5366ce6e)
 
 org.assertj:assertj-core:3.27.7 (2 constraints: 221f6290)
 
-org.checkerframework:checker-qual:3.53.0 (2 constraints: 6f1547e6)
+org.checkerframework:checker-qual:3.54.0 (2 constraints: 70157ae6)
 
 org.codehaus.groovy:groovy:3.0.24 (4 constraints: aa410b07)
 
