@@ -15,6 +15,6 @@ com.google.errorprone:error_prone_annotations = 2.11.0
 org.checkerframework:checker-qual = 3.53.0
 
 # unit testing
-org.assertj:* = 3.27.6
+org.assertj:* = 3.27.7
 org.junit.jupiter:* = 6.0.2
 org.junit.platform:* = 6.0.2
