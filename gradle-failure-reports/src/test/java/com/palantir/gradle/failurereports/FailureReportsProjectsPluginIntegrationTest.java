@@ -115,7 +115,6 @@ class FailureReportsProjectsPluginIntegrationTest {
                 rootProject.path().toFile(), "multiple-javaCompile", getDefaultOutputFile(rootProject));
     }
 
-    @SuppressWarnings("for-rollout:deprecation")
     @Test
     void multiple_project_errors_are_reported(
             GradleInvoker gradle, RootProject rootProject, SubProject myProject1, SubProject myProject2)
@@ -458,7 +457,6 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .doesNotExist();
     }
 
-    @SuppressWarnings("for-rollout:deprecation")
     @Test
     void when_running_locally_no_failure_report_is_created(GradleInvoker gradle, RootProject rootProject) {
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
@@ -487,7 +485,6 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .doesNotExist();
     }
 
-    @SuppressWarnings("for-rollout:deprecation")
     @Test
     void when_circle_node_index_is_not_0_no_failure_report_is_created(GradleInvoker gradle, RootProject rootProject) {
         rootProject.buildGradle().plugins().add("com.palantir.failure-reports").add("java");
@@ -520,7 +517,6 @@ class FailureReportsProjectsPluginIntegrationTest {
                 .doesNotExist();
     }
 
-    @SuppressWarnings("for-rollout:deprecation")
     @Test
     void when_circle_node_index_is_not_set_javacompile_errors_are_reported(
             GradleInvoker gradle, RootProject rootProject) {
@@ -564,7 +560,6 @@ class FailureReportsProjectsPluginIntegrationTest {
         return rootProject.buildGradle();
     }
 
-    @SuppressWarnings("for-rollout:deprecation")
     private void enableTestCiRun(RootProject rootProject) {
         rootProject
                 .gradlePropertiesFile()
