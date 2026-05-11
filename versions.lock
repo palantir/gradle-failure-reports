@@ -68,13 +68,13 @@ com.palantir.baseline:gradle-baseline-java:5.38.0 (1 constraints: 4205613b)
 
 com.palantir.baseline:gradle-junit-reports:5.38.0 (1 constraints: f9112c07)
 
-com.palantir.gradle.plugintesting:configuration-cache-spec:0.69.0 (1 constraints: 4105523b)
+com.palantir.gradle.plugintesting:configuration-cache-spec:0.70.0 (1 constraints: 39053b3b)
 
-com.palantir.gradle.plugintesting:discover-tests-cli:0.69.0 (1 constraints: 4105523b)
+com.palantir.gradle.plugintesting:discover-tests-cli:0.70.0 (1 constraints: 39053b3b)
 
-com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.69.0 (1 constraints: 4105523b)
+com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.70.0 (1 constraints: 39053b3b)
 
-com.palantir.gradle.plugintesting:plugin-testing-core:0.69.0 (2 constraints: 1e1f448f)
+com.palantir.gradle.plugintesting:plugin-testing-core:0.70.0 (2 constraints: 0e1fde8c)
 
 com.palantir.gradle.utils:lazily-configured-mapping:0.1.0 (1 constraints: ba11f3f4)
 
@@ -82,7 +82,7 @@ com.palantir.javaformat:gradle-palantir-java-format:1.1.0 (1 constraints: bb11f8
 
 com.palantir.javaformat:palantir-java-format-spi:1.1.0 (2 constraints: 2b273bdb)
 
-commons-io:commons-io:2.21.0 (2 constraints: 912eef6b)
+commons-io:commons-io:2.22.0 (2 constraints: 922e2d6c)
 
 commons-lang:commons-lang:2.6 (1 constraints: 6311bad1)
 
