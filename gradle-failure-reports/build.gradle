@@ -27,6 +27,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     gradlePluginForTesting 'com.palantir.baseline:gradle-baseline-java'
+    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'org.spockframework:spock-junit4'
 }
 
 gradlePlugin {
