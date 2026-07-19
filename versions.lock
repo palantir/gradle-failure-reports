@@ -24,7 +24,7 @@ com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations:1.4.0 (1
 
 com.palantir.gradle.utils:environment-variables:0.24.0 (1 constraints: 3805333b)
 
-one.util:streamex:0.8.4 (1 constraints: 0e050736)
+one.util:streamex:0.9.0 (1 constraints: 0b050636)
 
 org.codehaus.woodstox:stax2-api:4.2.2 (2 constraints: 6a278bd2)
 
