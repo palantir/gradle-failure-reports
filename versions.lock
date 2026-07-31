@@ -22,7 +22,7 @@ com.google.j2objc:j2objc-annotations:3.1 (1 constraints: b809f1a0)
 
 com.palantir.gradle.auto-parallelizable:auto-parallelizable-annotations:1.5.0 (1 constraints: 0805ff35)
 
-com.palantir.gradle.utils:environment-variables:0.24.0 (1 constraints: 3805333b)
+com.palantir.gradle.utils:environment-variables:0.26.0 (1 constraints: 3a05393b)
 
 one.util:streamex:0.9.0 (1 constraints: 0b050636)
 
