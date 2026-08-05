@@ -1,14 +1,14 @@
 # Run ./gradlew writeVersionsLocks to regenerate this file. Blank lines are to minimize merge conflicts.
 
-com.fasterxml.jackson.core:jackson-annotations:2.21 (3 constraints: 092e32dc)
+com.fasterxml.jackson.core:jackson-annotations:2.22 (3 constraints: 0c2ee6dc)
 
-com.fasterxml.jackson.core:jackson-core:2.21.4 (2 constraints: f529ad13)
+com.fasterxml.jackson.core:jackson-core:2.22.1 (2 constraints: f1292b13)
 
-com.fasterxml.jackson.core:jackson-databind:2.21.4 (1 constraints: 6d17a33d)
+com.fasterxml.jackson.core:jackson-databind:2.22.1 (1 constraints: 6b17a33d)
 
-com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.4 (1 constraints: 3b053a3b)
+com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.22.1 (1 constraints: 39053a3b)
 
-com.fasterxml.woodstox:woodstox-core:7.1.1 (1 constraints: 3d174926)
+com.fasterxml.woodstox:woodstox-core:7.2.0 (1 constraints: 3d174b26)
 
 com.google.errorprone:error_prone_annotations:2.47.0 (3 constraints: af1f4c50)
 
@@ -26,7 +26,7 @@ com.palantir.gradle.utils:environment-variables:0.26.0 (1 constraints: 3a05393b)
 
 one.util:streamex:0.9.0 (1 constraints: 0b050636)
 
-org.codehaus.woodstox:stax2-api:4.2.2 (2 constraints: 6a278bd2)
+org.codehaus.woodstox:stax2-api:4.3.0 (2 constraints: 682760d2)
 
 org.immutables:value:2.12.2 (1 constraints: 3905373b)
 
