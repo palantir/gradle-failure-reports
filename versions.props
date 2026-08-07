@@ -17,4 +17,4 @@ org.checkerframework:checker-qual = 4.2.2
 # unit testing
 org.assertj:* = 3.27.7
 org.junit.jupiter:* = 6.1.2
-org.junit.platform:* = 6.1.2
+org.junit.platform:* = 6.1.3
