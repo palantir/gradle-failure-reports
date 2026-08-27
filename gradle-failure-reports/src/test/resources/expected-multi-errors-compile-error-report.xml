@@ -4,6 +4,10 @@
       <failure type="ERROR">_PROJECT_DIR/myProject2/src/main/java/foo/Foo.java:2: error: reached end of file while parsing
 public class Foo extends NonExistentClass
                                          ^
+_PROJECT_DIR/myProject2/src/main/java/foo/Foo.java:2: error: cannot find symbol
+public class Foo extends NonExistentClass
+                         ^
+  symbol: class NonExistentClass
 </failure>
     </testcase>
   </testsuite>
