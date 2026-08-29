@@ -1,5 +1,0 @@
-type: improvement
-improvement:
-  description: ExceptionWithLogs type for gradle exec tasks
-  links:
-  - https://github.com/palantir/gradle-failure-reports/pull/118

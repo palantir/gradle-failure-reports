@@ -1,6 +1,0 @@
-type: fix
-fix:
-  description: Create FinalizerTask before subProjects FailureReportsProjectsPlugin
-    plugin
-  links:
-  - https://github.com/palantir/gradle-failure-reports/pull/20

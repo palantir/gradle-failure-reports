@@ -1,5 +1,0 @@
-type: improvement
-improvement:
-  description: LocalRecommendationsPlugin that adds recommendations for failures
-  links:
-  - https://github.com/palantir/gradle-failure-reports/pull/264
