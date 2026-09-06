@@ -42,7 +42,6 @@ public class FailureReporterResourcesTest {
         assertThat(FailureReporterResources.getTaskErrorHeader(":compileJava", "this is my error", "warn"))
                 .isEqualTo("[:compileJava] warn: this is my error");
 
-        @SuppressWarnings("for-rollout:deprecation")
         String longErrorMessage = RandomStringUtils.randomAlphabetic(400);
         String expectedTruncatedMessage = longErrorMessage.substring(0, 150);
         assertThat(FailureReporterResources.getTaskErrorHeader(":compileJava", longErrorMessage))
@@ -51,9 +50,7 @@ public class FailureReporterResourcesTest {
         assertThat(FailureReporterResources.getTaskErrorHeader(":compileJava", longErrorMessage, "FATAL"))
                 .isEqualTo(String.format("[:compileJava] fatal: %s...", expectedTruncatedMessage));
 
-        @SuppressWarnings("for-rollout:deprecation")
         String message1 = RandomStringUtils.randomAlphabetic(155);
-        @SuppressWarnings("for-rollout:deprecation")
         String fullMessageWithSpace = message1 + " " + RandomStringUtils.randomAlphabetic(200);
         assertThat(FailureReporterResources.getTaskErrorHeader(":compileJava", fullMessageWithSpace, "ERROR"))
                 .isEqualTo(String.format("[:compileJava] error: %s...", message1));
