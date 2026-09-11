@@ -76,13 +76,13 @@ com.palantir.baseline-error-prone:gradle-baseline-error-prone:0.7.0 (1 constrain
 
 com.palantir.gradle.idea-configuration:gradle-idea-configuration:0.8.0 (2 constraints: 3627c0dc)
 
-com.palantir.gradle.plugintesting:configuration-cache-spec:0.76.0 (1 constraints: 3f054d3b)
+com.palantir.gradle.plugintesting:configuration-cache-spec:0.77.0 (1 constraints: 4005503b)
 
-com.palantir.gradle.plugintesting:discover-tests-cli:0.76.0 (1 constraints: 3f054d3b)
+com.palantir.gradle.plugintesting:discover-tests-cli:0.77.0 (1 constraints: 4005503b)
 
-com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.76.0 (1 constraints: 3f054d3b)
+com.palantir.gradle.plugintesting:gradle-plugin-testing-junit:0.77.0 (1 constraints: 4005503b)
 
-com.palantir.gradle.plugintesting:plugin-testing-core:0.76.0 (2 constraints: 1a1fac8e)
+com.palantir.gradle.plugintesting:plugin-testing-core:0.77.0 (2 constraints: 1c1ff98e)
 
 com.palantir.gradle.utils:exec:0.22.0 (1 constraints: 2f0f6176)
 
