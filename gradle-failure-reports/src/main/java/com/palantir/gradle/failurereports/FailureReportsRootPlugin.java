@@ -27,6 +27,7 @@ import org.gradle.api.invocation.Gradle;
 
 public final class FailureReportsRootPlugin implements Plugin<Project> {
 
+    @SuppressWarnings("for-rollout:ReferenceEquality")
     @Override
     public void apply(Project project) {
         if (project.getRootProject() != project) {
