@@ -126,7 +126,7 @@ net.bytebuddy:byte-buddy:1.18.3 (1 constraints: 530b55df)
 
 net.ltgt.gradle:gradle-errorprone-plugin:4.3.0 (2 constraints: 3d366a24)
 
-org.apache.commons:commons-lang3:3.20.0 (5 constraints: f043d3f3)
+org.apache.commons:commons-lang3:3.21.0 (5 constraints: f1438df4)
 
 org.apache.groovy:groovy:4.0.29 (2 constraints: 8a1bae9e)
 
