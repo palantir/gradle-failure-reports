@@ -58,7 +58,7 @@ com.fasterxml.jackson.datatype:jackson-datatype-guava:2.22.3 (2 constraints: 252
 
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.22.3 (1 constraints: a51a8b21)
 
-com.github.ben-manes.caffeine:caffeine:3.3.0 (1 constraints: bf1108f5)
+com.github.ben-manes.caffeine:caffeine:3.3.1 (1 constraints: c01109f5)
 
 com.google.inject:guice:5.1.0 (1 constraints: e20b61f3)
 
@@ -70,7 +70,7 @@ com.googlecode.javaewah:JavaEWAH:1.2.3 (1 constraints: 460e7e50)
 
 com.netflix.nebula:nebula-test:12.1.0 (2 constraints: cb1d802c)
 
-com.palantir.baseline:gradle-baseline-java:7.11.0 (1 constraints: 3b05503b)
+com.palantir.baseline:gradle-baseline-java:7.12.0 (1 constraints: 3c05533b)
 
 com.palantir.baseline-error-prone:gradle-baseline-error-prone:0.7.0 (1 constraints: c01105f5)
 
